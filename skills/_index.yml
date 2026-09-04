@@ -1,0 +1,24 @@
+generated: '2026-09-04'
+method: generated
+source: openapi/viridi-parente-vista-openapi.json + conventions/ + errors/
+note: >-
+  Packaged Agent Skills for the Viridi ViSTA Platform API. Every operationId referenced was
+  verified present in the contract Viridi serves at https://vista.viridiparente.com/v3/api-docs.
+  Viridi publishes no skills or AGENTS.md of its own; these are API Evangelist generations.
+skills:
+- file: viridi-parente-sbr30-telemetry.md
+  name: viridi-sbr30-telemetry
+  description: Read SBR30 battery data and bulk telemetry, plus generator and chiller latest values.
+  operations: [getSBR30Data, getSBR30DataV1_2, getSBR30Telem, getGeneratorData, getChillerData]
+  writes: false
+- file: viridi-parente-moxion-aemp-telematics.md
+  name: viridi-moxion-aemp-telematics
+  description: Page through Moxion AEMP equipment telematics and fault records.
+  operations: [getMoxionAEMP, getMoxionAEMPFaults]
+  writes: false
+- file: viridi-parente-device-fleet.md
+  name: viridi-device-fleet
+  description: Inventory devices and assets, read latest timeseries, triage alarms.
+  operations: [getTenantDevices_1, getTenantDeviceInfos, getDeviceById, getCustomerDevices, getTimeseriesKeys, getLatestTimeseries_1, getAllAlarms, clearAlarm]
+  writes: limited
+  excluded_operations: [handleTwoWayDeviceRPCRequest, setConfig, setCert, registerAll, deregisterAll, deleteDevice, deleteEntityTimeseries]

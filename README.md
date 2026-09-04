@@ -64,5 +64,28 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Viridi is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/viridi-parente_stock/
+Viridi (Viridi Parente, Inc.) is a Buffalo, New York manufacturer of fail-safe, modular
+lithium-ion battery energy storage systems (RPS150, RPS50, RPSLink IN/EX, SBR30, FAVEO and
+the 1.2 MWh series) built around its Anti-Propagation technology for installation in
+occupied spaces. Its software side is ViSTA / Viridi Insights, an energy management and
+industrial-IoT platform that connects behind-the-meter equipment over BACnet, Modbus,
+CANbus, DNP3 and serial links.
+
+Viridi was surfaced via the API Evangelist harvest backlog (source: secondary-market).
+
+## API surface
+
+ViSTA runs at `https://vista.viridiparente.com` and serves an anonymously readable
+**OpenAPI 3.1.0** contract at `/v3/api-docs` (373 paths, 453 operations, 425 schemas), with
+Swagger UI at `/swagger-ui/index.html`. The deployment is a Viridi-operated instance of the
+open-source **ThingsBoard** IoT platform (v3.7.0) — the served `info` block is upstream
+ThingsBoard's — extended with **17 Viridi-authored operations**: SBR30 battery data and bulk
+telemetry, generator and chiller latest values, CBRS device registration/state/config/
+certificates, and Moxion AEMP equipment telematics and faults. All operations require an
+authenticated ViSTA account, which is provisioned by Viridi sales; the contract itself is
+public.
+
+- Website: https://viridiparente.com/
+- ViSTA / Viridi Insights: https://viridiparente.com/products/iiot-intelligent-solution/
+- Request a ViSTA account: https://viridiparente.com/create-a-vista-account/
+- Secondary-market listing (harvest source): https://forgeglobal.com/viridi-parente_stock/

@@ -1,0 +1,171 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json (components.schemas $ref and *Id reference fields)
+note: >-
+  Entity graph of the ViSTA Platform API. The contract carries 425 component schemas; the
+  entities below are the ones the REST surface is organized around. Every id field is a
+  typed EntityId object ({id, entityType}), not a bare string, so relationships are
+  explicit in the schema rather than by convention. Multi-tenancy is the spine: nearly
+  every entity belongs_to a Tenant, and a Customer sub-partition sits under it.
+entities:
+- name: Tenant
+  description: Top-level isolation boundary. Owns every other entity.
+  relationships:
+  - belongs_to: TenantProfile
+    via: tenantProfileId
+  - has_many: Customer
+  - has_many: Device
+  - has_many: Asset
+  - has_many: Dashboard
+  - has_many: RuleChain
+  - has_many: Edge
+- name: Customer
+  description: Sub-tenant partition; entities are assigned to a customer for scoped access.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - has_many: Device
+  - has_many: Asset
+  - has_many: User
+- name: User
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - has_one: Role
+    via: roleId
+- name: Device
+  description: A physical unit — an RPS/SBR30 battery system, generator, chiller or CBRS radio.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - belongs_to: DeviceProfile
+    via: deviceProfileId
+  - has_one: OtaPackage
+    via: firmwareId
+  - has_one: OtaPackage
+    via: softwareId
+  - has_many: Alarm
+  - has_many: TimeseriesEntry
+- name: DeviceProfile
+  description: Device type template carrying transport config, provisioning and alarm rules.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - has_one: RuleChain
+    via: defaultRuleChainId
+  - has_one: Dashboard
+    via: defaultDashboardId
+  - has_one: RuleChain
+    via: defaultEdgeRuleChainId
+  - has_one: OtaPackage
+    via: firmwareId
+  - has_one: OtaPackage
+    via: softwareId
+- name: Asset
+  description: Logical grouping — a site, microgrid, building or fleet.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - belongs_to: AssetProfile
+    via: assetProfileId
+- name: AssetProfile
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - has_one: RuleChain
+    via: defaultRuleChainId
+  - has_one: Dashboard
+    via: defaultDashboardId
+- name: EntityView
+  description: A filtered projection of a device or asset exposed to a customer.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - has_one: (Device|Asset)
+    via: entityId
+- name: Alarm
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - has_one: User
+    via: assigneeId
+  - has_one: (Device|Asset|EntityView)
+    via: originator
+  - has_many: AlarmComment
+- name: RuleChain
+  description: Server-side event processing pipeline for telemetry and alarms.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - has_one: RuleNode
+    via: firstRuleNodeId
+- name: Edge
+  description: Edge computing instance — the Conductor edge platform in Viridi's product naming.
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: Customer
+    via: customerId
+  - has_one: RuleChain
+    via: rootRuleChainId
+  - has_many: EdgeEvent
+- name: Dashboard
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - has_many: WidgetType
+    via: WidgetsBundle
+- name: OtaPackageInfo
+  relationships:
+  - belongs_to: Tenant
+    via: tenantId
+  - belongs_to: DeviceProfile
+    via: deviceProfileId
+- name: TelemRequest
+  description: >-
+    Viridi-authored request body for POST /api/telem (getSBR30Telem) — the SBR30 bulk
+    telemetry read. Not a ThingsBoard type.
+  fields:
+  - assets (array of string)
+  - keys (map of string -> array of string)
+  - start_ts (int64 epoch ms)
+  - end_ts (int64 epoch ms)
+  - report (boolean)
+  - limit (int32)
+  - interval (string)
+  relationships:
+  - references: Asset
+    via: assets
+first_party_surface:
+  note: >-
+    The Viridi-authored controllers return untyped `object` / JsonNode bodies, so no schema
+    can be derived for SBR30 data, generator/chiller latest values, CBRS state or Moxion
+    AEMP payloads. That is a real gap in the published contract, not a gap in this profile.
+  operations:
+  - getSBR30Data
+  - getSBR30DataV1_2
+  - getSBR30Telem
+  - getGeneratorData
+  - getChillerData
+  - getMoxionAEMP
+  - getMoxionAEMPFaults
+  - getDevices
+  - getState
+  - getStats
+  - getConfig
+  - setConfig
+  - getCert
+  - setCert
+  - registerAll
+  - deregisterAll
+  - getGenTelem

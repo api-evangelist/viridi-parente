@@ -1,0 +1,45 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json + searches of viridiparente.com
+versioning:
+  scheme: platform-version
+  current_version: 3.7.0
+  version_source: info.version of the contract served at https://vista.viridiparente.com/v3/api-docs
+  note: >-
+    The version tracks the upstream ThingsBoard platform release, not a Viridi-published API
+    version. There is no version segment in the base path. Two Viridi-authored endpoints
+    version by hand in the path (GET /api/data and GET /api/data/v1_2), and RPC is split
+    across /api/rpc and /api/v2/rpc, so callers must pin per-endpoint rather than per-API.
+  in_url: false
+  in_header: false
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation or sunset policy is published by Viridi, no RFC 8594 Sunset/Deprecation
+    header is documented, and no operation in the 453-operation contract carries
+    `deprecated: true`. The v1/v1_2 and rpc/v2-rpc pairs exist with no statement about which
+    is retiring.
+status_page:
+  published: false
+  url: null
+  probe: status.viridiparente.com has no DNS A or CNAME record (checked 2026-09-04)
+  note: >-
+    No status page, uptime dashboard or incident history is published for ViSTA. The platform
+    itself exposes a usage-info controller and audit log to authenticated tenants, which is
+    not a public status surface.
+sla:
+  published: false
+  note: No SLA or uptime commitment is published on viridiparente.com or in the contract.
+changelog:
+  published: false
+  note: >-
+    viridiparente.com/blog/ is a marketing and press blog, not a dated API or release
+    changelog. No release notes exist for ViSTA.
+support:
+  channel: https://viridiparente.com/contact/
+  account_provisioning: https://viridiparente.com/create-a-vista-account/

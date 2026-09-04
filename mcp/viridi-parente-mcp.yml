@@ -1,0 +1,80 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json
+status: candidate
+note: >-
+  Viridi publishes no MCP server. Searches of viridiparente.com, the ViSTA host and the
+  github.com/ViridiParente organization (14 repositories, all forks of upstream open-source
+  projects) found no hosted endpoint and no stdio package. The tools below are a CANDIDATE
+  set derived from the Viridi-authored operations in the ViSTA OpenAPI contract — nothing
+  here is served today.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+server:
+  name: viridi-vista
+  description: Candidate MCP surface over the Viridi ViSTA energy-management platform.
+  transport: null
+  base_api: https://vista.viridiparente.com
+tools:
+- name: get_sbr30_data
+  description: Read the latest SBR30 battery data page.
+  rest: getSBR30Data
+  http: GET /api/data
+- name: get_sbr30_data_v1_2
+  description: Read the latest SBR30 battery data page, v1.2 payload.
+  rest: getSBR30DataV1_2
+  http: GET /api/data/v1_2
+- name: query_sbr30_telemetry
+  description: Bulk telemetry read for named assets and keys over a time range.
+  rest: getSBR30Telem
+  http: POST /api/telem
+- name: get_generator_data
+  description: Read latest generator values.
+  rest: getGeneratorData
+  http: GET /api/data/gen
+- name: get_chiller_data
+  description: Read latest chiller values.
+  rest: getChillerData
+  http: GET /api/data/chiller
+- name: get_moxion_aemp
+  description: Page through Moxion AEMP equipment telematics records.
+  rest: getMoxionAEMP
+  http: GET /api/moxion_aemp/{page}
+- name: get_moxion_aemp_faults
+  description: Page through Moxion AEMP fault records.
+  rest: getMoxionAEMPFaults
+  http: GET /api/moxion_aemp_faults/{page}
+- name: list_devices
+  description: List tenant devices.
+  rest: getTenantDevices_1
+  http: GET /api/tenant/devices
+- name: get_device
+  description: Fetch one device by id.
+  rest: getDeviceById
+  http: GET /api/device/{deviceId}
+- name: get_latest_timeseries
+  description: Read latest timeseries values for an entity.
+  rest: getLatestTimeseries_1
+  http: GET /api/plugins/telemetry/{entityType}/{entityId}/values/timeseries
+- name: list_alarms
+  description: List alarms across the tenant.
+  rest: getAllAlarms
+  http: GET /api/alarms
+excluded:
+  note: >-
+    Deliberately excluded from the candidate set — these actuate physical battery, generator
+    and radio hardware, have no idempotency key and no documented reversal, and must not be
+    exposed to an agent without an explicit human-in-the-loop escalation.
+  operations:
+  - handleTwoWayDeviceRPCRequest
+  - setConfig
+  - setCert
+  - registerAll
+  - deregisterAll
+  - deleteDevice
+  - deleteEntityTimeseries

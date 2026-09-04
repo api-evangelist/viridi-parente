@@ -1,0 +1,19 @@
+generated: '2026-09-04'
+method: searched
+source: https://viridiparente.com/ (site search + sitemap, 2026-09-04)
+plan_count: 0
+plans: []
+note: >-
+  Viridi publishes no pricing page and no plans for either its hardware or the ViSTA
+  platform. https://viridiparente.com/pricing/ returns HTTP 404 and no pricing URL appears
+  in the Yoast sitemap index. ViSTA access is quote-and-sales gated: the account page
+  (https://viridiparente.com/create-a-vista-account/, HTTP 200) is a "Request a ViSTA
+  Account" contact form after which "our sales team will contact you with your account
+  credentials". There is a channel-partner program page
+  (https://viridiparente.com/battery-energy-storage-channel-partner-program/) and a
+  financial-services page for equipment financing, neither of which lists a price.
+evidence:
+- url: https://viridiparente.com/pricing/
+  status: 404
+- url: https://viridiparente.com/create-a-vista-account/
+  status: 200

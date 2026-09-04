@@ -1,0 +1,144 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json + live probes of https://vista.viridiparente.com
+note: >-
+  Cross-cutting runtime semantics of the ViSTA Platform API. Derived from the OpenAPI 3.1
+  contract ViSTA serves at /v3/api-docs plus live unauthenticated probes. ViSTA is a
+  Viridi-operated ThingsBoard 3.7.0 deployment, so the platform-wide conventions below are
+  ThingsBoard's; the Viridi-authored controllers (SBR30, generator/chiller, CBRS, Moxion AEMP)
+  ride on the same conventions but document none of their own.
+authentication:
+  style: bearer-jwt
+  header: X-Authorization
+  value: 'Bearer <jwt>'
+  token_endpoint: POST /api/auth/login
+  refresh_endpoint: POST /api/auth/token
+  federated_login: >-
+    OAuth2 / OIDC single sign-on is enabled on this deployment. The anonymous endpoint
+    POST /api/noauth/oauth2Clients returns 200 with three configured identity providers
+    (a Google provider plus two enterprise Okta/ADFS providers), each with an
+    /oauth2/authorization/<uuid> entry URL.
+  see: authentication/viridi-parente-authentication.yml
+pagination:
+  style: page-number
+  request_params:
+  - name: page
+    description: zero-based page index
+  - name: pageSize
+    description: page size; a few Viridi-authored endpoints default to 10 or 100
+  - name: sortProperty
+  - name: sortOrder
+    description: ASC | DESC
+  - name: textSearch
+  response_fields:
+  - data
+  - totalPages
+  - totalElements
+  - hasNext
+  coverage: >-
+    page/pageSize appear on 85 operations, sortOrder on 78, sortProperty on 77 and
+    textSearch on 76 — the dominant list convention across the contract.
+time_range_params:
+- startTime
+- endTime
+- name: interval
+  note: telemetry aggregation window on the timeseries controller and on POST /api/telem
+error_envelope:
+  shape: proprietary-json
+  format: not rfc9457
+  observed_media_type: application/json
+  fields:
+  - status
+  - message
+  - errorCode
+  - timestamp
+  example_observed: 'GET https://vista.viridiparente.com/api/data -> 401 {"status":401,"message":"Authentication failed","errorCode":10,"timestamp":...}'
+  see: errors/viridi-parente-problem-types.yml
+versioning:
+  style: platform-version
+  current: ThingsBoard 3.7.0 (info.version of the served contract)
+  url_versioning: >-
+    No global version segment. Two Viridi-authored endpoints version in the path by hand
+    (GET /api/data and GET /api/data/v1_2), and RPC is split across /api/rpc (v1) and
+    /api/v2/rpc surfaces.
+  see: lifecycle/viridi-parente-lifecycle.yml
+request_id_tracing:
+  supported: unknown
+  note: No request-id or correlation header is documented in the contract or observed on probed responses.
+rate_limit_signaling:
+  headers_observed: []
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header was present on the probed
+    unauthenticated 401 responses. ThingsBoard implements per-tenant rate limits that
+    surface as HTTP 429, but this deployment publishes no limit values.
+  see: rate-limits/viridi-parente-rate-limits.yml
+field_expansion:
+  supported: false
+metadata:
+  supported: true
+  mechanism: >-
+    additionalInfo is a free-form JSON object on Device, Asset, Customer, User, Dashboard
+    and most other entities; server-side and shared/client attributes are managed through
+    the telemetry controller (/api/plugins/telemetry/...).
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  note: >-
+    No Idempotency-Key header, no idempotency parameter and no replay-protection language
+    appears anywhere in the 453-operation contract. Entity writes are save-by-id upserts
+    (POST /api/device, POST /api/asset and siblings), which are naturally repeatable when
+    the caller supplies an id, but a create call with no id mints a new entity on every
+    retry. Device RPC (POST /api/rpc/twoway/{deviceId}) is explicitly at-least-once with a
+    504 timeout path and no dedupe key, so a retried command can execute twice on hardware.
+reversibility:
+  grade: documented
+  na: false
+  note: >-
+    Reversal exists as an operation for several write surfaces but Viridi publishes no
+    window for any of them, so this grades `documented` rather than `verified`. No
+    retention, undo or restore window is stated in the contract or on viridiparente.com.
+  surfaces:
+  - write: POST /api/customer/{customerId}/device/{deviceId} (assignDeviceToCustomer)
+    reversal: DELETE /api/customer/device/{deviceId} (unassignDeviceFromCustomer)
+    operation_id: unassignDeviceFromCustomer
+    window: null
+    window_source: null
+  - write: POST /api/customer/{customerId}/asset/{assetId} (assignAssetToCustomer)
+    reversal: DELETE /api/customer/asset/{assetId} (unassignAssetFromCustomer)
+    operation_id: unassignAssetFromCustomer
+    window: null
+    window_source: null
+  - write: POST /api/alarm (saveAlarm) / POST /api/alarm/{alarmId}/ack
+    reversal: POST /api/alarm/{alarmId}/clear (clearAlarm)
+    operation_id: clearAlarm
+    window: null
+    window_source: null
+  - write: DELETE /api/device/{deviceId} (deleteDevice)
+    reversal: null
+    window: null
+    note: >-
+      Entity deletes are hard deletes. There is no restore, trash or soft-delete operation
+      in the contract; the only recovery path is the entities-version-control controller
+      (/api/entities/vc/...), which restores from a git-backed version store the tenant
+      must have configured beforehand.
+  - write: POST /api/plugins/telemetry/{entityType}/{entityId}/timeseries/{scope}
+    reversal: DELETE /api/plugins/telemetry/{entityType}/{entityId}/timeseries/delete
+    operation_id: deleteEntityTimeseries
+    window: null
+    note: The delete takes explicit startTs/endTs bounds; no retention window is published.
+  - write: POST /api/rpc/twoway/{deviceId} (handleTwoWayDeviceRPCRequest)
+    reversal: null
+    window: null
+    note: >-
+      Device RPC actuates physical battery/generator hardware and has no documented undo.
+      This is the highest-consequence write on the surface and the one an agent should
+      never retry blind.
+dry_run_mode:
+  supported: false
+  note: No test/preview/dry-run mode or simulation flag is documented for any operation.
+sandbox:
+  available: false
+  note: >-
+    No public sandbox, demo tenant or test account. ViSTA access is granted by Viridi sales
+    via https://viridiparente.com/create-a-vista-account/.

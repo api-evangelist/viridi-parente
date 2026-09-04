@@ -1,0 +1,60 @@
+generated: '2026-09-04'
+method: searched
+source: openapi/viridi-parente-vista-openapi.json + live probes of https://vista.viridiparente.com (2026-09-04)
+docs: https://vista.viridiparente.com/swagger-ui/index.html
+summary:
+  types:
+  - http
+  - oauth2
+  primary: bearer JWT in the X-Authorization header
+  self_service_signup: false
+  signup: https://viridiparente.com/create-a-vista-account/
+schemes:
+- name: HTTP login form
+  type: http
+  scheme: loginPassword
+  bearerFormat: /api/auth/login|X-Authorization
+  description: Enter Username / Password
+  sources:
+  - openapi/viridi-parente-vista-openapi.json
+  detail: >-
+    The declared securityScheme. POST /api/auth/login exchanges username/password for a JWT;
+    the token is presented on every subsequent call as `X-Authorization: Bearer <jwt>`, not
+    as a standard Authorization header. POST /api/auth/token refreshes it; POST
+    /api/auth/logout revokes it.
+- name: OAuth2 / OIDC single sign-on
+  type: oauth2
+  declared_in_spec: false
+  method: probed
+  detail: >-
+    Not declared in components.securitySchemes but demonstrably live. POST
+    /api/noauth/oauth2Clients returns HTTP 200 anonymously with three configured identity
+    providers — one Google provider and two enterprise providers (an Okta tenant and an
+    ADFS tenant) — each with an /oauth2/authorization/<uuid> entry URL. The contract carries
+    an o-auth-2-controller and an o-auth-2-config-template-controller
+    (GET/POST /api/oauth2/config, GET /api/oauth2/config/template,
+    GET /api/oauth2/loginProcessingUrl).
+  evidence:
+    url: https://vista.viridiparente.com/api/noauth/oauth2Clients
+    method: POST
+    status: 200
+    providers_configured: 3
+- name: Two-factor authentication
+  type: mfa
+  declared_in_spec: false
+  detail: >-
+    two-factor-auth-controller and two-factor-auth-config-controller are present:
+    GET /api/auth/2fa/providers, POST /api/auth/2fa/verification/send, POST
+    /api/auth/2fa/verification/check.
+scopes:
+  published: false
+  note: >-
+    No OAuth2 scope surface. Authorization is role- and tenant-based rather than
+    scope-based: the contract exposes a role-controller, and every entity carries tenantId /
+    customerId, with 401 returned when "User belongs to different Customer or Tenant".
+    scopes/ is deliberately not written for this provider.
+device_transport_auth:
+  note: >-
+    Device-side credentials are managed through device-controller and device-profile
+    transport configuration (access token, X.509, MQTT basic, LwM2M). The CBRS surface adds
+    Viridi-authored certificate operations, GET /api/getCert and POST /api/setCert.

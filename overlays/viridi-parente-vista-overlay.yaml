@@ -1,0 +1,123 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for the Viridi ViSTA Platform API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-04'
+  method: generated
+  source: openapi/viridi-parente-vista-openapi.json
+  note: >-
+    Non-destructive overlay of API Evangelist enhancements. It never mutates the original
+    contract Viridi serves at https://vista.viridiparente.com/v3/api-docs. It adds the
+    missing description and contact for the Viridi deployment (the served info block is the
+    upstream ThingsBoard one), marks which operations are Viridi-authored rather than
+    upstream platform operations, and flags the high-consequence physical-actuation
+    operations that have no idempotency key and no documented reversal.
+extends: openapi/viridi-parente-vista-openapi.json
+actions:
+- target: $.info
+  update:
+    x-deployment: ViSTA (Viridi Insights) — Viridi Parente, Inc.
+    x-deployment-host: https://vista.viridiparente.com
+    x-contract-author: ThingsBoard (Apache-2.0 upstream platform)
+    x-first-party-operations: 17
+    x-access: >-
+      Contract anonymously readable; all operations require an authenticated ViSTA account
+      provisioned by Viridi sales at https://viridiparente.com/create-a-vista-account/
+    x-error-envelope: '{status, message, errorCode, timestamp} — not RFC 9457'
+    x-idempotency: none
+- target: $.paths['/api/data'].get
+  update:
+    summary: Read the latest SBR30 battery energy storage data page
+    x-viridi-authored: true
+- target: $.paths['/api/data/v1_2'].get
+  update:
+    summary: Read the latest SBR30 battery data page, v1.2 payload
+    x-viridi-authored: true
+- target: $.paths['/api/data/gen'].get
+  update:
+    summary: Read the latest generator values
+    x-viridi-authored: true
+- target: $.paths['/api/data/chiller'].get
+  update:
+    summary: Read the latest chiller values
+    x-viridi-authored: true
+- target: $.paths['/api/telem'].post
+  update:
+    summary: Bulk SBR30 telemetry read for named assets, keys and time range
+    x-viridi-authored: true
+- target: $.paths['/api/moxion_aemp/{page}'].get
+  update:
+    summary: Page through Moxion AEMP equipment telematics records
+    x-viridi-authored: true
+    x-domain-standard: AEMP telematics (AEMP 2.0 / ISO 15143-3) — payload schema unpublished
+- target: $.paths['/api/moxion_aemp_faults/{page}'].get
+  update:
+    summary: Page through Moxion AEMP equipment fault records
+    x-viridi-authored: true
+    x-domain-standard: AEMP telematics (AEMP 2.0 / ISO 15143-3) — payload schema unpublished
+- target: $.paths['/api/getDevices'].get
+  update:
+    summary: List CBRS radio devices
+    x-viridi-authored: true
+- target: $.paths['/api/getState'].get
+  update:
+    summary: Read CBRS device state
+    x-viridi-authored: true
+- target: $.paths['/api/getStats'].get
+  update:
+    summary: Read CBRS device statistics
+    x-viridi-authored: true
+- target: $.paths['/api/getConfig'].get
+  update:
+    summary: Read CBRS device configuration
+    x-viridi-authored: true
+- target: $.paths['/api/setConfig'].post
+  update:
+    summary: Write CBRS device configuration
+    x-viridi-authored: true
+    x-consequence: high
+    x-agent-guidance: >-
+      Writes live radio configuration. No idempotency key and no documented reversal —
+      require human confirmation before calling.
+- target: $.paths['/api/getCert'].get
+  update:
+    summary: Read the CBRS device certificate
+    x-viridi-authored: true
+- target: $.paths['/api/setCert'].post
+  update:
+    summary: Install a CBRS device certificate
+    x-viridi-authored: true
+    x-consequence: high
+- target: $.paths['/api/registerAll'].post
+  update:
+    summary: Register all CBRS devices
+    x-viridi-authored: true
+    x-consequence: high
+- target: $.paths['/api/deregisterAll'].post
+  update:
+    summary: Deregister all CBRS devices
+    x-viridi-authored: true
+    x-consequence: high
+    x-agent-guidance: >-
+      Bulk deregistration of radio devices. Irreversible from this contract — no restore
+      operation exists. Never call from an unattended agent.
+- target: $.paths['/api/genTelem'].post
+  update:
+    summary: Bulk generator telemetry read
+    x-viridi-authored: true
+- target: $.paths['/api/rpc/twoway/{deviceId}'].post
+  update:
+    x-consequence: high
+    x-idempotent: false
+    x-agent-guidance: >-
+      Actuates physical hardware. At-least-once with a 504 timeout path and no dedupe key —
+      a retry after a timeout can execute the command twice. Confirm device state before
+      re-issuing.
+- target: $.paths['/api/device/{deviceId}'].delete
+  update:
+    x-consequence: high
+    x-reversible: false
+    x-agent-guidance: >-
+      Hard delete. The only recovery path is the entities version-control controller, which
+      requires the tenant to have configured a git-backed version store in advance.

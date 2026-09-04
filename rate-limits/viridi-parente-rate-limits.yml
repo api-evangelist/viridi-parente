@@ -1,0 +1,22 @@
+generated: '2026-09-04'
+method: probed
+source: live unauthenticated responses from https://vista.viridiparente.com + docs search
+limit_count: 0
+rate_limits: []
+headers:
+  observed: []
+  documented: []
+exhaustion_status: null
+note: >-
+  Viridi publishes no rate limits for the ViSTA Platform API. No X-RateLimit-*, RateLimit-*
+  or Retry-After header appeared on any probed response (GET /api/data -> 401, GET
+  /api/moxion_aemp/0 -> 401, POST /api/noauth/oauth2Clients -> 200, GET /v3/api-docs -> 200,
+  all 2026-09-04). The underlying ThingsBoard platform supports configurable per-tenant and
+  per-device rate limits that surface as HTTP 429 with a plain-text body, but this
+  deployment declares none in its contract and Viridi documents none publicly, so an agent
+  has no runtime signal to back off on.
+evidence:
+- url: https://vista.viridiparente.com/api/data?pageSize=1&page=0
+  status: 401
+- url: https://vista.viridiparente.com/v3/api-docs
+  status: 200

@@ -1,23 +1,116 @@
 aid: viridi-parente
 name: Viridi
-description: 'Viridi is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Viridi (Viridi Parente, Inc.) is a Buffalo, New York manufacturer of fail-safe,
+  modular lithium-ion battery energy storage systems (RPS150, RPS50, RPSLink IN/EX, SBR30,
+  FAVEO and the 1.2 MWh series) built around its Anti-Propagation technology for installation
+  in occupied spaces. Its software side is ViSTA / Viridi Insights, an energy management and
+  IIoT platform pairing a data-visualization engine with a Conductor edge computing platform,
+  connecting behind-the-meter equipment over BACnet, Modbus, CANbus, DNP3 and serial links for
+  remote monitoring, peak shaving and demand response. ViSTA runs a Viridi-branded ThingsBoard
+  deployment at vista.viridiparente.com that serves an anonymously readable OpenAPI 3.1 contract
+  and carries Viridi-authored controllers for SBR30 telemetry, generator and chiller data, CBRS
+  device management and Moxion AEMP equipment telematics.'
+image: https://viridiparente.com/wp-content/uploads/viridi-featured-image-2023.jpg
 url: https://raw.githubusercontent.com/api-evangelist/viridi-parente/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-04'
 modified: '2026-09-04'
 tags:
 - Company
-apis: []
+- Energy
+- Energy Storage
+- Battery
+- IoT
+- Industrial IoT
+- Energy Management
+- Manufacturing
+- Telematics
+- Microgrid
+apis:
+- aid: viridi-parente-vista
+  name: Viridi ViSTA Platform API
+  description: 'The REST API of ViSTA (Viridi Insights), Viridi''s energy management and IIoT
+    platform. ViSTA is a Viridi-operated deployment of the open-source ThingsBoard IoT platform
+    (v3.7.0) served from vista.viridiparente.com, extended with Viridi-authored controllers:
+    SBR30 battery telemetry and data, generator and chiller latest-value reads, CBRS device
+    registration and configuration, and Moxion AEMP equipment telematics and fault feeds.
+    All operations require an authenticated ViSTA account; the OpenAPI contract itself is
+    served anonymously.'
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  image: https://viridiparente.com/wp-content/uploads/viridi-featured-image-2023.jpg
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - Energy Management
+  - IoT
+  - Telemetry
+  - Telematics
+  - Battery
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-vista-openapi.json
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/viridi-parente-domain-security.yml
+- type: Authentication
+  url: authentication/viridi-parente-authentication.yml
 - type: Website
-  url: https://forgeglobal.com/viridi-parente_stock/
+  url: https://viridiparente.com/
+- type: Documentation
+  url: https://viridiparente.com/products/iiot-intelligent-solution/
+- type: APIReference
+  url: https://vista.viridiparente.com/swagger-ui/index.html
+- type: SignUp
+  url: https://viridiparente.com/create-a-vista-account/
+- type: Blog
+  url: https://viridiparente.com/blog/
+- type: BlogRSS
+  url: https://viridiparente.com/feed/
+- type: Support
+  url: https://viridiparente.com/contact/
+- type: GitHubOrganization
+  url: https://github.com/ViridiParente
+- type: PrivacyPolicy
+  url: https://viridiparente.com/privacy-policy/
+- type: TermsOfService
+  url: https://viridiparente.com/privacy-policy/
+- type: FAQ
+  url: https://viridiparente.com/faq/
+- type: Conventions
+  url: conventions/viridi-parente-conventions.yml
+- type: ErrorCatalog
+  url: errors/viridi-parente-problem-types.yml
+- type: DataModel
+  url: data-model/viridi-parente-data-model.yml
+- type: Conformance
+  url: conformance/viridi-parente-conformance.yml
+- type: Lifecycle
+  url: lifecycle/viridi-parente-lifecycle.yml
+- type: LLMsTxt
+  url: llms/viridi-parente-llms.txt
+- type: Overlay
+  url: overlays/viridi-parente-vista-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/viridi-parente-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/viridi-parente-rate-limits.yml
+- type: X-MCPServerCandidate
+  url: mcp/viridi-parente-mcp.yml
+
+x-enrichment:
+  date: '2026-09-04'
+  status: enriched
+  artifacts_added: 19
+  pass: local-v3

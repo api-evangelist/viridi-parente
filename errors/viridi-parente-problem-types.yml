@@ -1,0 +1,67 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json + live probe of https://vista.viridiparente.com/api/data
+format: proprietary-json
+rfc9457: false
+envelope:
+  media_type: application/json
+  fields:
+  - name: status
+    description: HTTP status code, repeated in the body
+  - name: message
+    description: Human-readable message
+  - name: errorCode
+    description: Platform error code (integer). errorCode 10 is the authentication failure observed live.
+  - name: timestamp
+    description: Epoch milliseconds
+  observed: 'GET /api/data (unauthenticated) -> HTTP 401 {"status":401,"message":"Authentication failed","errorCode":10,"timestamp":1788544366214}'
+  note: >-
+    The contract declares application/json for error responses with an empty schema, so the
+    envelope above is recorded from a live probe rather than from the spec. No
+    application/problem+json media type appears anywhere in the contract.
+coverage:
+  operations_total: 453
+  operations_with_4xx_or_5xx: 32
+  note: >-
+    Only 32 of 453 operations declare any non-2xx response. 452 declare a 200; 401 appears
+    11 times, 400 ten times, 500 eight times, 504 twice. None of the 17 Viridi-authored
+    operations (SBR30, generator/chiller, CBRS, Moxion AEMP) declares a single error
+    response — they document a bare 200 with an untyped object body.
+problem_types:
+- status: 400
+  title: Invalid request structure
+  detail: >-
+    Malformed request body, or required keys/scope omitted. On the telemetry controller the
+    platform returns 400 when the keys list is empty, or when start and end timestamps are
+    empty while deleteAllDataForKeys is false.
+  remediation: Fix the payload shape and re-send; do not retry unchanged.
+  from: openapi 400 responses
+- status: 401
+  title: Authentication failed
+  detail: >-
+    Missing, invalid or expired JWT in the X-Authorization header; or the caller belongs to a
+    different Customer or Tenant than the entity addressed. The contract distinguishes
+    "Unauthorized" from "Unauthorized (Expired credentials)".
+  error_code: 10
+  remediation: >-
+    Re-authenticate at POST /api/auth/login (or refresh at POST /api/auth/token) and retry.
+    A tenant/customer mismatch is not fixable by retrying.
+  from: openapi 401 responses + live probe
+- status: 500
+  title: Processing exception
+  detail: >-
+    An exception was thrown while processing the request. On attribute and timeseries writes
+    the platform still records an audit log event (ATTRIBUTES_UPDATED, ATTRIBUTES_DELETED,
+    TIMESERIES_UPDATED, TIMESERIES_DELETED) describing the attempted change.
+  remediation: Safe to retry with backoff; check the audit log controller for partial effects.
+  from: openapi 500 responses
+- status: 504
+  title: RPC timeout
+  detail: >-
+    Timeout processing a two-way device RPC call — most commonly the device is offline.
+    Applies to POST /api/rpc/twoway/{deviceId}.
+  remediation: >-
+    Do NOT blind-retry. The command may already have reached the device; there is no
+    idempotency key on this surface (see conventions/viridi-parente-conventions.yml).
+    Confirm device state before re-issuing.
+  from: openapi 504 responses

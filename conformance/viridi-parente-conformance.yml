@@ -1,0 +1,83 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/viridi-parente-vista-openapi.json + live probes + viridiparente.com product pages
+conformance:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    POST https://vista.viridiparente.com/api/noauth/oauth2Clients returns 200 with three
+    configured OAuth2 identity providers, each carrying an /oauth2/authorization/<uuid>
+    entry URL. The contract exposes an o-auth-2-controller and an
+    o-auth-2-config-template-controller (GET/POST /api/oauth2/config, GET
+    /api/oauth2/loginProcessingUrl).
+  probed: '2026-09-04'
+- id: oidc
+  conforms: partial
+  evidence: >-
+    The configured providers are OIDC-shaped (a Google provider plus two enterprise
+    Okta/ADFS providers), but ViSTA is the relying party, not an OpenID Provider — it
+    serves no /.well-known/openid-configuration (that path returns the SPA shell, see
+    well-known/viridi-parente-well-known.yml).
+- id: rfc9457
+  conforms: false
+  evidence: >-
+    Errors use a proprietary {status,message,errorCode,timestamp} envelope on
+    application/json. No application/problem+json appears in the contract. See
+    errors/viridi-parente-problem-types.yml.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header or equivalent anywhere in the 453-operation contract. See
+    conventions/viridi-parente-conventions.yml (idempotency.coverage none).
+- id: pagination
+  conforms: true
+  evidence: >-
+    Consistent page-number pagination — page/pageSize on 85 operations, sortProperty/
+    sortOrder on 77-78, textSearch on 76 — returning data/totalPages/totalElements/hasNext.
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    https://vista.viridiparente.com/v3/api-docs serves an OpenAPI 3.1.0 document with 373
+    paths, 453 operations and 425 component schemas, anonymously readable.
+  probed: '2026-09-04'
+- id: two-factor-auth
+  conforms: true
+  evidence: >-
+    two-factor-auth-controller and two-factor-auth-config-controller are present
+    (POST /api/auth/2fa/verification/send, /check; GET /api/auth/2fa/providers).
+domain_standards:
+- id: aemp
+  name: AEMP telematics (AEMP 2.0 / ISO 15143-3 mixed-fleet equipment telematics)
+  conforms: partial
+  evidence: >-
+    The contract declares a first-party `moxion-aemp` tag with two operations —
+    GET /api/moxion_aemp/{page} (getMoxionAEMP) and GET /api/moxion_aemp_faults/{page}
+    (getMoxionAEMPFaults) — naming the AEMP equipment-telematics standard in the operation
+    and tag identifiers. This is the strongest domain-standard signal in the contract: it
+    exposes Viridi's Moxion mobile power units to mixed-fleet telematics consumers the way
+    AEMP/ISO 15143-3 intends. Graded `partial` and not `true` because the responses are
+    typed as a bare `object` with no schema, so the payload cannot be confirmed as an
+    AEMP-conformant fleet/equipment document from the published contract alone.
+  spec_location: paths./api/moxion_aemp/{page} and paths./api/moxion_aemp_faults/{page}
+- id: sparkplug-b
+  name: Eclipse Sparkplug B (MQTT topic and payload specification for industrial IoT)
+  conforms: unknown
+  evidence: >-
+    Viridi's public GitHub organization (github.com/ViridiParente) maintains forks of
+    pysparkplug and mqtt-spb-wrapper (Eclipse Tahu Sparkplug B), alongside a fork of
+    thingsboard-gateway. That is evidence Viridi works in Sparkplug B on the device side,
+    but no Sparkplug topic namespace or payload contract is published, and the ViSTA REST
+    contract declares none. Recorded as unknown rather than asserted.
+industrial_protocols:
+  note: >-
+    Not API standards, recorded for completeness. The Viridi Insights / ViSTA product page
+    states the platform can "Connect and control any behind-the-meter device with support
+    for BACnet, Modbus, CANbus, DNP3, and Serial protocols." Source
+    https://viridiparente.com/products/iiot-intelligent-solution/ (HTTP 200, 2026-09-04).
+  protocols: [BACnet, Modbus, CANbus, DNP3, Serial]
+certifications_published: false
+compliance_note: >-
+  No SOC 2, ISO 27001 or trust-center page is published for ViSTA. Viridi does publish
+  product-safety and procurement certifications that are not API compliance programs:
+  UL 9540 listing (TUV Rheinland) and UL 9540A testing for RPSLink IN, and Buy America /
+  BABA / FEOC domestic-content compliance claims for its hardware.

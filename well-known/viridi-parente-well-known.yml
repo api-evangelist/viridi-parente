@@ -1,0 +1,67 @@
+generated: '2026-09-04'
+method: probed
+source: live GET probes of the named /.well-known/ paths on every host in this record
+note: >-
+  No .well-known document is served on any Viridi host. Every 200 recorded below on
+  vista.viridiparente.com is the ViSTA single-page-app catch-all returning the Angular
+  index.html shell (it opens with the ThingsBoard/Viridi Parente copyright comment and
+  content-type text/html), not a discovery document — recorded as a miss per the pipeline
+  SPA-shell rule. No WellKnown or SecurityTxt pointer is emitted in apis.yml because no
+  path returned a real document.
+hosts:
+- host: viridiparente.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.viridiparente.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: vista.viridiparente.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 200
+    note: HTML SPA shell, not an OpenID Provider metadata document — treated as a miss
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    note: HTML SPA shell, not authorization-server metadata — treated as a miss
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    note: HTML SPA shell, not protected-resource metadata — treated as a miss
+  - path: /.well-known/api-catalog
+    status: 200
+    note: HTML SPA shell, not an RFC 9727 api-catalog document — treated as a miss
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
