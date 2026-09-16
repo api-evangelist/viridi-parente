@@ -28,26 +28,806 @@ tags:
 - Telematics
 - Microgrid
 apis:
-- aid: viridi-parente:viridi-parente-vista
-  name: Viridi ViSTA Platform API
-  description: 'The REST API of ViSTA (Viridi Insights), Viridi''s energy management and IIoT platform.
-    ViSTA is a Viridi-operated deployment of the open-source ThingsBoard IoT platform (v3.7.0) served
-    from vista.viridiparente.com, extended with Viridi-authored controllers: SBR30 battery telemetry and
-    data, generator and chiller latest-value reads, CBRS device registration and configuration, and Moxion
-    AEMP equipment telematics and fault feeds. All operations require an authenticated ViSTA account;
-    the OpenAPI contract itself is served anonymously.'
+- aid: viridi-parente:viridi-parente-admin-controller-api
+  name: Viridi Admin Controller API
+  description: The admin-controller API from Viridi — 18 operation(s) for admin-controller.
   humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
-  image: https://viridiparente.com/wp-content/uploads/viridi-featured-image-2023.jpg
   baseURL: https://vista.viridiparente.com
   tags:
-  - Energy Management
-  - IoT
-  - Telemetry
-  - Telematics
-  - Battery
+  - admin-controller
   properties:
   - type: OpenAPI
-    url: openapi/viridi-parente-vista-openapi.json
+    url: openapi/viridi-parente-admin-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-alarm-comment-controller-api
+  name: Viridi Alarm Comment Controller API
+  description: >-
+    The alarm-comment-controller API from Viridi — 2 operation(s) for alarm-comment-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - alarm-comment-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-alarm-controller-api
+  name: Viridi Alarm Controller API
+  description: The alarm-controller API from Viridi — 13 operation(s) for alarm-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - alarm-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-alarm-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-asset-controller-api
+  name: Viridi Asset Controller API
+  description: The asset-controller API from Viridi — 15 operation(s) for asset-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - asset-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-asset-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-asset-profile-controller-api
+  name: Viridi Asset Profile Controller API
+  description: >-
+    The asset-profile-controller API from Viridi — 8 operation(s) for asset-profile-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - asset-profile-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-asset-profile-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-audit-log-controller-api
+  name: Viridi Audit Log Controller API
+  description: The audit-log-controller API from Viridi — 4 operation(s) for audit-log-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - audit-log-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-audit-log-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-auth-controller-api
+  name: Viridi Auth Controller API
+  description: The auth-controller API from Viridi — 7 operation(s) for auth-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - auth-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-auth-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-cbrs-controller-api
+  name: Viridi Cbrs Controller API
+  description: The cbrs-controller API from Viridi — 9 operation(s) for cbrs-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - cbrs-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-cbrs-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-component-descriptor-controller-api
+  name: Viridi Component Descriptor Controller API
+  description: >-
+    The component-descriptor-controller API from Viridi — 3 operation(s) for component-descriptor-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - component-descriptor-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-component-descriptor-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-customer-controller-api
+  name: Viridi Customer Controller API
+  description: The customer-controller API from Viridi — 6 operation(s) for customer-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - customer-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-customer-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-dashboard-controller-api
+  name: Viridi Dashboard Controller API
+  description: The dashboard-controller API from Viridi — 18 operation(s) for dashboard-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - dashboard-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-dashboard-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-device-connectivity-controller-api
+  name: Viridi Device Connectivity Controller API
+  description: >-
+    The device-connectivity-controller API from Viridi — 3 operation(s) for device-connectivity-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - device-connectivity-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-device-connectivity-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-device-controller-api
+  name: Viridi Device Controller API
+  description: The device-controller API from Viridi — 21 operation(s) for device-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - device-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-device-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-device-profile-controller-api
+  name: Viridi Device Profile Controller API
+  description: >-
+    The device-profile-controller API from Viridi — 10 operation(s) for device-profile-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - device-profile-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-device-profile-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-edge-controller-api
+  name: Viridi Edge Controller API
+  description: The edge-controller API from Viridi — 20 operation(s) for edge-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - edge-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-edge-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-edge-event-controller-api
+  name: Viridi Edge Event Controller API
+  description: The edge-event-controller API from Viridi — 1 operation(s) for edge-event-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - edge-event-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-edge-event-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-entities-version-control-controller-api
+  name: Viridi Entities Version Control Controller API
+  description: >-
+    The entities-version-control-controller API from Viridi — 11 operation(s) for entities-version-control-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - entities-version-control-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-entities-version-control-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-entity-query-controller-api
+  name: Viridi Entity Query Controller API
+  description: >-
+    The entity-query-controller API from Viridi — 5 operation(s) for entity-query-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - entity-query-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-entity-query-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-entity-relation-controller-api
+  name: Viridi Entity Relation Controller API
+  description: >-
+    The entity-relation-controller API from Viridi — 3 operation(s) for entity-relation-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - entity-relation-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-entity-relation-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-entity-view-controller-api
+  name: Viridi Entity View Controller API
+  description: The entity-view-controller API from Viridi — 14 operation(s) for entity-view-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - entity-view-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-entity-view-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-event-controller-api
+  name: Viridi Event Controller API
+  description: The event-controller API from Viridi — 3 operation(s) for event-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - event-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-event-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-gen-chiller-latest-api
+  name: Viridi Gen Chiller Latest API
+  description: The gen-chiller-latest API from Viridi — 2 operation(s) for gen-chiller-latest.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - gen-chiller-latest
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-gen-chiller-latest-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-gen-data-api
+  name: Viridi Gen Data API
+  description: The gen-data API from Viridi — 1 operation(s) for gen-data.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - gen-data
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-gen-data-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-image-controller-api
+  name: Viridi Image Controller API
+  description: The image-controller API from Viridi — 9 operation(s) for image-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - image-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-image-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-login-endpoint-api
+  name: Viridi Login Endpoint API
+  description: The login-endpoint API from Viridi — 1 operation(s) for login-endpoint.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - login-endpoint
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-login-endpoint-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-lwm-2m-controller-api
+  name: Viridi Lwm 2m Controller API
+  description: The lwm-2m-controller API from Viridi — 2 operation(s) for lwm-2m-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - lwm-2m-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-lwm-2m-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-mail-config-template-controller-api
+  name: Viridi Mail Config Template Controller API
+  description: >-
+    The mail-config-template-controller API from Viridi — 1 operation(s) for mail-config-template-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - mail-config-template-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-mail-config-template-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-mobile-application-controller-api
+  name: Viridi Mobile Application Controller API
+  description: >-
+    The mobile-application-controller API from Viridi — 6 operation(s) for mobile-application-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - mobile-application-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-mobile-application-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-moxion-aemp-api
+  name: Viridi Moxion Aemp API
+  description: The moxion-aemp API from Viridi — 2 operation(s) for moxion-aemp.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - moxion-aemp
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-moxion-aemp-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-notification-controller-api
+  name: Viridi Notification Controller API
+  description: >-
+    The notification-controller API from Viridi — 12 operation(s) for notification-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - notification-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-notification-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-notification-rule-controller-api
+  name: Viridi Notification Rule Controller API
+  description: >-
+    The notification-rule-controller API from Viridi — 3 operation(s) for notification-rule-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - notification-rule-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-notification-rule-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-notification-target-controller-api
+  name: Viridi Notification Target Controller API
+  description: >-
+    The notification-target-controller API from Viridi — 4 operation(s) for notification-target-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - notification-target-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-notification-target-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-notification-template-controller-api
+  name: Viridi Notification Template Controller API
+  description: >-
+    The notification-template-controller API from Viridi — 4 operation(s) for notification-template-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - notification-template-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-notification-template-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-o-auth-2-config-template-controller-api
+  name: Viridi O Auth 2 Config Template Controller API
+  description: >-
+    The o-auth-2-config-template-controller API from Viridi — 2 operation(s) for o-auth-2-config-template-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - o-auth-2-config-template-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-o-auth-2-config-template-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-o-auth-2-controller-api
+  name: Viridi O Auth 2 Controller API
+  description: The o-auth-2-controller API from Viridi — 3 operation(s) for o-auth-2-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - o-auth-2-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-o-auth-2-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-ota-package-controller-api
+  name: Viridi Ota Package Controller API
+  description: The ota-package-controller API from Viridi — 7 operation(s) for ota-package-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - ota-package-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-ota-package-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-queue-controller-api
+  name: Viridi Queue Controller API
+  description: The queue-controller API from Viridi — 3 operation(s) for queue-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - queue-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-queue-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-queue-stats-controller-api
+  name: Viridi Queue Stats Controller API
+  description: The queue-stats-controller API from Viridi — 2 operation(s) for queue-stats-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - queue-stats-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-queue-stats-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-role-controller-api
+  name: Viridi Role Controller API
+  description: The role-controller API from Viridi — 9 operation(s) for role-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - role-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-role-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-rpc-v-1-controller-api
+  name: Viridi Rpc V 1 Controller API
+  description: The rpc-v-1-controller API from Viridi — 2 operation(s) for rpc-v-1-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - rpc-v-1-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-rpc-v-1-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-rpc-v-2-controller-api
+  name: Viridi Rpc V 2 Controller API
+  description: The rpc-v-2-controller API from Viridi — 4 operation(s) for rpc-v-2-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - rpc-v-2-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-rpc-v-2-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-rule-chain-controller-api
+  name: Viridi Rule Chain Controller API
+  description: The rule-chain-controller API from Viridi — 19 operation(s) for rule-chain-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - rule-chain-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-rule-chain-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-sbr-30-data-api
+  name: Viridi Sbr 30 Data API
+  description: The sbr-30-data API from Viridi — 1 operation(s) for sbr-30-data.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - sbr-30-data
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-sbr-30-data-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-sbr-30-latest-api
+  name: Viridi Sbr 30 Latest API
+  description: The sbr-30-latest API from Viridi — 2 operation(s) for sbr-30-latest.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - sbr-30-latest
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-sbr-30-latest-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-tb-resource-controller-api
+  name: Viridi Tb Resource Controller API
+  description: The tb-resource-controller API from Viridi — 11 operation(s) for tb-resource-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - tb-resource-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-tb-resource-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-telemetry-controller-api
+  name: Viridi Telemetry Controller API
+  description: The telemetry-controller API from Viridi — 12 operation(s) for telemetry-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - telemetry-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-telemetry-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-tenant-controller-api
+  name: Viridi Tenant Controller API
+  description: The tenant-controller API from Viridi — 5 operation(s) for tenant-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - tenant-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-tenant-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-tenant-profile-controller-api
+  name: Viridi Tenant Profile Controller API
+  description: >-
+    The tenant-profile-controller API from Viridi — 7 operation(s) for tenant-profile-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - tenant-profile-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-tenant-profile-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-thingsboard-error-response-handler-api
+  name: Viridi Thingsboard Error Response Handler API
+  description: >-
+    The thingsboard-error-response-handler API from Viridi — 1 operation(s) for thingsboard-error-response-handler.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - thingsboard-error-response-handler
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-thingsboard-error-response-handler-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-two-factor-auth-config-controller-api
+  name: Viridi Two Factor Auth Config Controller API
+  description: >-
+    The two-factor-auth-config-controller API from Viridi — 6 operation(s) for two-factor-auth-config-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - two-factor-auth-config-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-two-factor-auth-config-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-two-factor-auth-controller-api
+  name: Viridi Two Factor Auth Controller API
+  description: >-
+    The two-factor-auth-controller API from Viridi — 3 operation(s) for two-factor-auth-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - two-factor-auth-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-two-factor-auth-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-ui-settings-controller-api
+  name: Viridi UI Settings Controller API
+  description: The ui-settings-controller API from Viridi — 1 operation(s) for ui-settings-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - ui-settings-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-ui-settings-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-usage-info-controller-api
+  name: Viridi Usage Info Controller API
+  description: The usage-info-controller API from Viridi — 1 operation(s) for usage-info-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - usage-info-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-usage-info-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-user-controller-api
+  name: Viridi User Controller API
+  description: The user-controller API from Viridi — 19 operation(s) for user-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - user-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-user-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-widget-type-controller-api
+  name: Viridi Widget Type Controller API
+  description: The widget-type-controller API from Viridi — 7 operation(s) for widget-type-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - widget-type-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-widget-type-controller-api-openapi.yml
+  - type: Documentation
+    url: https://vista.viridiparente.com/swagger-ui/index.html
+  - type: SignUp
+    url: https://viridiparente.com/create-a-vista-account/
+- aid: viridi-parente:viridi-parente-widgets-bundle-controller-api
+  name: Viridi Widgets Bundle Controller API
+  description: >-
+    The widgets-bundle-controller API from Viridi — 5 operation(s) for widgets-bundle-controller.
+  humanURL: https://viridiparente.com/products/iiot-intelligent-solution/
+  baseURL: https://vista.viridiparente.com
+  tags:
+  - widgets-bundle-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/viridi-parente-widgets-bundle-controller-api-openapi.yml
   - type: Documentation
     url: https://vista.viridiparente.com/swagger-ui/index.html
   - type: SignUp
