@@ -1,0 +1,566 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Role Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: role-controller
+paths:
+  /api/role:
+    get:
+      tags:
+      - role-controller
+      summary: Get Role Policy (getRolePolicy)
+      description: Fetch the policy JSON from the Role object based on the current assigned role.
+      operationId: getRolePolicy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+    post:
+      tags:
+      - role-controller
+      summary: Save Or update Role (saveRole)
+      description: 'Create or update the Role. When creating user, platform generates Role Id as time-based UUID). The newly created Role Id will be present in the response. Specify existing Role Id to update the role. Referencing non-existing Role Id will cause ''Not Found'' error.Remove ''id'', ''tenantId'' from the request body example (below) to create new Role entity.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+  /api/role/{roleId}/user/{userId}:
+    post:
+      tags:
+      - role-controller
+      summary: Assign role to user (assignRoleToUser)
+      description: Creates assignment of the role to user.
+      operationId: assignRoleToUser
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: path
+        description: A string value representing the user id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/role/{roleId}/default:
+    post:
+      tags:
+      - role-controller
+      summary: Make Role Default (setDefaultRole)
+      description: 'Marks role default within a tenant scope.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setDefaultRole
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /api/roles:
+    get:
+      tags:
+      - role-controller
+      summary: Get Roles (getRoles)
+      description: 'Returns a page of roles owned by tenant.You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRoles
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime, name, isDefault
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC, DESC
+      - name: textSearch
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataRole'
+  /api/role/{roleId}:
+    get:
+      tags:
+      - role-controller
+      summary: Get Role (getRoleById)
+      description: Fetch the Role object based on the provided Role Id. If the user has the authority of 'SYS_ADMIN', the server does not perform additional checks. If the user has the authority of 'TENANT_ADMIN', the server checks that the requested user is owned by the same tenant.
+      operationId: getRoleById
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+    delete:
+      tags:
+      - role-controller
+      summary: Delete Role (deleteRole)
+      description: 'Deletes the Role and all the relations. Referencing non-existing Role Id will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteRole
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/role/{roleId}/users:
+    get:
+      tags:
+      - role-controller
+      summary: Get Role Users (getRoleUsers)
+      description: 'Returns a page of users assigned to role.You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRoleUsers
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the user email.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime, firstName, lastName, email
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC, DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataUser'
+  /api/role/{roleId}/assignable:
+    get:
+      tags:
+      - role-controller
+      summary: Get Assignable Role Users (getAssignableRoleUsers)
+      description: 'Returns a page of users assigned to role.You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAssignableRoleUsers
+      parameters:
+      - name: roleId
+        in: path
+        description: A string value representing the role id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the user email.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime, firstName, lastName, email
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC, DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataUser'
+  /api/role/user/{userId}:
+    get:
+      tags:
+      - role-controller
+      summary: Get role for user (getRoleAssignedToUser)
+      description: Returns the role id assigned to a user.
+      operationId: getRoleAssignedToUser
+      parameters:
+      - name: userId
+        in: path
+        description: A string value representing the user id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+  /api/role/menu:
+    get:
+      tags:
+      - role-controller
+      summary: Get Menu (getMenu)
+      description: Returns a menu with allowed links by current role.
+      operationId: getMenu
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+components:
+  schemas:
+    PageDataRole:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    User:
+      description: A JSON value representing the User.
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with the User Id. Specify this field to update the device. Referencing non-existing User Id will cause error. Omit this field to create new customer.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the user creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with the Customer Id.
+          readOnly: true
+        roleId:
+          $ref: '#/components/schemas/RoleId'
+        email:
+          type: string
+          description: Email of the user
+          example: user@example.com
+        authority:
+          type: string
+          description: Authority
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+          example: SYS_ADMIN, TENANT_ADMIN or CUSTOMER_USER
+        firstName:
+          type: string
+          description: First name of the user
+          example: John
+        lastName:
+          type: string
+          description: Last name of the user
+          example: Doe
+        phone:
+          type: string
+          description: Phone number of the user
+          example: 38012345123
+        name:
+          type: string
+          description: Duplicates the email of the user, readonly
+          example: user@example.com
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the user
+      required:
+      - authority
+      - email
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    Role:
+      description: A JSON value representing the Role.
+      properties:
+        id:
+          $ref: '#/components/schemas/RoleId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        policy:
+          $ref: '#/components/schemas/JsonNode'
+        default:
+          type: boolean
+    PageDataUser:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

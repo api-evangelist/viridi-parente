@@ -1,0 +1,325 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Widgets Bundle Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: widgets-bundle-controller
+paths:
+  /api/widgetsBundle:
+    post:
+      tags:
+      - widgets-bundle-controller
+      summary: Create Or Update Widget Bundle (saveWidgetsBundle)
+      description: 'Create or update the Widget Bundle. Widget Bundle represents a group(bundle) of widgets. Widgets are grouped into bundle by type or use case. When creating the bundle, platform generates Widget Bundle Id as time-based UUID). The newly created Widget Bundle Id will be present in the response. Specify existing Widget Bundle id to update the Widget Bundle. Referencing non-existing Widget Bundle Id will cause ''Not Found'' error.
+
+
+        Widget Bundle alias is unique in the scope of tenant. Special Tenant Id ''13814000-1dd2-11b2-8080-808080808080'' is automatically used if the create bundle request is sent by user with ''SYS_ADMIN'' authority.Remove ''id'', ''tenantId'' from the request body example (below) to create new Widgets Bundle entity.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: saveWidgetsBundle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetsBundle'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetsBundle'
+  /api/widgetsBundle/{widgetsBundleId}/widgetTypes:
+    post:
+      tags:
+      - widgets-bundle-controller
+      summary: Update widgets bundle widgets types list (updateWidgetsBundleWidgetTypes)
+      description: 'Updates widgets bundle widgets list.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: updateWidgetsBundleWidgetTypes
+      parameters:
+      - name: widgetsBundleId
+        in: path
+        description: A string value representing the widget bundle id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Ordered list of widget type Ids to be included by widgets bundle
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/widgetsBundle/{widgetsBundleId}/widgetTypeFqns:
+    post:
+      tags:
+      - widgets-bundle-controller
+      summary: Update widgets bundle widgets list from widget type FQNs list…
+      description: 'Updates widgets bundle widgets list from widget type FQNs list.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: updateWidgetsBundleWidgetFqns
+      parameters:
+      - name: widgetsBundleId
+        in: path
+        description: A string value representing the widget bundle id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Ordered list of widget type FQNs to be included by widgets bundle
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/widgetsBundles:
+    get:
+      tags:
+      - widgets-bundle-controller
+      summary: Get Widget Bundles (getWidgetsBundles)
+      description: 'Returns a page of Widget Bundle objects available for current user. Widget Bundle represents a group(bundle) of widgets. Widgets are grouped into bundle by type or use case. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for any authorized user.'
+      operationId: getWidgetsBundles_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the widget bundle title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+          - tenantId
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: tenantOnly
+        in: query
+        description: Optional boolean parameter to include only tenant-level bundles without system
+        required: false
+        schema:
+          type: boolean
+      - name: fullSearch
+        in: query
+        description: Optional boolean parameter indicating extended search of widget bundles by description and by name / description of related widget types
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PageDataWidgetsBundle'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WidgetsBundle'
+  /api/widgetsBundle/{widgetsBundleId}:
+    get:
+      tags:
+      - widgets-bundle-controller
+      summary: Get Widget Bundle (getWidgetsBundleById)
+      description: 'Get the Widget Bundle based on the provided Widget Bundle Id. Widget Bundle represents a group(bundle) of widgets. Widgets are grouped into bundle by type or use case.
+
+
+        Available for any authorized user.'
+      operationId: getWidgetsBundleById
+      parameters:
+      - name: widgetsBundleId
+        in: path
+        description: A string value representing the widget bundle id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetsBundle'
+    delete:
+      tags:
+      - widgets-bundle-controller
+      summary: Delete widgets bundle (deleteWidgetsBundle)
+      description: 'Deletes the widget bundle. Referencing non-existing Widget Bundle Id will cause an error.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: deleteWidgetsBundle
+      parameters:
+      - name: widgetsBundleId
+        in: path
+        description: A string value representing the widget bundle id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    PageDataWidgetsBundle:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/WidgetsBundle'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    WidgetsBundle:
+      description: A JSON value representing the Widget Bundle.
+      properties:
+        id:
+          $ref: '#/components/schemas/WidgetsBundleId'
+          description: JSON object with the Widget Bundle Id. Specify this field to update the Widget Bundle. Referencing non-existing Widget Bundle Id will cause error. Omit this field to create new Widget Bundle.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Bundle creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        alias:
+          type: string
+          description: Unique alias that is used in widget types as a reference widget bundle
+          readOnly: true
+        title:
+          type: string
+          description: Title used in search and UI
+          readOnly: true
+        image:
+          type: string
+          description: Relative or external image URL. Replaced with image data URL (Base64) in case of relative URL and 'inlineImages' option enabled.
+          readOnly: true
+        description:
+          type: string
+          description: Description
+          readOnly: true
+        order:
+          type: integer
+          format: int32
+          description: Order
+          readOnly: true
+        name:
+          type: string
+          description: Same as title of the Widget Bundle. Read-only field. Update the 'title' to change the 'name' of the Widget Bundle.
+          readOnly: true
+    WidgetsBundleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGETS_BUNDLE
+          example: WIDGETS_BUNDLE
+      required:
+      - entityType
+      - id
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

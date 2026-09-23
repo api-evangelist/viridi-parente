@@ -1,0 +1,986 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Rule Chain Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: rule-chain-controller
+paths:
+  /api/ruleChains/import:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Import Rule Chains
+      description: 'Imports all tenant rule chains as one JSON.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: importRuleChains
+      parameters:
+      - name: overwrite
+        in: query
+        description: Enables overwrite for existing rule chains with the same name.
+        required: false
+        schema:
+          type: boolean
+          default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleChainData'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleChainImportResult'
+  /api/ruleChain:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Create Or Update Rule Chain (saveRuleChain)
+      description: 'Create or update the Rule Chain. When creating Rule Chain, platform generates Rule Chain Id as time-based UUID). The newly created Rule Chain Id will be present in the response. Specify existing Rule Chain id to update the rule chain. Referencing non-existing rule chain Id will cause ''Not Found'' error.
+
+
+        The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.Remove ''id'', ''tenantId'' from the request body example (below) to create new Rule Chain entity.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveRuleChain
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleChain'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/ruleChain/{ruleChainId}/root:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Set Root Rule Chain (setRootRuleChain)
+      description: 'Makes the rule chain to be root rule chain. Updates previous root rule chain as well.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setRootRuleChain
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/ruleChain/{ruleChainId}/edgeTemplateRoot:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Set Edge Template Root Rule Chain (setEdgeTemplateRootRuleChain)
+      description: 'Makes the rule chain to be root rule chain for any new edge that will be created. Does not update root rule chain for already created edges.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setEdgeTemplateRootRuleChain
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/ruleChain/{ruleChainId}/autoAssignToEdge:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Set Auto Assign To Edge Rule Chain (setAutoAssignToEdgeRuleChain)
+      description: 'Makes the rule chain to be automatically assigned for any new edge that will be created. Does not assign this rule chain for already created edges.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setAutoAssignToEdgeRuleChain
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+    delete:
+      tags:
+      - rule-chain-controller
+      summary: Unset Auto Assign To Edge Rule Chain (unsetAutoAssignToEdgeRuleChain)
+      description: 'Removes the rule chain from the list of rule chains that are going to be automatically assigned for any new edge that will be created. Does not unassign this rule chain for already assigned edges.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unsetAutoAssignToEdgeRuleChain
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/ruleChain/testScript:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Test Script function
+      description: 'Execute the Script function and return the result. The format of request:
+
+
+        ```json
+
+        {
+
+        "script": "Your Function as String",
+
+        "scriptType": "One of: update, generate, filter, switch, json, string",
+
+        "argNames": ["msg", "metadata", "type"],
+
+        "msg": "{\"temperature\": 42}",
+
+        "metadata": {
+
+        "deviceName": "Device A",
+
+        "deviceType": "Thermometer"
+
+        },
+
+        "msgType": "POST_TELEMETRY_REQUEST"
+
+        }
+
+        ```
+
+
+        Expected result JSON contains "output" and "error".
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: testScript
+      parameters:
+      - name: scriptLang
+        in: query
+        description: 'Script language: JS or TBEL'
+        required: false
+        schema:
+          type: string
+          enum:
+          - JS
+          - TBEL
+      requestBody:
+        description: Test JS request. See API call description above.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonNode'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+  /api/ruleChain/metadata:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Update Rule Chain Metadata
+      description: 'Updates the rule chain metadata. The metadata object contains information about the rule nodes and their connections.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveRuleChainMetaData
+      parameters:
+      - name: updateRelated
+        in: query
+        description: Update related rule nodes.
+        required: false
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleChainMetaData'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChainMetaData'
+  /api/ruleChain/device/default:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Create Default Rule Chain
+      description: 'Create rule chain from template, based on the specified name in the request. Creates the rule chain based on the template that is used to create root rule chain.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveRuleChain_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DefaultRuleChainCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/edge/{edgeId}/ruleChain/{ruleChainId}:
+    post:
+      tags:
+      - rule-chain-controller
+      summary: Assign rule chain to edge (assignRuleChainToEdge)
+      description: 'Creates assignment of an existing rule chain to an instance of The Edge. Assignment works in async way - first, notification event pushed to edge service queue on platform. Second, remote edge service will receive a copy of assignment rule chain (Edge will receive this instantly, if it''s currently connected, or once it''s going to be connected to platform). Third, once rule chain will be delivered to edge service, it''s going to start processing messages locally.
+
+
+        Only rule chain with type ''EDGE'' can be assigned to edge.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignRuleChainToEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ruleChainId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+    delete:
+      tags:
+      - rule-chain-controller
+      summary: Unassign rule chain from edge (unassignRuleChainFromEdge)
+      description: 'Clears assignment of the rule chain to the edge. Unassignment works in async way - first, ''unassign'' notification event pushed to edge queue on platform. Second, remote edge service will receive an ''unassign'' command to remove rule chain (Edge will receive this instantly, if it''s currently connected, or once it''s going to be connected to platform). Third, once ''unassign'' command will be delivered to edge service, it''s going to remove rule chain locally.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignRuleChainFromEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ruleChainId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+  /api/ruleNode/{ruleNodeId}/debugIn:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get latest input message (getLatestRuleNodeDebugInput)
+      description: 'Gets the input message from the debug events for specified Rule Chain Id. Referencing non-existing rule chain Id will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getLatestRuleNodeDebugInput
+      parameters:
+      - name: ruleNodeId
+        in: path
+        description: A string value representing the rule node id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+  /api/ruleChains:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Rule Chains (getRuleChains)
+      description: 'Returns a page of Rule Chains owned by tenant. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRuleChains
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Rule chain type (CORE or EDGE)
+        required: false
+        schema:
+          enum:
+          - CORE
+          - EDGE
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the rule chain name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - root
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataRuleChain'
+  /api/ruleChains/export:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Export Rule Chains
+      description: 'Exports all tenant rule chains as one JSON.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: exportRuleChains
+      parameters:
+      - name: limit
+        in: query
+        description: A limit of rule chains to export.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChainData'
+  /api/ruleChain/{ruleChainId}:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Rule Chain (getRuleChainById)
+      description: 'Fetch the Rule Chain object based on the provided Rule Chain Id. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRuleChainById
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChain'
+    delete:
+      tags:
+      - rule-chain-controller
+      summary: Delete rule chain (deleteRuleChain)
+      description: 'Deletes the rule chain. Referencing non-existing rule chain Id will cause an error. Referencing rule chain that is used in the device profiles will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteRuleChain
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/ruleChain/{ruleChainId}/output/labels:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Rule Chain output labels (getRuleChainOutputLabels)
+      description: 'Fetch the unique labels for the "output" Rule Nodes that belong to the Rule Chain based on the provided Rule Chain Id. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRuleChainOutputLabels
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                uniqueItems: true
+  /api/ruleChain/{ruleChainId}/output/labels/usage:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get output labels usage (getRuleChainOutputLabelsUsage)
+      description: 'Fetch the list of rule chains and the relation types (labels) they use to process output of the current rule chain based on the provided Rule Chain Id. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRuleChainOutputLabelsUsage
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleChainOutputLabelsUsage'
+  /api/ruleChain/{ruleChainId}/metadata:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Rule Chain (getRuleChainById)
+      description: 'Fetch the Rule Chain Metadata object based on the provided Rule Chain Id. The metadata object contains information about the rule nodes and their connections.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getRuleChainMetaData
+      parameters:
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleChainMetaData'
+  /api/ruleChain/tbelEnabled:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Is TBEL script executor enabled
+      description: 'Returns ''True'' if the TBEL script execution is enabled
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: isTbelEnabled
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/ruleChain/autoAssignToEdgeRuleChains:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Auto Assign To Edge Rule Chains (getAutoAssignToEdgeRuleChains)
+      description: 'Returns a list of Rule Chains that will be assigned to a newly created edge. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAutoAssignToEdgeRuleChains
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleChain'
+  /api/edge/{edgeId}/ruleChains:
+    get:
+      tags:
+      - rule-chain-controller
+      summary: Get Edge Rule Chains (getEdgeRuleChains)
+      description: 'Returns a page of Rule Chains assigned to the specified edge. The rule chain object is lightweight and contains general information about the rule chain. List of rule nodes and their connection is stored in a separate ''metadata'' object.You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getEdgeRuleChains
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the rule chain name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - root
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataRuleChain'
+components:
+  schemas:
+    RuleChainData:
+      description: A JSON value representing the rule chains.
+      properties:
+        ruleChains:
+          type: array
+          description: List of the Rule Chain objects.
+          items:
+            $ref: '#/components/schemas/RuleChain'
+          readOnly: true
+        metadata:
+          type: array
+          description: List of the Rule Chain metadata objects.
+          items:
+            $ref: '#/components/schemas/RuleChainMetaData'
+          readOnly: true
+      required:
+      - metadata
+      - ruleChains
+    RuleNode:
+      properties:
+        id:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: JSON object with the Rule Node Id. Specify this field to update the Rule Node. Referencing non-existing Rule Node Id will cause error. Omit this field to create new rule node.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rule node creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: 'JSON object with the Rule Chain Id. '
+          readOnly: true
+        type:
+          type: string
+          description: 'Full Java Class Name of the rule node implementation. '
+          example: com.mycompany.iot.rule.engine.ProcessingNode
+        name:
+          type: string
+          description: 'User defined name of the rule node. Used on UI and for logging. '
+          example: Process sensor reading
+        debugMode:
+          type: boolean
+          description: 'Enable/disable debug. '
+          example: false
+        singletonMode:
+          type: boolean
+          description: 'Enable/disable singleton mode. '
+          example: false
+        queueName:
+          type: string
+          description: 'Queue name. '
+          example: Main
+        configurationVersion:
+          type: integer
+          format: int32
+          description: 'Version of rule node configuration. '
+          example: 0
+        externalId:
+          $ref: '#/components/schemas/RuleNodeId'
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the rule node. Contains 'layoutX' and 'layoutY' properties for visualization.
+    DefaultRuleChainCreateRequest:
+      description: A JSON value representing the request.
+      properties:
+        name:
+          type: string
+          description: Name of the new rule chain
+          example: Root Rule Chain
+      required:
+      - name
+    RuleChainConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        targetRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with the additional information about the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - additionalInfo
+      - fromIndex
+      - targetRuleChainId
+      - type
+    RuleChain:
+      description: A JSON value representing the rule chain.
+      properties:
+        id:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id. Specify this field to update the Rule Chain. Referencing non-existing Rule Chain Id will cause error. Omit this field to create new rule chain.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rule chain creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        name:
+          type: string
+          description: Rule Chain name
+          example: Humidity data processing
+        type:
+          type: string
+          description: Rule Chain type. 'EDGE' rule chains are processing messages on the edge devices only.
+          enum:
+          - CORE
+          - EDGE
+          example: A4B72CCDFF33
+        firstRuleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: JSON object with Rule Chain Id. Pointer to the first rule node that should receive all messages pushed to this rule chain.
+        root:
+          type: boolean
+          description: Indicates root rule chain. The root rule chain process messages from all devices and entities by default. User may configure default rule chain per device profile.
+        debugMode:
+          type: boolean
+          description: Reserved for future usage.
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - tenantId
+    NodeConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        toIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - fromIndex
+      - toIndex
+      - type
+    RuleChainImportResult:
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+        ruleChainName:
+          type: string
+        updated:
+          type: boolean
+        error:
+          type: string
+    PageDataRuleChain:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/RuleChain'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    RuleNodeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_NODE
+          example: RULE_NODE
+      required:
+      - entityType
+      - id
+    RuleChainOutputLabelsUsage:
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Rule Chain Id
+          readOnly: true
+        ruleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: Rule Node Id
+          readOnly: true
+        ruleChainName:
+          type: string
+          description: Rule Chain Name
+          readOnly: true
+        ruleNodeName:
+          type: string
+          description: Rule Node Name
+          readOnly: true
+        labels:
+          type: array
+          description: Output labels
+          items:
+            type: string
+          readOnly: true
+          uniqueItems: true
+      required:
+      - labels
+      - ruleChainId
+      - ruleChainName
+      - ruleNodeId
+      - ruleNodeName
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    RuleChainMetaData:
+      description: A JSON value representing the rule chain metadata.
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Rule Chain Id.
+          readOnly: true
+        firstNodeIndex:
+          type: integer
+          format: int32
+          description: Index of the first rule node in the 'nodes' list
+        nodes:
+          type: array
+          description: List of rule node JSON objects
+          items:
+            $ref: '#/components/schemas/RuleNode'
+        connections:
+          type: array
+          description: List of JSON objects that represent connections between rule nodes
+          items:
+            $ref: '#/components/schemas/NodeConnectionInfo'
+        ruleChainConnections:
+          type: array
+          description: List of JSON objects that represent connections between rule nodes and other rule chains.
+          items:
+            $ref: '#/components/schemas/RuleChainConnectionInfo'
+      required:
+      - connections
+      - firstNodeIndex
+      - nodes
+      - ruleChainConnections
+      - ruleChainId
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

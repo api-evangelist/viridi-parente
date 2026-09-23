@@ -1,0 +1,81 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Moxion Aemp API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: moxion-aemp
+paths:
+  /api/moxion_aemp_faults/{page}:
+    get:
+      tags:
+      - moxion-aemp
+      operationId: getMoxionAEMPFaults
+      parameters:
+      - name: page
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Get moxion AEMP faults
+      x-summary-source: derived
+  /api/moxion_aemp/{page}:
+    get:
+      tags:
+      - moxion-aemp
+      operationId: getMoxionAEMP
+      parameters:
+      - name: page
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Get moxion AEMP
+      x-summary-source: derived
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

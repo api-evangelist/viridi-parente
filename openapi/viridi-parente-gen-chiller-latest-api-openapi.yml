@@ -1,0 +1,83 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Gen Chiller Latest API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: gen-chiller-latest
+paths:
+  /api/data/gen:
+    get:
+      tags:
+      - gen-chiller-latest
+      operationId: getGeneratorData
+      parameters:
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Get generator data
+      x-summary-source: derived
+  /api/data/chiller:
+    get:
+      tags:
+      - gen-chiller-latest
+      operationId: getChillerData
+      parameters:
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Get chiller data
+      x-summary-source: derived
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

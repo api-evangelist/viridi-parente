@@ -1,0 +1,477 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Notification Template Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: notification-template-controller
+paths:
+  /api/notification/template:
+    post:
+      tags:
+      - notification-template-controller
+      summary: Save notification template (saveNotificationTemplate)
+      description: 'Creates or updates notification template.
+
+
+        Here is an example of template to send notification via Web, SMS and Slack:
+
+        ```json
+
+        {
+
+        "name": "Greetings",
+
+        "notificationType": "GENERAL",
+
+        "configuration": {
+
+        "deliveryMethodsTemplates": {
+
+        "WEB": {
+
+        "enabled": true,
+
+        "subject": "Greetings",
+
+        "body": "Hi there, ${recipientTitle}",
+
+        "additionalConfig": {
+
+        "icon": {
+
+        "enabled": true,
+
+        "icon": "back_hand",
+
+        "color": "#757575"
+
+        },
+
+        "actionButtonConfig": {
+
+        "enabled": false
+
+        }
+
+        },
+
+        "method": "WEB"
+
+        },
+
+        "SMS": {
+
+        "enabled": true,
+
+        "body": "Hi there, ${recipientTitle}",
+
+        "method": "SMS"
+
+        },
+
+        "SLACK": {
+
+        "enabled": true,
+
+        "body": "Hi there, @${recipientTitle}",
+
+        "method": "SLACK"
+
+        }
+
+        }
+
+        }
+
+        }
+
+        ```
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: saveNotificationTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+  /api/notification/templates:
+    get:
+      tags:
+      - notification-template-controller
+      summary: Get notification templates (getNotificationTemplates)
+      description: 'Returns the page of notification templates owned by sysadmin or tenant.
+
+
+        You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getNotificationTemplates
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: Case-insensitive 'substring' filter based on template's name and notification type
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          type: string
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          type: string
+      - name: notificationTypes
+        in: query
+        description: Comma-separated list of notification types to filter the templates
+        required: false
+        schema:
+          items: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataNotificationTemplate'
+  /api/notification/template/{id}:
+    get:
+      tags:
+      - notification-template-controller
+      summary: Get notification template by id (getNotificationTemplateById)
+      description: 'Fetches notification template by id.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getNotificationTemplateById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+    delete:
+      tags:
+      - notification-template-controller
+      summary: Delete notification template by id (deleteNotificationTemplateById
+      description: 'Deletes notification template by its id.
+
+
+        This template cannot be referenced by existing scheduled notification requests or any notification rules.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: deleteNotificationTemplateById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+  /api/notification/slack/conversations:
+    get:
+      tags:
+      - notification-template-controller
+      summary: List Slack conversations (listSlackConversations)
+      description: 'List available Slack conversations by type.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: listSlackConversations
+      parameters:
+      - name: type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - DIRECT
+          - PUBLIC_CHANNEL
+          - PRIVATE_CHANNEL
+      - name: token
+        in: query
+        description: Slack bot token. If absent - system Slack settings will be used
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SlackConversation'
+components:
+  schemas:
+    WebDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          additionalConfig: {}
+      required:
+      - body
+      - subject
+    MicrosoftTeamsDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          themeColor:
+            type: string
+          button:
+            $ref: '#/components/schemas/Button'
+      required:
+      - body
+    SlackConversation:
+      properties:
+        type:
+          type: string
+          enum:
+          - DIRECT
+          - PUBLIC_CHANNEL
+          - PRIVATE_CHANNEL
+        id:
+          type: string
+        name:
+          type: string
+        wholeName:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    NotificationTemplate:
+      properties:
+        id:
+          $ref: '#/components/schemas/NotificationTemplateId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        notificationType:
+          type: string
+          enum:
+          - GENERAL
+          - ALARM
+          - DEVICE_ACTIVITY
+          - ENTITY_ACTION
+          - ALARM_COMMENT
+          - RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT
+          - ALARM_ASSIGNMENT
+          - NEW_PLATFORM_VERSION
+          - ENTITIES_LIMIT
+          - API_USAGE_LIMIT
+          - RULE_NODE
+          - RATE_LIMITS
+          - EDGE_CONNECTION
+          - EDGE_COMMUNICATION_FAILURE
+          - TASK_PROCESSING_FAILURE
+        configuration:
+          $ref: '#/components/schemas/NotificationTemplateConfig'
+      required:
+      - configuration
+      - name
+      - notificationType
+    SmsDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      required:
+      - body
+    Button:
+      properties:
+        enabled:
+          type: boolean
+        text:
+          type: string
+        linkType:
+          type: string
+          enum:
+          - LINK
+          - DASHBOARD
+        link:
+          type: string
+        dashboardId:
+          type: string
+          format: uuid
+        dashboardState:
+          type: string
+        setEntityIdInState:
+          type: boolean
+    NotificationTemplateId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - NOTIFICATION_TEMPLATE
+          example: NOTIFICATION_TEMPLATE
+      required:
+      - entityType
+      - id
+    DeliveryMethodNotificationTemplate:
+      discriminator:
+        propertyName: method
+      properties:
+        enabled:
+          type: boolean
+        body:
+          type: string
+        method:
+          type: string
+      required:
+      - body
+      - method
+    PageDataNotificationTemplate:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/NotificationTemplate'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EmailDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+      required:
+      - body
+      - subject
+    SlackDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      required:
+      - body
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    NotificationTemplateConfig:
+      properties:
+        deliveryMethodsTemplates:
+          type: object
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/EmailDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MicrosoftTeamsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MobileAppDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SlackDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SmsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/WebDeliveryMethodNotificationTemplate'
+      required:
+      - deliveryMethodsTemplates
+    MobileAppDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          additionalConfig: {}
+      required:
+      - body
+      - subject
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

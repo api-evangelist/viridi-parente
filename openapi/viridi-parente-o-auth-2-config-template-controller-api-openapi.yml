@@ -1,0 +1,213 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST O Auth 2 Config Template Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: o-auth-2-config-template-controller
+paths:
+  /api/oauth2/config/template:
+    get:
+      tags:
+      - o-auth-2-config-template-controller
+      summary: Get the list of all OAuth2 client registration templates…
+      description: Client registration template is OAuth2 provider configuration template with default settings for registering new OAuth2 clients
+      operationId: getClientRegistrationTemplates
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OAuth2ClientRegistrationTemplate'
+    post:
+      tags:
+      - o-auth-2-config-template-controller
+      summary: Create or update OAuth2 client registration template…
+      description: Client registration template is OAuth2 provider configuration template with default settings for registering new OAuth2 clients
+      operationId: saveClientRegistrationTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2ClientRegistrationTemplate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2ClientRegistrationTemplate'
+  /api/oauth2/config/template/{clientRegistrationTemplateId}:
+    delete:
+      tags:
+      - o-auth-2-config-template-controller
+      summary: Delete OAuth2 client registration template by id…
+      description: Client registration template is OAuth2 provider configuration template with default settings for registering new OAuth2 clients
+      operationId: deleteClientRegistrationTemplate
+      parameters:
+      - name: clientRegistrationTemplateId
+        in: path
+        description: String representation of client registration template id to delete
+        required: true
+        schema:
+          type: string
+        example: 139b1f81-2f5d-11ec-9dbe-9b627e1a88f4
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    OAuth2MapperConfig:
+      properties:
+        allowUserCreation:
+          type: boolean
+          description: Whether user should be created if not yet present on the platform after successful authentication
+        activateUser:
+          type: boolean
+          description: Whether user credentials should be activated when user is created after successful authentication
+        type:
+          type: string
+          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
+          enum:
+          - BASIC
+          - CUSTOM
+          - GITHUB
+          - APPLE
+        basic:
+          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
+          description: Mapper config for BASIC and GITHUB mapper types
+        custom:
+          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
+          description: Mapper config for CUSTOM mapper type
+      required:
+      - type
+    OAuth2BasicMapperConfig:
+      properties:
+        emailAttributeKey:
+          type: string
+          description: Email attribute key of OAuth2 principal attributes. Must be specified for BASIC mapper type and cannot be specified for GITHUB type
+        firstNameAttributeKey:
+          type: string
+          description: First name attribute key
+        lastNameAttributeKey:
+          type: string
+          description: Last name attribute key
+        tenantNameStrategy:
+          type: string
+          description: Tenant naming strategy. For DOMAIN type, domain for tenant name will be taken from the email (substring before '@')
+          enum:
+          - DOMAIN
+          - EMAIL
+          - CUSTOM
+        tenantNamePattern:
+          type: string
+          description: Tenant name pattern for CUSTOM naming strategy. OAuth2 attributes in the pattern can be used by enclosing attribute key in '%{' and '}'
+          example: '%{email}'
+        customerNamePattern:
+          type: string
+          description: Customer name pattern. When creating a user on the first OAuth2 log in, if specified, customer name will be used to create or find existing customer in the platform and assign customerId to the user
+        defaultDashboardName:
+          type: string
+          description: Name of the tenant's dashboard to set as default dashboard for newly created user
+        alwaysFullScreen:
+          type: boolean
+          description: Whether default dashboard should be open in full screen
+      required:
+      - tenantNameStrategy
+    OAuth2ClientRegistrationTemplate:
+      properties:
+        id:
+          $ref: '#/components/schemas/OAuth2ClientRegistrationTemplateId'
+        createdTime:
+          type: integer
+          format: int64
+        providerId:
+          type: string
+          description: OAuth2 provider identifier (e.g. its name)
+        mapperConfig:
+          $ref: '#/components/schemas/OAuth2MapperConfig'
+          description: Default config for mapping OAuth2 log in response to platform entities
+        authorizationUri:
+          type: string
+          description: Default authorization URI of the OAuth2 provider
+        accessTokenUri:
+          type: string
+          description: Default access token URI of the OAuth2 provider
+        scope:
+          type: array
+          description: Default OAuth scopes that will be requested from OAuth2 platform
+          items:
+            type: string
+        userInfoUri:
+          type: string
+          description: Default user info URI of the OAuth2 provider
+        userNameAttributeName:
+          type: string
+          description: Default name of the username attribute in OAuth2 provider log in response
+        jwkSetUri:
+          type: string
+          description: Default JSON Web Key URI of the OAuth2 provider
+        clientAuthenticationMethod:
+          type: string
+          description: 'Default client authentication method to use: ''BASIC'' or ''POST'''
+        comment:
+          type: string
+          description: Comment for OAuth2 provider
+        loginButtonIcon:
+          type: string
+          description: Default log in button icon for OAuth2 provider
+        loginButtonLabel:
+          type: string
+          description: Default OAuth2 provider label
+        helpLink:
+          type: string
+          description: Help link for OAuth2 provider
+        name:
+          type: string
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - providerId
+    OAuth2CustomMapperConfig:
+      properties:
+        url:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        sendToken:
+          type: boolean
+    OAuth2ClientRegistrationTemplateId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

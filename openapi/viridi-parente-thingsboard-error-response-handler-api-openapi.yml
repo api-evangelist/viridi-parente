@@ -1,0 +1,110 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Thingsboard Error Response Handler API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: thingsboard-error-response-handler
+paths:
+  /error:
+    get:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error
+      x-summary-source: derived
+    put:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_3
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 3
+      x-summary-source: derived
+    post:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_2
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 2
+      x-summary-source: derived
+    delete:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_5
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 5
+      x-summary-source: derived
+    options:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_6
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 6
+      x-summary-source: derived
+    head:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 1
+      x-summary-source: derived
+    patch:
+      tags:
+      - thingsboard-error-response-handler
+      operationId: handleError_4
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Handle error 4
+      x-summary-source: derived
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

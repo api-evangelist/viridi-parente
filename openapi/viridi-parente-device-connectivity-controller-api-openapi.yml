@@ -1,0 +1,101 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Device Connectivity Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: device-connectivity-controller
+paths:
+  /api/device-connectivity/{protocol}/certificate/download:
+    get:
+      tags:
+      - device-connectivity-controller
+      summary: Download server certificate using file path defined in device.connectivity…
+      description: Download server certificate.
+      operationId: downloadServerCertificate
+      parameters:
+      - name: protocol
+        in: path
+        description: 'A string value representing the device connectivity protocol. Possible values: ''mqtt'', ''mqtts'', ''http'', ''https'', ''coap'', ''coaps'''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+  /api/device-connectivity/{deviceId}:
+    get:
+      tags:
+      - device-connectivity-controller
+      summary: Get commands to publish device telemetry (getDevicePublishTelemetryCommands)
+      description: 'Fetch the list of commands to publish device telemetry based on device profile If the user has the authority of ''Tenant Administrator'', the server checks that the device is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the device is assigned to the same customer.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDevicePublishTelemetryCommands
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                http:
+                  description: http
+                  value: curl -v -X POST http://localhost:8080/api/v1/0ySs4FTOn5WU15XLmal8/telemetry --header Content-Type:application/json --data {temperature:25}
+                mqtt:
+                  description: mqtt
+                  value: mosquitto_pub -d -q 1 -h localhost -t v1/devices/me/telemetry -i myClient1 -u myUsername1 -P myPassword -m {temperature:25}
+                coap:
+                  description: coap
+                  value: coap-client -m POST coap://localhost:5683/api/v1/0ySs4FTOn5WU15XLmal8/telemetry -t json -e {temperature:25}
+  /api/device-connectivity/gateway-launch/{deviceId}/docker-compose/download:
+    get:
+      tags:
+      - device-connectivity-controller
+      summary: Download generated docker-compose.yml file for gateway…
+      description: Download generated docker-compose.yml for gateway.
+      operationId: downloadGatewayDockerCompose
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

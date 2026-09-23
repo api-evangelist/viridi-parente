@@ -1,0 +1,635 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Widget Type Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: widget-type-controller
+paths:
+  /api/widgetType:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get Widget Type (getWidgetType)
+      description: 'Get the Widget Type by FQN. Widget Type represents the template for widget creation. Widget Type and Widget are similar to class and object in OOP theory.
+
+
+        Available for any authorized user.'
+      operationId: getWidgetTypeByBundleAliasAndTypeAlias_1
+      parameters:
+      - name: isSystem
+        in: query
+        description: System or Tenant
+        required: true
+        schema:
+          type: boolean
+      - name: bundleAlias
+        in: query
+        description: Widget Bundle alias
+        required: true
+        schema:
+          type: string
+      - name: alias
+        in: query
+        description: Widget Type alias
+        required: true
+        schema:
+          type: string
+      - name: fqn
+        in: query
+        description: Widget Type fqn
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetType'
+      deprecated: true
+    post:
+      tags:
+      - widget-type-controller
+      summary: Create Or Update Widget Type (saveWidgetType)
+      description: 'Create or update the Widget Type. Widget Type represents the template for widget creation. Widget Type and Widget are similar to class and object in OOP theory. When creating the Widget Type, platform generates Widget Type Id as time-based UUID). The newly created Widget Type Id will be present in the response. Specify existing Widget Type id to update the Widget Type. Referencing non-existing Widget Type Id will cause ''Not Found'' error.
+
+
+        Widget Type fqn is unique in the scope of System or Tenant. Special Tenant Id ''13814000-1dd2-11b2-8080-808080808080'' is automatically used if the create request is sent by user with ''SYS_ADMIN'' authority.Remove ''id'', ''tenantId'' rom the request body example (below) to create new Widget Type entity.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: saveWidgetType
+      parameters:
+      - name: updateExistingByFqn
+        in: query
+        description: Optional boolean parameter indicating whether to update existing widget type by FQN if present instead of creating new one
+        required: false
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetTypeDetails'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetTypeDetails'
+  /api/widgetTypes:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get all Widget types for specified Bundle (getBundleWidgetTypesByBundleAlias)…
+      description: 'Returns an array of Widget Type objects that belong to specified Widget Bundle.Widget Type represents the template for widget creation. Widget Type and Widget are similar to class and object in OOP theory.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getBundleWidgetTypes_1_1
+      parameters:
+      - name: widgetsBundleId
+        in: query
+        description: Widget Bundle Id
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the widget type name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - deprecated
+          - tenantId
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC, DESC
+      - name: tenantOnly
+        in: query
+        description: Optional boolean parameter indicating whether only tenant widget types should be returned
+        required: false
+        schema:
+          type: boolean
+      - name: fullSearch
+        in: query
+        description: Optional boolean parameter indicating whether search widgets by description not only by name
+        required: false
+        schema:
+          type: boolean
+      - name: deprecatedFilter
+        in: query
+        description: Optional string parameter indicating whether to include deprecated widgets
+        required: false
+        schema:
+          enum:
+          - ALL
+          - ACTUAL
+          - DEPRECATED
+      - name: widgetTypeList
+        in: query
+        description: A list of string values separated by comma ',' representing one of the widget type value
+        required: false
+        schema:
+          items:
+            enum:
+            - timeseries
+            - latest
+            - control
+            - alarm
+            - static
+      - name: isSystem
+        in: query
+        description: System or Tenant
+        required: true
+        schema:
+          type: boolean
+      - name: bundleAlias
+        in: query
+        description: Widget Bundle alias
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PageDataWidgetTypeInfo'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WidgetType'
+      deprecated: true
+  /api/widgetTypesInfos:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get Widget Type Info objects (getBundleWidgetTypesInfosByBundleAlias)…
+      description: 'Get the Widget Type Info objects based on the provided parameters. Widget Type Info is a lightweight object that represents Widget Type but does not contain the heavyweight widget descriptor JSON
+
+
+        Available for any authorized user.'
+      operationId: getBundleWidgetTypesInfos_1
+      parameters:
+      - name: widgetsBundleId
+        in: query
+        description: Widget Bundle Id
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the widget type name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - deprecated
+          - tenantId
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: fullSearch
+        in: query
+        description: Optional boolean parameter indicating whether search widgets by description not only by name
+        required: false
+        schema:
+          type: boolean
+      - name: deprecatedFilter
+        in: query
+        description: Optional string parameter indicating whether to include deprecated widgets
+        required: false
+        schema:
+          enum:
+          - ALL
+          - ACTUAL
+          - DEPRECATED
+      - name: widgetTypeList
+        in: query
+        description: A list of string values separated by comma ',' representing one of the widget type value
+        required: false
+        schema:
+          items:
+            enum:
+            - timeseries
+            - latest
+            - control
+            - alarm
+            - static
+      - name: isSystem
+        in: query
+        description: System or Tenant
+        required: true
+        schema:
+          type: boolean
+      - name: bundleAlias
+        in: query
+        description: Widget Bundle alias
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WidgetTypeInfo'
+                - $ref: '#/components/schemas/PageDataWidgetTypeInfo'
+      deprecated: true
+  /api/widgetTypesDetails:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get all Widget types details for specified Bundle…
+      description: 'Returns an array of Widget Type Details objects that belong to specified Widget Bundle.Widget Type Details extend Widget Type and add image and description properties. Those properties are useful to edit the Widget Type but they are not required for Dashboard rendering.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getBundleWidgetTypesDetails_1
+      parameters:
+      - name: widgetsBundleId
+        in: query
+        description: Widget Bundle Id
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      - name: isSystem
+        in: query
+        description: System or Tenant
+        required: true
+        schema:
+          type: boolean
+      - name: bundleAlias
+        in: query
+        description: Widget Bundle alias
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WidgetTypeDetails'
+      deprecated: true
+  /api/widgetTypeInfo/{widgetTypeId}:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get Widget Type Info (getWidgetTypeInfoById)
+      description: 'Get the Widget Type Info based on the provided Widget Type Id. Widget Type Details extend Widget Type and add image and description properties. Those properties are useful to edit the Widget Type but they are not required for Dashboard rendering.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getWidgetTypeInfoById
+      parameters:
+      - name: widgetTypeId
+        in: path
+        description: A string value representing the widget type id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetTypeInfo'
+  /api/widgetTypeFqns:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get all Widget type fqns for specified Bundle (getBundleWidgetTypeFqns)
+      description: 'Returns an array of Widget Type fqns that belong to specified Widget Bundle.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getBundleWidgetTypeFqns
+      parameters:
+      - name: widgetsBundleId
+        in: query
+        description: Widget Bundle Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/widgetType/{widgetTypeId}:
+    get:
+      tags:
+      - widget-type-controller
+      summary: Get Widget Type Details (getWidgetTypeById)
+      description: 'Get the Widget Type Details based on the provided Widget Type Id. Widget Type Details extend Widget Type and add image and description properties. Those properties are useful to edit the Widget Type but they are not required for Dashboard rendering.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getWidgetTypeById
+      parameters:
+      - name: widgetTypeId
+        in: path
+        description: A string value representing the widget type id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetTypeDetails'
+    delete:
+      tags:
+      - widget-type-controller
+      summary: Delete widget type (deleteWidgetType)
+      description: 'Deletes the Widget Type. Referencing non-existing Widget Type Id will cause an error.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: deleteWidgetType
+      parameters:
+      - name: widgetTypeId
+        in: path
+        description: A string value representing the widget type id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    WidgetType:
+      properties:
+        id:
+          $ref: '#/components/schemas/WidgetTypeId'
+          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Type creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        fqn:
+          type: string
+          description: Unique FQN that is used in dashboards as a reference widget type
+          readOnly: true
+        name:
+          type: string
+          description: Widget name used in search and UI
+          readOnly: true
+        deprecated:
+          type: boolean
+          description: Whether widget type is deprecated.
+          example: true
+        descriptor:
+          $ref: '#/components/schemas/JsonNode'
+    WidgetTypeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGET_TYPE
+          example: WIDGET_TYPE
+      required:
+      - entityType
+      - id
+    WidgetTypeInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/WidgetTypeId'
+          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Type creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        fqn:
+          type: string
+          description: Unique FQN that is used in dashboards as a reference widget type
+          readOnly: true
+        name:
+          type: string
+          description: Widget name used in search and UI
+          readOnly: true
+        deprecated:
+          type: boolean
+          description: Whether widget type is deprecated.
+          example: true
+        image:
+          type: string
+          description: Base64 encoded widget thumbnail
+          readOnly: true
+        description:
+          type: string
+          description: Description of the widget type
+          readOnly: true
+        tags:
+          type: array
+          description: Tags of the widget type
+          items:
+            type: string
+          readOnly: true
+        widgetType:
+          type: string
+          description: Type of the widget (timeseries, latest, control, alarm or static)
+          readOnly: true
+    PageDataWidgetTypeInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/WidgetTypeInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    WidgetTypeDetails:
+      description: A JSON value representing the Widget Type Details.
+      properties:
+        fqn:
+          type: string
+          description: Unique FQN that is used in dashboards as a reference widget type
+          readOnly: true
+        name:
+          type: string
+          description: Widget name used in search and UI
+          readOnly: true
+        deprecated:
+          type: boolean
+          description: Whether widget type is deprecated.
+          example: true
+        image:
+          type: string
+          description: Relative or external image URL. Replaced with image data URL (Base64) in case of relative URL and 'inlineImages' option enabled.
+        description:
+          type: string
+          description: Description of the widget
+        descriptor:
+          $ref: '#/components/schemas/JsonNode'
+        id:
+          $ref: '#/components/schemas/WidgetTypeId'
+          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Type creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        tags:
+          type: array
+          description: Tags of the widget type
+          items:
+            type: string
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

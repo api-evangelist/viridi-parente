@@ -1,0 +1,582 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Audit Log Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: audit-log-controller
+paths:
+  /api/audit/logs:
+    get:
+      tags:
+      - audit-log-controller
+      summary: Get all audit logs (getAuditLogs)
+      description: 'Returns a page of audit logs related to all entities in the scope of the current user''s Tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAuditLogs
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: 'The case insensitive ''substring'' filter based on one of the next properties: entityType, entityName, userName, actionType, actionStatus.'
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: 'Property of audit log to sort by. See the ''Model'' tab of the Response Class for more details. Note: entityType sort property is not defined in the AuditLog class, however, it can be used to sort audit logs by types of entities that were logged.'
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - entityType
+          - entityName
+          - userName
+          - actionType
+          - actionStatus
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: 'The start timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: 'The end timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: actionTypes
+        in: query
+        description: A String value representing comma-separated list of action types. This parameter is optional, but it can be used to filter results to fetch only audit logs of specific action types. For example, 'LOGIN', 'LOGOUT'. See the 'Model' tab of the Response Class for more details.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAuditLog'
+  /api/audit/logs/user/{userId}:
+    get:
+      tags:
+      - audit-log-controller
+      summary: Get audit logs by user id (getAuditLogsByUserId)
+      description: 'Returns a page of audit logs related to the actions of targeted user. For example, RPC call to a particular device, or alarm acknowledgment for a specific device, etc. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAuditLogsByUserId
+      parameters:
+      - name: userId
+        in: path
+        description: A string value representing the user id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: 'The case insensitive ''substring'' filter based on one of the next properties: entityType, entityName, userName, actionType, actionStatus.'
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: 'Property of audit log to sort by. See the ''Model'' tab of the Response Class for more details. Note: entityType sort property is not defined in the AuditLog class, however, it can be used to sort audit logs by types of entities that were logged.'
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - entityType
+          - entityName
+          - userName
+          - actionType
+          - actionStatus
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: 'The start timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: 'The end timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: actionTypes
+        in: query
+        description: A String value representing comma-separated list of action types. This parameter is optional, but it can be used to filter results to fetch only audit logs of specific action types. For example, 'LOGIN', 'LOGOUT'. See the 'Model' tab of the Response Class for more details.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAuditLog'
+  /api/audit/logs/entity/{entityType}/{entityId}:
+    get:
+      tags:
+      - audit-log-controller
+      summary: Get audit logs by entity id (getAuditLogsByEntityId)
+      description: 'Returns a page of audit logs related to the actions on the targeted entity. Basically, this API call is used to get the full lifecycle of some specific entity. For example to see when a device was created, updated, assigned to some customer, or even deleted from the system. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAuditLogsByEntityId
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          default: DEVICE
+      - name: entityId
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: 'The case insensitive ''substring'' filter based on one of the next properties: entityType, entityName, userName, actionType, actionStatus.'
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: 'Property of audit log to sort by. See the ''Model'' tab of the Response Class for more details. Note: entityType sort property is not defined in the AuditLog class, however, it can be used to sort audit logs by types of entities that were logged.'
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - entityType
+          - entityName
+          - userName
+          - actionType
+          - actionStatus
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: 'The start timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: 'The end timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: actionTypes
+        in: query
+        description: A String value representing comma-separated list of action types. This parameter is optional, but it can be used to filter results to fetch only audit logs of specific action types. For example, 'LOGIN', 'LOGOUT'. See the 'Model' tab of the Response Class for more details.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAuditLog'
+  /api/audit/logs/customer/{customerId}:
+    get:
+      tags:
+      - audit-log-controller
+      summary: Get audit logs by customer id (getAuditLogsByCustomerId)
+      description: 'Returns a page of audit logs related to the targeted customer entities (devices, assets, etc.), and users actions (login, logout, etc.) that belong to this customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAuditLogsByCustomerId
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: 'The case insensitive ''substring'' filter based on one of the next properties: entityType, entityName, userName, actionType, actionStatus.'
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: 'Property of audit log to sort by. See the ''Model'' tab of the Response Class for more details. Note: entityType sort property is not defined in the AuditLog class, however, it can be used to sort audit logs by types of entities that were logged.'
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - entityType
+          - entityName
+          - userName
+          - actionType
+          - actionStatus
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: 'The start timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: 'The end timestamp in milliseconds of the search time range over the AuditLog class field: ''createdTime''.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: actionTypes
+        in: query
+        description: A String value representing comma-separated list of action types. This parameter is optional, but it can be used to filter results to fetch only audit logs of specific action types. For example, 'LOGIN', 'LOGOUT'. See the 'Model' tab of the Response Class for more details.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAuditLog'
+components:
+  schemas:
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    PageDataAuditLog:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AuditLog'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    AuditLog:
+      properties:
+        id:
+          $ref: '#/components/schemas/AuditLogId'
+          description: JSON object with the auditLog Id
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the auditLog creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id
+          readOnly: true
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with Entity id
+          readOnly: true
+        entityName:
+          type: string
+          description: Name of the logged entity
+          example: Thermometer
+          readOnly: true
+        userId:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with User id.
+          readOnly: true
+        userName:
+          type: string
+          description: Unique user name(email) of the user that performed some action on logged entity
+          example: tenant@thingsboard.org
+          readOnly: true
+        actionType:
+          type: string
+          description: String represented Action type
+          enum:
+          - ADDED
+          - DELETED
+          - UPDATED
+          - ATTRIBUTES_UPDATED
+          - ATTRIBUTES_DELETED
+          - TIMESERIES_UPDATED
+          - TIMESERIES_DELETED
+          - RPC_CALL
+          - CREDENTIALS_UPDATED
+          - ASSIGNED_TO_CUSTOMER
+          - UNASSIGNED_FROM_CUSTOMER
+          - ACTIVATED
+          - SUSPENDED
+          - CREDENTIALS_READ
+          - ATTRIBUTES_READ
+          - RELATION_ADD_OR_UPDATE
+          - RELATION_DELETED
+          - RELATIONS_DELETED
+          - ALARM_ACK
+          - ALARM_CLEAR
+          - ALARM_DELETE
+          - ALARM_ASSIGNED
+          - ALARM_UNASSIGNED
+          - LOGIN
+          - LOGOUT
+          - LOCKOUT
+          - ASSIGNED_FROM_TENANT
+          - ASSIGNED_TO_TENANT
+          - PROVISION_SUCCESS
+          - PROVISION_FAILURE
+          - ASSIGNED_TO_EDGE
+          - UNASSIGNED_FROM_EDGE
+          - ADDED_COMMENT
+          - UPDATED_COMMENT
+          - DELETED_COMMENT
+          - SMS_SENT
+          example: ADDED
+          readOnly: true
+        actionData:
+          $ref: '#/components/schemas/JsonNode'
+          description: JsonNode represented action data
+          readOnly: true
+        actionStatus:
+          type: string
+          description: String represented Action status
+          enum:
+          - SUCCESS
+          - FAILURE
+          example: SUCCESS
+          readOnly: true
+        actionFailureDetails:
+          type: string
+          description: Failure action details info. An empty string in case of action status type 'SUCCESS', otherwise includes stack trace of the caused exception.
+          readOnly: true
+    AuditLogId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

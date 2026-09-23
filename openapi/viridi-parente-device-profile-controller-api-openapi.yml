@@ -1,0 +1,1313 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Device Profile Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: device-profile-controller
+paths:
+  /api/deviceProfile:
+    post:
+      tags:
+      - device-profile-controller
+      summary: Create Or Update Device Profile (saveDeviceProfile)
+      description: Create or update the Device Profile.
+      operationId: saveDeviceProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceProfile'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceProfile'
+  /api/deviceProfile/{deviceProfileId}/default:
+    post:
+      tags:
+      - device-profile-controller
+      summary: Make Device Profile Default (setDefaultDeviceProfile)
+      description: 'Marks device profile as default within a tenant scope.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setDefaultDeviceProfile
+      parameters:
+      - name: deviceProfileId
+        in: path
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceProfile'
+  /api/deviceProfiles:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Device Profiles (getDeviceProfiles)
+      description: 'Returns a page of devices profile objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getDeviceProfiles
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the device profile name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - transportType
+          - description
+          - isDefault
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDeviceProfile'
+  /api/deviceProfileInfos:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Device Profiles for transport type (getDeviceProfileInfos)
+      description: 'Returns a page of devices profile info objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details. Device Profile Info is a lightweight object that includes main information about Device Profile excluding the heavyweight configuration object.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDeviceProfileInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the device profile name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - transportType
+          - description
+          - isDefault
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: transportType
+        in: query
+        description: Type of the transport
+        required: false
+        schema:
+          enum:
+          - DEFAULT
+          - MQTT
+          - COAP
+          - LWM2M
+          - SNMP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDeviceProfileInfo'
+  /api/deviceProfileInfo/{deviceProfileId}:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Device Profile Info (getDeviceProfileInfoById)
+      description: 'Fetch the Device Profile Info object based on the provided Device Profile Id. Device Profile Info is a lightweight object that includes main information about Device Profile excluding the heavyweight configuration object.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDeviceProfileInfoById
+      parameters:
+      - name: deviceProfileId
+        in: path
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceProfileInfo'
+  /api/deviceProfileInfo/default:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Default Device Profile (getDefaultDeviceProfileInfo)
+      description: 'Fetch the Default Device Profile Info object. Device Profile Info is a lightweight object that includes main information about Device Profile excluding the heavyweight configuration object.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDefaultDeviceProfileInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceProfileInfo'
+  /api/deviceProfile/{deviceProfileId}:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Device Profile (getDeviceProfileById)
+      description: 'Fetch the Device Profile object based on the provided Device Profile Id. The server checks that the device profile is owned by the same tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getDeviceProfileById
+      parameters:
+      - name: deviceProfileId
+        in: path
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceProfile'
+    delete:
+      tags:
+      - device-profile-controller
+      summary: Delete device profile (deleteDeviceProfile)
+      description: 'Deletes the device profile. Referencing non-existing device profile Id will cause an error. Can''t delete the device profile if it is referenced by existing devices.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteDeviceProfile
+      parameters:
+      - name: deviceProfileId
+        in: path
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/deviceProfile/names:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get Device Profile names (getDeviceProfileNames)
+      description: 'Returns a set of unique device profile names owned by the tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDeviceProfileNames
+      parameters:
+      - name: activeOnly
+        in: query
+        description: Flag indicating whether to retrieve exclusively the names of device profiles that are referenced by tenant's devices.
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityInfo'
+  /api/deviceProfile/devices/keys/timeseries:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get time-series keys (getTimeseriesKeys)
+      description: 'Get a set of unique time-series keys used by devices that belong to specified profile. If profile is not set returns a list of unique keys among all profiles. The call is used for auto-complete in the UI forms. The implementation limits the number of devices that participate in search to 100 as a trade of between accurate results and time-consuming queries.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTimeseriesKeys_1
+      parameters:
+      - name: deviceProfileId
+        in: query
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/deviceProfile/devices/keys/attributes:
+    get:
+      tags:
+      - device-profile-controller
+      summary: Get attribute keys (getAttributesKeys)
+      description: 'Get a set of unique attribute keys used by devices that belong to specified profile. If profile is not set returns a list of unique keys among all profiles. The call is used for auto-complete in the UI forms. The implementation limits the number of devices that participate in search to 100 as a trade of between accurate results and time-consuming queries.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAttributesKeys
+      parameters:
+      - name: deviceProfileId
+        in: query
+        description: A string value representing the device profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+components:
+  schemas:
+    TelemetryMappingConfiguration:
+      properties:
+        keyName:
+          type: object
+          additionalProperties:
+            type: string
+        observe:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        attribute:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        telemetry:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        attributeLwm2m:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectAttributes'
+    CustomTimeSchedule:
+      allOf:
+      - $ref: '#/components/schemas/AlarmSchedule'
+      - type: object
+        properties:
+          timezone:
+            type: string
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/CustomTimeScheduleItem'
+    AlarmRule:
+      properties:
+        condition:
+          $ref: '#/components/schemas/AlarmCondition'
+          description: JSON object representing the alarm rule condition
+        schedule:
+          description: JSON object representing time interval during which the rule is active
+          oneOf:
+          - $ref: '#/components/schemas/AnyTimeSchedule'
+          - $ref: '#/components/schemas/CustomTimeSchedule'
+          - $ref: '#/components/schemas/SpecificTimeSchedule'
+        alarmDetails:
+          type: string
+          description: String value representing the additional details for an alarm rule
+        dashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id representing the reference to alarm details dashboard used by mobile application
+    DeviceProfile:
+      description: A JSON value representing the device profile.
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceProfileId'
+          description: JSON object with the device profile Id. Specify this field to update the device profile. Referencing non-existing device profile Id will cause error. Omit this field to create new device profile.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the profile creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id that owns the profile.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Device Profile Name in scope of Tenant.
+          example: Moisture Sensor
+        description:
+          type: string
+          description: 'Device Profile description. '
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. '
+        type:
+          type: string
+          description: Type of the profile. Always 'DEFAULT' for now. Reserved for future use.
+          enum:
+          - DEFAULT
+        transportType:
+          type: string
+          description: Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.
+          enum:
+          - DEFAULT
+          - MQTT
+          - COAP
+          - LWM2M
+          - SNMP
+        provisionType:
+          type: string
+          description: Provisioning strategy.
+          enum:
+          - DISABLED
+          - ALLOW_CREATE_NEW_DEVICES
+          - CHECK_PRE_PROVISIONED_DEVICES
+          - CREATE_OR_CHECK_DEVICES
+          - X509_CERTIFICATE_CHAIN
+        defaultRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the rule chain. If present, the specified rule chain will be used to process all messages related to device, including telemetry, attribute updates, etc. Otherwise, the root rule chain will be used to process those messages.
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details.
+        defaultQueueName:
+          type: string
+          description: Rule engine queue name. If present, the specified queue will be used to store all unprocessed messages related to device, including telemetry, attribute updates, etc. Otherwise, the 'Main' queue will be used to store those messages.
+        provisionDeviceKey:
+          type: string
+          description: Unique provisioning key used by 'Device Provisioning' feature.
+        firmwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: 'Reference to the firmware OTA package. If present, the specified package will be used as default device firmware. '
+        softwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: 'Reference to the software OTA package. If present, the specified package will be used as default device software. '
+        defaultEdgeRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the edge rule chain. If present, the specified edge rule chain will be used on the edge to process all messages related to device, including telemetry, attribute updates, etc. Otherwise, the edge root rule chain will be used to process those messages.
+        default:
+          type: boolean
+          description: Used to mark the default profile. Default profile is used when the device profile is not specified during device creation.
+        profileData:
+          $ref: '#/components/schemas/DeviceProfileData'
+          description: Complex JSON object that includes addition device profile configuration (transport, alarm rules, etc).
+    AlarmConditionSpec:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    KeyFilterPredicate:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    StringFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - STARTS_WITH
+            - ENDS_WITH
+            - CONTAINS
+            - NOT_CONTAINS
+            - IN
+            - NOT_IN
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueString'
+          ignoreCase:
+            type: boolean
+    DynamicValueDouble:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    CoapDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          coapDeviceTypeConfiguration:
+            $ref: '#/components/schemas/CoapDeviceTypeConfiguration'
+          clientSettings:
+            $ref: '#/components/schemas/PowerSavingConfiguration'
+    DefaultDeviceProfileConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileConfiguration'
+    LwM2MBootstrapServerCredential:
+      discriminator:
+        propertyName: securityMode
+      properties:
+        securityMode:
+          type: string
+      required:
+      - securityMode
+    FilterPredicateValueInteger:
+      properties:
+        defaultValue:
+          type: integer
+          format: int32
+        userValue:
+          type: integer
+          format: int32
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueInteger'
+    DisabledDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    CustomTimeScheduleItem:
+      properties:
+        enabled:
+          type: boolean
+        dayOfWeek:
+          type: integer
+          format: int32
+        startsOn:
+          type: integer
+          format: int64
+        endsOn:
+          type: integer
+          format: int64
+    SpecificTimeSchedule:
+      allOf:
+      - $ref: '#/components/schemas/AlarmSchedule'
+      - type: object
+        properties:
+          timezone:
+            type: string
+          daysOfWeek:
+            type: array
+            items:
+              type: integer
+              format: int32
+            uniqueItems: true
+          startsOn:
+            type: integer
+            format: int64
+          endsOn:
+            type: integer
+            format: int64
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
+    TransportPayloadTypeConfiguration:
+      discriminator:
+        propertyName: transportPayloadType
+      properties:
+        transportPayloadType:
+          type: string
+      required:
+      - transportPayloadType
+    PageDataDeviceProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DeviceProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    DynamicValueBoolean:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    DeviceProfileInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: Tenant id.
+        name:
+          type: string
+          description: Entity Name
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. '
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details.
+        type:
+          type: string
+          description: Type of the profile. Always 'DEFAULT' for now. Reserved for future use.
+          enum:
+          - DEFAULT
+        transportType:
+          type: string
+          description: Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.
+          enum:
+          - DEFAULT
+          - MQTT
+          - COAP
+          - LWM2M
+          - SNMP
+    NumericFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - GREATER
+            - LESS
+            - GREATER_OR_EQUAL
+            - LESS_OR_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueDouble'
+    ObjectAttributes:
+      properties:
+        dim:
+          type: integer
+          format: int64
+        ssid:
+          type: integer
+          format: int64
+        uri:
+          type: string
+        ver: {}
+        lwm2m:
+          $ref: '#/components/schemas/LwM2mVersion'
+        pmin:
+          type: integer
+          format: int64
+        pmax:
+          type: integer
+          format: int64
+        gt:
+          type: number
+          format: double
+        lt:
+          type: number
+          format: double
+        st:
+          type: number
+          format: double
+        epmin:
+          type: integer
+          format: int64
+        epmax:
+          type: integer
+          format: int64
+    AlarmConditionFilter:
+      properties:
+        key:
+          $ref: '#/components/schemas/AlarmConditionFilterKey'
+          description: JSON object for specifying alarm condition by specific key
+        valueType:
+          type: string
+          description: String representation of the type of the value
+          enum:
+          - STRING
+          - NUMERIC
+          - BOOLEAN
+          - DATE_TIME
+          example: NUMERIC
+        value:
+          description: Value used in Constant comparison. For other types, such as TIME_SERIES or ATTRIBUTE, the predicate condition is used
+        predicate:
+          description: JSON object representing filter condition
+          oneOf:
+          - $ref: '#/components/schemas/BooleanFilterPredicate'
+          - $ref: '#/components/schemas/ComplexFilterPredicate'
+          - $ref: '#/components/schemas/NumericFilterPredicate'
+          - $ref: '#/components/schemas/StringFilterPredicate'
+    PageDataDeviceProfileInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DeviceProfileInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    SimpleAlarmConditionSpec:
+      allOf:
+      - $ref: '#/components/schemas/AlarmConditionSpec'
+    CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    DeviceProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
+      required:
+      - entityType
+      - id
+    AlarmCondition:
+      properties:
+        condition:
+          type: array
+          description: JSON array of alarm condition filters
+          items:
+            $ref: '#/components/schemas/AlarmConditionFilter'
+        spec:
+          description: JSON object representing alarm condition type
+          oneOf:
+          - $ref: '#/components/schemas/DurationAlarmConditionSpec'
+          - $ref: '#/components/schemas/RepeatingAlarmConditionSpec'
+          - $ref: '#/components/schemas/SimpleAlarmConditionSpec'
+    DeviceProfileData:
+      properties:
+        configuration:
+          description: JSON object of device profile configuration
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceProfileConfiguration'
+        transportConfiguration:
+          description: JSON object of device profile transport configuration
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceProfileTransportConfiguration'
+        provisionConfiguration:
+          description: JSON object of provisioning strategy type per device profile
+          oneOf:
+          - $ref: '#/components/schemas/AllowCreateNewDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/CreateOrCheckDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/DisabledDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/X509CertificateChainProvisionConfiguration'
+        alarms:
+          type: array
+          description: JSON array of alarm rules configuration per device profile
+          items:
+            $ref: '#/components/schemas/DeviceProfileAlarm'
+    DeviceProfileProvisionConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        provisionDeviceSecret:
+          type: string
+        type:
+          type: string
+      required:
+      - type
+    AnyTimeSchedule:
+      allOf:
+      - $ref: '#/components/schemas/AlarmSchedule'
+    OtaPackageId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - OTA_PACKAGE
+          example: OTA_PACKAGE
+      required:
+      - entityType
+      - id
+    FilterPredicateValueString:
+      properties:
+        defaultValue:
+          type: string
+        userValue:
+          type: string
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueString'
+    FilterPredicateValueBoolean:
+      properties:
+        defaultValue:
+          type: boolean
+        userValue:
+          type: boolean
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueBoolean'
+    RepeatingAlarmConditionSpec:
+      allOf:
+      - $ref: '#/components/schemas/AlarmConditionSpec'
+      - type: object
+        properties:
+          predicate:
+            $ref: '#/components/schemas/FilterPredicateValueInteger'
+    X509CertificateChainProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+      - type: object
+        properties:
+          certificateRegExPattern:
+            type: string
+          allowCreateNewDevicesByX509Certificate:
+            type: boolean
+    OtherConfiguration:
+      properties:
+        fwUpdateStrategy:
+          type: integer
+          format: int32
+        swUpdateStrategy:
+          type: integer
+          format: int32
+        clientOnlyObserveAfterConnect:
+          type: integer
+          format: int32
+        powerMode:
+          type: string
+          enum:
+          - PSM
+          - DRX
+          - E_DRX
+        psmActivityTimer:
+          type: integer
+          format: int64
+        edrxCycle:
+          type: integer
+          format: int64
+        pagingTransmissionWindow:
+          type: integer
+          format: int64
+        fwUpdateResource:
+          type: string
+        swUpdateResource:
+          type: string
+        defaultObjectIDVer:
+          type: string
+    PowerSavingConfiguration:
+      properties:
+        powerMode:
+          type: string
+          enum:
+          - PSM
+          - DRX
+          - E_DRX
+        psmActivityTimer:
+          type: integer
+          format: int64
+        edrxCycle:
+          type: integer
+          format: int64
+        pagingTransmissionWindow:
+          type: integer
+          format: int64
+    DurationAlarmConditionSpec:
+      allOf:
+      - $ref: '#/components/schemas/AlarmConditionSpec'
+      - type: object
+        properties:
+          unit:
+            type: string
+            enum:
+            - NANOSECONDS
+            - MICROSECONDS
+            - MILLISECONDS
+            - SECONDS
+            - MINUTES
+            - HOURS
+            - DAYS
+          predicate:
+            $ref: '#/components/schemas/FilterPredicateValueLong'
+    DeviceProfileAlarm:
+      properties:
+        id:
+          type: string
+          description: String value representing the alarm rule id
+          example: highTemperatureAlarmID
+        alarmType:
+          type: string
+          description: String value representing type of the alarm
+          example: High Temperature Alarm
+        createRules:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AlarmRule'
+          description: Complex JSON object representing create alarm rules. The unique create alarm rule can be created for each alarm severity type. There can be 5 create alarm rules configured per a single alarm type. See method implementation notes and AlarmRule model for more details
+        clearRule:
+          $ref: '#/components/schemas/AlarmRule'
+          description: JSON object representing clear alarm rule
+        propagate:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to parent entities of alarm originator
+          example: true
+        propagateToOwner:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator
+          example: true
+        propagateToTenant:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the tenant entity
+          example: true
+        propagateRelationTypes:
+          type: array
+          description: JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.
+          items:
+            type: string
+    DynamicValueLong:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    DynamicValueInteger:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    LwM2mVersion:
+      properties:
+        supported:
+          type: boolean
+    EntityInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
+          type: string
+          description: Entity Name
+    ComplexFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - AND
+            - OR
+          predicates:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyFilterPredicate'
+    FilterPredicateValueLong:
+      properties:
+        defaultValue:
+          type: integer
+          format: int64
+        userValue:
+          type: integer
+          format: int64
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueLong'
+    FilterPredicateValueDouble:
+      properties:
+        defaultValue:
+          type: number
+          format: double
+        userValue:
+          type: number
+          format: double
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueDouble'
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    DynamicValueString:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    CoapDeviceTypeConfiguration:
+      discriminator:
+        propertyName: coapDeviceType
+      properties:
+        coapDeviceType:
+          type: string
+      required:
+      - coapDeviceType
+    AlarmSchedule:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+          - ANY_TIME
+          - SPECIFIC_TIME
+          - CUSTOM
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueString'
+    CreateOrCheckDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    DefaultDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+    DeviceProfileConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    MqttDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          deviceTelemetryTopic:
+            type: string
+          deviceAttributesTopic:
+            type: string
+          deviceAttributesSubscribeTopic:
+            type: string
+          transportPayloadTypeConfiguration:
+            $ref: '#/components/schemas/TransportPayloadTypeConfiguration'
+          sparkplug:
+            type: boolean
+          sparkplugAttributesMetricNames:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+          sendAckOnValidationException:
+            type: boolean
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    BooleanFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueBoolean'
+    Lwm2mDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          observeAttr:
+            $ref: '#/components/schemas/TelemetryMappingConfiguration'
+          bootstrapServerUpdateEnable:
+            type: boolean
+          bootstrap:
+            type: array
+            items:
+              $ref: '#/components/schemas/LwM2MBootstrapServerCredential'
+          clientLwM2mSettings:
+            $ref: '#/components/schemas/OtherConfiguration'
+    AllowCreateNewDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    AlarmConditionFilterKey:
+      properties:
+        type:
+          type: string
+          description: The key type
+          enum:
+          - ATTRIBUTE
+          - TIME_SERIES
+          - ENTITY_FIELD
+          - CONSTANT
+          example: TIME_SERIES
+        key:
+          type: string
+          description: String value representing the key
+          example: temp
+    DeviceProfileTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    SnmpDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          timeoutMs:
+            type: integer
+            format: int32
+          retries:
+            type: integer
+            format: int32
+          communicationConfigs:
+            type: array
+            items:
+              $ref: '#/components/schemas/SnmpCommunicationConfig'
+    SnmpCommunicationConfig:
+      discriminator:
+        propertyName: spec
+      properties:
+        spec:
+          type: string
+          enum:
+          - TELEMETRY_QUERYING
+          - CLIENT_ATTRIBUTES_QUERYING
+          - SHARED_ATTRIBUTES_SETTING
+          - TO_DEVICE_RPC_REQUEST
+          - TO_SERVER_RPC_REQUEST
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

@@ -1,0 +1,439 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Auth Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: auth-controller
+paths:
+  /api/noauth/resetPassword:
+    get:
+      tags:
+      - auth-controller
+      summary: Check password reset token (checkResetToken)
+      description: Checks the password reset token and forwards user to 'Reset Password' page. If token is valid, returns '303 See Other' (redirect) response code with the correct address of 'Reset Password' page and same 'resetToken' specified in the URL parameters. If token is not valid, returns '409 Conflict'.
+      operationId: checkResetToken
+      parameters:
+      - name: resetToken
+        in: query
+        description: The reset token string.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - auth-controller
+      summary: Reset password (resetPassword)
+      description: Checks the password reset token and updates the password. If token is valid, returns the object that contains JWT access and refresh tokens. If token is not valid, returns '404 Bad Request'.
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtPair'
+  /api/noauth/resetPasswordByEmail:
+    post:
+      tags:
+      - auth-controller
+      summary: Request reset password email (requestResetPasswordByEmail)
+      description: Request to send the reset password email if the user with specified email address is present in the database. Always return '200 OK' status for security purposes.
+      operationId: requestResetPasswordByEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordEmailRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/noauth/activate:
+    get:
+      tags:
+      - auth-controller
+      summary: Check Activate User Token (checkActivateToken)
+      description: Checks the activation token and forwards user to 'Create Password' page. If token is valid, returns '303 See Other' (redirect) response code with the correct address of 'Create Password' page and same 'activateToken' specified in the URL parameters. If token is not valid, returns '409 Conflict'.
+      operationId: checkActivateToken
+      parameters:
+      - name: activateToken
+        in: query
+        description: The activate token string.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - auth-controller
+      summary: Activate User
+      description: Checks the activation token and updates corresponding user password in the database. Now the user may start using his password to login. The response already contains the JWT activation and refresh tokens, to simplify the user activation flow and avoid asking user to input password again after activation. If token is valid, returns the object that contains JWT access and refresh tokens. If token is not valid, returns '404 Bad Request'.
+      operationId: activateUser
+      parameters:
+      - name: sendActivationMail
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateUserRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtPair'
+  /api/auth/logout:
+    post:
+      tags:
+      - auth-controller
+      summary: Logout (logout)
+      description: Special API call to record the 'logout' of the user to the Audit Logs. Since platform uses JWT, the actual logout is the procedure of clearing the JWT token on the client side.
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+  /api/auth/changePassword:
+    post:
+      tags:
+      - auth-controller
+      summary: Change password for current User (changePassword)
+      description: Change the password for the User which credentials are used to perform this REST API call. Be aware that previously generated JWT tokens will be still valid until they expire.
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtPair'
+  /api/noauth/userPasswordPolicy:
+    get:
+      tags:
+      - auth-controller
+      summary: Get the current User password policy (getUserPasswordPolicy)
+      description: API call to get the password policy for the password validation form(s).
+      operationId: getUserPasswordPolicy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPasswordPolicy'
+  /api/auth/user:
+    get:
+      tags:
+      - auth-controller
+      summary: Get current User (getUser)
+      description: Get the information about the User which credentials are used to perform this REST API call.
+      operationId: getUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    UserPasswordPolicy:
+      properties:
+        minimumLength:
+          type: integer
+          format: int32
+          description: Minimum number of symbols in the password.
+        maximumLength:
+          type: integer
+          format: int32
+          description: Maximum number of symbols in the password.
+        minimumUppercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of uppercase letters in the password.
+        minimumLowercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of lowercase letters in the password.
+        minimumDigits:
+          type: integer
+          format: int32
+          description: Minimum number of digits in the password.
+        minimumSpecialCharacters:
+          type: integer
+          format: int32
+          description: Minimum number of special in the password.
+        allowWhitespaces:
+          type: boolean
+          description: Allow whitespaces
+        forceUserToResetPasswordIfNotValid:
+          type: boolean
+          description: Force user to update password if existing one does not pass validation
+        passwordExpirationPeriodDays:
+          type: integer
+          format: int32
+          description: Password expiration period (days). Force expiration of the password.
+        passwordReuseFrequencyDays:
+          type: integer
+          format: int32
+          description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
+    ActivateUserRequest:
+      description: Activate user request.
+      properties:
+        activateToken:
+          type: string
+          description: The activate token to verify
+          example: AAB254FF67D..
+        password:
+          type: string
+          description: The new password to set
+          example: secret
+    User:
+      description: A JSON value representing the User.
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with the User Id. Specify this field to update the device. Referencing non-existing User Id will cause error. Omit this field to create new customer.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the user creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with the Customer Id.
+          readOnly: true
+        roleId:
+          $ref: '#/components/schemas/RoleId'
+        email:
+          type: string
+          description: Email of the user
+          example: user@example.com
+        authority:
+          type: string
+          description: Authority
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+          example: SYS_ADMIN, TENANT_ADMIN or CUSTOMER_USER
+        firstName:
+          type: string
+          description: First name of the user
+          example: John
+        lastName:
+          type: string
+          description: Last name of the user
+          example: Doe
+        phone:
+          type: string
+          description: Phone number of the user
+          example: 38012345123
+        name:
+          type: string
+          description: Duplicates the email of the user, readonly
+          example: user@example.com
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the user
+      required:
+      - authority
+      - email
+    ResetPasswordRequest:
+      description: Reset password request.
+      properties:
+        resetToken:
+          type: string
+          description: The reset token to verify
+          example: AAB254FF67D..
+        password:
+          type: string
+          description: The new password to set
+          example: secret
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    ResetPasswordEmailRequest:
+      description: The JSON object representing the reset password email request.
+      properties:
+        email:
+          type: string
+          description: The email of the user
+          example: user@example.com
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    ChangePasswordRequest:
+      description: Change Password Request
+      properties:
+        currentPassword:
+          type: string
+          description: The old password
+          example: OldPassword
+        newPassword:
+          type: string
+          description: The new password
+          example: NewPassword
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

@@ -1,0 +1,1128 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Asset Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: asset-controller
+paths:
+  /api/edge/{edgeId}/asset/{assetId}:
+    post:
+      tags:
+      - asset-controller
+      summary: Assign asset to edge (assignAssetToEdge)
+      description: Creates assignment of an existing asset to an instance of The Edge. Assignment works in async way - first, notification event pushed to edge service queue on platform. Second, remote edge service will receive a copy of assignment asset (Edge will receive this instantly, if it's currently connected, or once it's going to be connected to platform). Third, once asset will be delivered to edge service, it's going to be available for usage on remote edge instance.
+      operationId: assignAssetToEdge
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+    delete:
+      tags:
+      - asset-controller
+      summary: Unassign asset from edge (unassignAssetFromEdge)
+      description: Clears assignment of the asset to the edge. Unassignment works in async way - first, 'unassign' notification event pushed to edge queue on platform. Second, remote edge service will receive an 'unassign' command to remove asset (Edge will receive this instantly, if it's currently connected, or once it's going to be connected to platform). Third, once 'unassign' command will be delivered to edge service, it's going to remove asset locally.
+      operationId: unassignAssetFromEdge
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+  /api/customer/{customerId}/asset/{assetId}:
+    post:
+      tags:
+      - asset-controller
+      summary: Assign asset to customer (assignAssetToCustomer)
+      description: 'Creates assignment of the asset to customer. Customer will be able to query asset afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignAssetToCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+  /api/customer/public/asset/{assetId}:
+    post:
+      tags:
+      - asset-controller
+      summary: Make asset publicly available (assignAssetToPublicCustomer)
+      description: 'Asset will be available for non-authorized (not logged-in) users. This is useful to create dashboards that you plan to share/embed on a publicly available website. However, users that are logged-in and belong to different tenant will not be able to access the asset.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignAssetToPublicCustomer
+      parameters:
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+  /api/assets:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Assets By Ids (getAssetsByIds)
+      description: Requested assets must be owned by tenant or assigned to customer which user is performing the request.
+      operationId: getAssetsByIds
+      parameters:
+      - name: assetIds
+        in: query
+        description: A list of assets ids, separated by comma ','
+        required: true
+        schema:
+          items: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+    post:
+      tags:
+      - asset-controller
+      summary: Find related assets (findByQuery)
+      description: Returns all assets that are related to the specific entity. The entity id, relation type, asset types, depth of the search, and other query parameters defined using complex 'AssetSearchQuery' object. See 'Model' tab of the Parameters for more info.
+      operationId: findByQuery_4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetSearchQuery'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+  /api/asset:
+    post:
+      tags:
+      - asset-controller
+      summary: Create Or Update Asset (saveAsset)
+      description: 'Creates or Updates the Asset. When creating asset, platform generates Asset Id as time-based UUID). The newly created Asset id will be present in the response. Specify existing Asset id to update the asset. Referencing non-existing Asset Id will cause ''Not Found'' error. Remove ''id'', ''tenantId'' and optionally ''customerId'' from the request body example (below) to create new Asset entity.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: saveAsset
+      requestBody:
+        description: A JSON value representing the asset.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+  /api/asset/bulk_import:
+    post:
+      tags:
+      - asset-controller
+      summary: Import the bulk of assets (processAssetsBulkImport)
+      description: There's an ability to import the bulk of assets using the only .csv file.
+      operationId: processAssetsBulkImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkImportRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkImportResultAsset'
+  /api/tenant/assets:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Tenant Asset (getTenantAsset)
+      description: 'Requested asset must be owned by tenant that the user belongs to. Asset name is an unique property of asset. So it can be used to identify the asset.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantAssets_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Asset type
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: assetName
+        in: query
+        description: A string value representing the Asset name.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Asset'
+                - $ref: '#/components/schemas/PageDataAsset'
+  /api/tenant/assetInfos:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Tenant Asset Infos (getTenantAssetInfos)
+      description: 'Returns a page of assets info objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details. Asset Info is an extension of the default Asset object that contains information about the assigned customer name.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantAssetInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Asset type
+        required: false
+        schema:
+          type: string
+      - name: assetProfileId
+        in: query
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAssetInfo'
+  /api/edge/{edgeId}/assets:
+    get:
+      tags:
+      - asset-controller
+      summary: Get assets assigned to edge (getEdgeAssets)
+      description: Returns a page of assets assigned to edge. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details.
+      operationId: getEdgeAssets
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Asset type
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: Timestamp. Assets with creation time before it won't be queried
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Assets with creation time after it won't be queried
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAsset'
+  /api/customer/{customerId}/assets:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Customer Assets (getCustomerAssets)
+      description: Returns a page of assets objects assigned to customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details.
+      operationId: getCustomerAssets
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Asset type
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAsset'
+  /api/customer/{customerId}/assetInfos:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Customer Asset Infos (getCustomerAssetInfos)
+      description: Returns a page of assets info objects assigned to customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details. Asset Info is an extension of the default Asset object that contains information about the assigned customer name.
+      operationId: getCustomerAssetInfos
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: Asset type
+        required: false
+        schema:
+          type: string
+      - name: assetProfileId
+        in: query
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAssetInfo'
+  /api/asset/{assetId}:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Asset (getAssetById)
+      description: 'Fetch the Asset object based on the provided Asset Id. If the user has the authority of ''Tenant Administrator'', the server checks that the asset is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the asset is assigned to the same customer.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetById
+      parameters:
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+    delete:
+      tags:
+      - asset-controller
+      summary: Delete asset (deleteAsset)
+      description: 'Deletes the asset and all the relations (from and to the asset). Referencing non-existing asset Id will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: deleteAsset
+      parameters:
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/asset/types:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Asset Types (getAssetTypes)
+      description: 'Deprecated. See ''getAssetProfileNames'' API from Asset Profile Controller instead.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntitySubtype'
+      deprecated: true
+  /api/asset/info/{assetId}:
+    get:
+      tags:
+      - asset-controller
+      summary: Get Asset Info (getAssetInfoById)
+      description: 'Fetch the Asset Info object based on the provided Asset Id. If the user has the authority of ''Tenant Administrator'', the server checks that the asset is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the asset is assigned to the same customer. Asset Info is an extension of the default Asset object that contains information about the assigned customer name.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetInfoById
+      parameters:
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetInfo'
+  /api/customer/asset/{assetId}:
+    delete:
+      tags:
+      - asset-controller
+      summary: Unassign asset from customer (unassignAssetFromCustomer)
+      description: 'Clears assignment of the asset to customer. Customer will not be able to query asset afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignAssetFromCustomer
+      parameters:
+      - name: assetId
+        in: path
+        description: A string value representing the asset id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+components:
+  schemas:
+    BulkImportResultAsset:
+      properties:
+        created:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        updated:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        errors:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        errorsList:
+          type: array
+          items:
+            type: string
+    PageDataAssetInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    RelationsSearchParameters:
+      properties:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
+          type: integer
+          format: int32
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
+          type: boolean
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    PageDataAsset:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Asset'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    Mapping:
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapping'
+        delimiter:
+          type: string
+        update:
+          type: boolean
+        header:
+          type: boolean
+    Asset:
+      properties:
+        id:
+          $ref: '#/components/schemas/AssetId'
+          description: JSON object with the asset Id. Specify this field to update the asset. Referencing non-existing asset Id will cause error. Omit this field to create new asset.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the asset creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignAssetToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Asset Name in scope of Tenant
+          example: Empire State Building
+        type:
+          type: string
+          description: Asset type
+          example: Building
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: NY Building
+        assetProfileId:
+          $ref: '#/components/schemas/AssetProfileId'
+          description: JSON object with Asset Profile Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the asset
+      required:
+      - name
+    AssetId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET
+          example: ASSET
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    AssetProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET_PROFILE
+          example: ASSET_PROFILE
+      required:
+      - entityType
+      - id
+    BulkImportRequest:
+      properties:
+        file:
+          type: string
+        mapping:
+          $ref: '#/components/schemas/Mapping'
+    ColumnMapping:
+      properties:
+        type:
+          type: string
+          enum:
+          - NAME
+          - TYPE
+          - LABEL
+          - SHARED_ATTRIBUTE
+          - SERVER_ATTRIBUTE
+          - TIMESERIES
+          - ACCESS_TOKEN
+          - X509
+          - MQTT_CLIENT_ID
+          - MQTT_USER_NAME
+          - MQTT_PASSWORD
+          - LWM2M_CLIENT_ENDPOINT
+          - LWM2M_CLIENT_SECURITY_CONFIG_MODE
+          - LWM2M_CLIENT_IDENTITY
+          - LWM2M_CLIENT_KEY
+          - LWM2M_CLIENT_CERT
+          - LWM2M_BOOTSTRAP_SERVER_SECURITY_MODE
+          - LWM2M_BOOTSTRAP_SERVER_PUBLIC_KEY_OR_ID
+          - LWM2M_BOOTSTRAP_SERVER_SECRET_KEY
+          - LWM2M_SERVER_SECURITY_MODE
+          - LWM2M_SERVER_CLIENT_PUBLIC_KEY_OR_ID
+          - LWM2M_SERVER_CLIENT_SECRET_KEY
+          - SNMP_HOST
+          - SNMP_PORT
+          - SNMP_VERSION
+          - SNMP_COMMUNITY_STRING
+          - IS_GATEWAY
+          - DESCRIPTION
+          - ROUTING_KEY
+          - SECRET
+        key:
+          type: string
+    AssetSearchQuery:
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
+          type: string
+          description: Type of the relation between root entity and asset (e.g. 'Contains' or 'Manages').
+        assetTypes:
+          type: array
+          description: Array of asset types to filter the related entities (e.g. 'Building', 'Vehicle').
+          items:
+            type: string
+    AssetInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/AssetId'
+          description: JSON object with the asset Id. Specify this field to update the asset. Referencing non-existing asset Id will cause error. Omit this field to create new asset.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the asset creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignAssetToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Asset Name in scope of Tenant
+          example: Empire State Building
+        type:
+          type: string
+          description: Asset type
+          example: Building
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: NY Building
+        assetProfileId:
+          $ref: '#/components/schemas/AssetProfileId'
+          description: JSON object with Asset Profile Id.
+        customerTitle:
+          type: string
+          description: Title of the Customer that owns the asset.
+          readOnly: true
+        customerIsPublic:
+          type: boolean
+          description: Indicates special 'Public' Customer that is auto-generated to use the assets on public dashboards.
+          readOnly: true
+        assetProfileName:
+          type: string
+          description: Name of the corresponding Asset Profile.
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the asset
+      required:
+      - name
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

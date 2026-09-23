@@ -1,0 +1,1011 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Entity View Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: entity-view-controller
+paths:
+  /api/entityViews:
+    post:
+      tags:
+      - entity-view-controller
+      summary: Find related entity views (findByQuery)
+      description: 'Returns all entity views that are related to the specific entity. The entity id, relation type, entity view types, depth of the search, and other query parameters defined using complex ''EntityViewSearchQuery'' object. See ''Model'' tab of the Parameters for more info.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: findByQuery_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityViewSearchQuery'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityView'
+  /api/entityView:
+    post:
+      tags:
+      - entity-view-controller
+      summary: Save or update entity view (saveEntityView)
+      description: 'Entity Views limit the degree of exposure of the Device or Asset telemetry and attributes to the Customers. Every Entity View references exactly one entity (device or asset) and defines telemetry and attribute keys that will be visible to the assigned Customer. As a Tenant Administrator you are able to create multiple EVs per Device or Asset and assign them to different Customers. See the ''Model'' tab for more details.Remove ''id'', ''tenantId'' and optionally ''customerId'' from the request body example (below) to create new Entity View entity.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: saveEntityView
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityView'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+  /api/edge/{edgeId}/entityView/{entityViewId}:
+    post:
+      tags:
+      - entity-view-controller
+      summary: Assign entity view to edge (assignEntityViewToEdge)
+      description: Creates assignment of an existing entity view to an instance of The Edge. Assignment works in async way - first, notification event pushed to edge service queue on platform. Second, remote edge service will receive a copy of assignment entity view (Edge will receive this instantly, if it's currently connected, or once it's going to be connected to platform). Third, once entity view will be delivered to edge service, it's going to be available for usage on remote edge instance.
+      operationId: assignEntityViewToEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: entityViewId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+    delete:
+      tags:
+      - entity-view-controller
+      summary: Unassign entity view from edge (unassignEntityViewFromEdge)
+      description: Clears assignment of the entity view to the edge. Unassignment works in async way - first, 'unassign' notification event pushed to edge queue on platform. Second, remote edge service will receive an 'unassign' command to remove entity view (Edge will receive this instantly, if it's currently connected, or once it's going to be connected to platform). Third, once 'unassign' command will be delivered to edge service, it's going to remove entity view locally.
+      operationId: unassignEntityViewFromEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: entityViewId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+  /api/customer/{customerId}/entityView/{entityViewId}:
+    post:
+      tags:
+      - entity-view-controller
+      summary: Assign Entity View to customer (assignEntityViewToCustomer)
+      description: 'Creates assignment of the Entity View to customer. Customer will be able to query Entity View afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignEntityViewToCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+  /api/customer/public/entityView/{entityViewId}:
+    post:
+      tags:
+      - entity-view-controller
+      summary: Make entity view publicly available (assignEntityViewToPublicCustomer)
+      description: 'Entity View will be available for non-authorized (not logged-in) users. This is useful to create dashboards that you plan to share/embed on a publicly available website. However, users that are logged-in and belong to different tenant will not be able to access the entity view.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignEntityViewToPublicCustomer
+      parameters:
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+  /api/tenant/entityViews:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Entity View by name (getTenantEntityView)
+      description: 'Fetch the Entity View object based on the tenant id and entity view name.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantEntityViews_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: "\n\n## Entity View Filter\n\nAllows to filter entity views based on their type and the **'starts with'** expression over their name. For example, this entity filter selects all 'Concrete Mixer' entity views which name starts with 'CAT':\n\n```json\n{\n  \"type\": \"entityViewType\",\n  \"entityViewType\": \"Concrete Mixer\",\n  \"entityViewNameFilter\": \"CAT\"\n}\n```"
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity view name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: entityViewName
+        in: query
+        description: Entity View name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/EntityView'
+                - $ref: '#/components/schemas/PageDataEntityView'
+  /api/tenant/entityViewInfos:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Tenant Entity Views (getTenantEntityViews)
+      description: 'Returns a page of entity views info owned by tenant. Entity Views limit the degree of exposure of the Device or Asset telemetry and attributes to the Customers. Every Entity View references exactly one entity (device or asset) and defines telemetry and attribute keys that will be visible to the assigned Customer. As a Tenant Administrator you are able to create multiple EVs per Device or Asset and assign them to different Customers. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantEntityViewInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: "\n\n## Entity View Filter\n\nAllows to filter entity views based on their type and the **'starts with'** expression over their name. For example, this entity filter selects all 'Concrete Mixer' entity views which name starts with 'CAT':\n\n```json\n{\n  \"type\": \"entityViewType\",\n  \"entityViewType\": \"Concrete Mixer\",\n  \"entityViewNameFilter\": \"CAT\"\n}\n```"
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity view name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityViewInfo'
+  /api/entityView/{entityViewId}:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get entity view (getEntityViewById)
+      description: 'Fetch the EntityView object based on the provided entity view id. Entity Views limit the degree of exposure of the Device or Asset telemetry and attributes to the Customers. Every Entity View references exactly one entity (device or asset) and defines telemetry and attribute keys that will be visible to the assigned Customer. As a Tenant Administrator you are able to create multiple EVs per Device or Asset and assign them to different Customers. See the ''Model'' tab for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEntityViewById
+      parameters:
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+    delete:
+      tags:
+      - entity-view-controller
+      summary: Delete entity view (deleteEntityView)
+      description: 'Delete the EntityView object based on the provided entity view id.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteEntityView
+      parameters:
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/entityView/types:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Entity View Types (getEntityViewTypes)
+      description: 'Returns a set of unique entity view types based on entity views that are either owned by the tenant or assigned to the customer which user is performing the request.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEntityViewTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntitySubtype'
+  /api/entityView/info/{entityViewId}:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Entity View info (getEntityViewInfoById)
+      description: 'Fetch the Entity View info object based on the provided Entity View Id. Entity Views Info extends the Entity View with customer title and ''is public'' flag. Entity Views limit the degree of exposure of the Device or Asset telemetry and attributes to the Customers. Every Entity View references exactly one entity (device or asset) and defines telemetry and attribute keys that will be visible to the assigned Customer. As a Tenant Administrator you are able to create multiple EVs per Device or Asset and assign them to different Customers. See the ''Model'' tab for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEntityViewInfoById
+      parameters:
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityViewInfo'
+  /api/edge/{edgeId}/entityViews:
+    get:
+      tags:
+      - entity-view-controller
+      operationId: getEdgeEntityViews
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sortOrder
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityView'
+      summary: Get edge entity views
+      x-summary-source: derived
+  /api/customer/{customerId}/entityViews:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Customer Entity Views (getCustomerEntityViews)
+      description: 'Returns a page of Entity View objects assigned to customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getCustomerEntityViews
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: "\n\n## Entity View Filter\n\nAllows to filter entity views based on their type and the **'starts with'** expression over their name. For example, this entity filter selects all 'Concrete Mixer' entity views which name starts with 'CAT':\n\n```json\n{\n  \"type\": \"entityViewType\",\n  \"entityViewType\": \"Concrete Mixer\",\n  \"entityViewNameFilter\": \"CAT\"\n}\n```"
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity view name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityView'
+  /api/customer/{customerId}/entityViewInfos:
+    get:
+      tags:
+      - entity-view-controller
+      summary: Get Customer Entity View info (getCustomerEntityViewInfos)
+      description: 'Returns a page of Entity View info objects assigned to customer. Entity Views limit the degree of exposure of the Device or Asset telemetry and attributes to the Customers. Every Entity View references exactly one entity (device or asset) and defines telemetry and attribute keys that will be visible to the assigned Customer. As a Tenant Administrator you are able to create multiple EVs per Device or Asset and assign them to different Customers. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getCustomerEntityViewInfos
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: "\n\n## Entity View Filter\n\nAllows to filter entity views based on their type and the **'starts with'** expression over their name. For example, this entity filter selects all 'Concrete Mixer' entity views which name starts with 'CAT':\n\n```json\n{\n  \"type\": \"entityViewType\",\n  \"entityViewType\": \"Concrete Mixer\",\n  \"entityViewNameFilter\": \"CAT\"\n}\n```"
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity view name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityViewInfo'
+  /api/customer/entityView/{entityViewId}:
+    delete:
+      tags:
+      - entity-view-controller
+      summary: Unassign Entity View from customer (unassignEntityViewFromCustomer)
+      description: 'Clears assignment of the Entity View to customer. Customer will not be able to query Entity View afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignEntityViewFromCustomer
+      parameters:
+      - name: entityViewId
+        in: path
+        description: A string value representing the entity view id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityView'
+components:
+  schemas:
+    EntityViewInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityViewId'
+          description: JSON object with the Entity View Id. Specify this field to update the Entity View. Referencing non-existing Entity View Id will cause error. Omit this field to create new Entity View.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Entity View creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with the referenced Entity Id (Device or Asset).
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEntityViewToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Entity View name
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        keys:
+          $ref: '#/components/schemas/TelemetryEntityView'
+          description: Set of telemetry and attribute keys to expose via Entity View.
+        startTimeMs:
+          type: integer
+          format: int64
+          description: Represents the start time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        endTimeMs:
+          type: integer
+          format: int64
+          description: Represents the end time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        customerTitle:
+          type: string
+          description: Title of the Customer that owns the entity view.
+          readOnly: true
+        customerIsPublic:
+          type: boolean
+          description: Indicates special 'Public' Customer that is auto-generated to use the entity view on public dashboards.
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+      required:
+      - entityId
+      - name
+      - type
+    RelationsSearchParameters:
+      properties:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
+          type: integer
+          format: int32
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
+          type: boolean
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    PageDataEntityView:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityView'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    AttributesEntityView:
+      properties:
+        cs:
+          type: array
+          description: List of client-side attribute keys to expose
+          example: currentConfiguration
+          items:
+            type: string
+        ss:
+          type: array
+          description: List of server-side attribute keys to expose
+          example: model
+          items:
+            type: string
+        sh:
+          type: array
+          description: List of shared attribute keys to expose
+          example: targetConfiguration
+          items:
+            type: string
+      required:
+      - cs
+      - sh
+      - ss
+    EntityViewSearchQuery:
+      description: The entity view search query JSON
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
+          type: string
+          description: Type of the relation between root entity and device (e.g. 'Contains' or 'Manages').
+        entityViewTypes:
+          type: array
+          description: Array of entity view types to filter the related entities (e.g. 'Temperature Sensor', 'Smoke Sensor').
+          items:
+            type: string
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    TelemetryEntityView:
+      properties:
+        timeseries:
+          type: array
+          description: List of time-series data keys to expose
+          example: temperature, humidity
+          items:
+            type: string
+        attributes:
+          $ref: '#/components/schemas/AttributesEntityView'
+          description: JSON object with attributes to expose
+      required:
+      - attributes
+      - timeseries
+    PageDataEntityViewInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityViewInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EntityView:
+      description: A JSON object representing the entity view.
+      properties:
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with the referenced Entity Id (Device or Asset).
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEntityViewToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Entity View name
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        keys:
+          $ref: '#/components/schemas/TelemetryEntityView'
+          description: Set of telemetry and attribute keys to expose via Entity View.
+        startTimeMs:
+          type: integer
+          format: int64
+          description: Represents the start time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        endTimeMs:
+          type: integer
+          format: int64
+          description: Represents the end time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        id:
+          $ref: '#/components/schemas/EntityViewId'
+          description: JSON object with the Entity View Id. Specify this field to update the Entity View. Referencing non-existing Entity View Id will cause error. Omit this field to create new Entity View.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Entity View creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+      required:
+      - entityId
+      - name
+      - type
+    EntityViewId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ENTITY_VIEW
+          example: ENTITY_VIEW
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

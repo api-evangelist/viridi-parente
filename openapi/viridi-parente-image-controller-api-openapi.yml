@@ -1,0 +1,576 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Image Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: image-controller
+paths:
+  /api/images/{type}/{key}:
+    get:
+      tags:
+      - image-controller
+      operationId: downloadImage
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      - name: If-None-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+      summary: Download image
+      x-summary-source: derived
+    put:
+      tags:
+      - image-controller
+      operationId: updateImage
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Update image
+      x-summary-source: derived
+    delete:
+      tags:
+      - image-controller
+      operationId: deleteImage
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbImageDeleteResult'
+      summary: Delete image
+      x-summary-source: derived
+  /api/images/{type}/{key}/public/{isPublic}:
+    put:
+      tags:
+      - image-controller
+      operationId: updateImagePublicStatus
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      - name: isPublic
+        in: path
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Update image public status
+      x-summary-source: derived
+  /api/images/{type}/{key}/info:
+    get:
+      tags:
+      - image-controller
+      operationId: getImageInfo
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Get image info
+      x-summary-source: derived
+    put:
+      tags:
+      - image-controller
+      operationId: updateImageInfo
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TbResourceInfo'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Update image info
+      x-summary-source: derived
+  /api/image/import:
+    put:
+      tags:
+      - image-controller
+      operationId: importImage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageExportData'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Import image
+      x-summary-source: derived
+  /api/image:
+    post:
+      tags:
+      - image-controller
+      operationId: uploadImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+              required:
+              - file
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TbResourceInfo'
+      summary: Upload image
+      x-summary-source: derived
+  /api/images:
+    get:
+      tags:
+      - image-controller
+      operationId: getImages
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: includeSystemImages
+        in: query
+        description: Use 'true' to include system images. Disabled by default. Ignored for requests by users with system administrator authority.
+        required: false
+        schema:
+          type: boolean
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the resource title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+          - resourceType
+          - tenantId
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataTbResourceInfo'
+      summary: Get images
+      x-summary-source: derived
+  /api/images/{type}/{key}/preview:
+    get:
+      tags:
+      - image-controller
+      operationId: downloadImagePreview
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      - name: If-None-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+      summary: Download image preview
+      x-summary-source: derived
+  /api/images/{type}/{key}/export:
+    get:
+      tags:
+      - image-controller
+      operationId: exportImage
+      parameters:
+      - name: type
+        in: path
+        description: 'Type of the image: tenant or system'
+        required: true
+        schema:
+          enum:
+          - tenant
+          - system
+      - name: key
+        in: path
+        description: Image resource key, for example thermostats_dashboard_background.jpeg
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageExportData'
+      summary: Export image
+      x-summary-source: derived
+  /api/images/public/{publicResourceKey}:
+    get:
+      tags:
+      - image-controller
+      operationId: downloadPublicImage
+      parameters:
+      - name: publicResourceKey
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: If-None-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+      summary: Download public image
+      x-summary-source: derived
+components:
+  schemas:
+    TbResourceInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/TbResourceId'
+          description: JSON object with the Resource Id. Specify this field to update the Resource. Referencing non-existing Resource Id will cause error. Omit this field to create new Resource.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the resource creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the resource can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Resource title.
+          example: BinaryAppDataContainer id=19 v1.0
+        resourceType:
+          type: string
+          description: Resource type.
+          enum:
+          - LWM2M_MODEL
+          - JKS
+          - PKCS_12
+          - JS_MODULE
+          - IMAGE
+          example: LWM2M_MODEL
+          readOnly: true
+        resourceKey:
+          type: string
+          description: Resource key.
+          example: '19_1.0'
+          readOnly: true
+        publicResourceKey:
+          type: string
+        etag:
+          type: string
+          description: Resource etag.
+          example: 33a64df551425fcc55e4d42a148795d9f25f89d4
+          readOnly: true
+        fileName:
+          type: string
+          description: Resource file name.
+          example: 19.xml
+          readOnly: true
+        descriptor:
+          $ref: '#/components/schemas/JsonNode'
+        name:
+          type: string
+          readOnly: true
+        public:
+          type: boolean
+        link:
+          type: string
+          readOnly: true
+        publicLink:
+          type: string
+          readOnly: true
+    TbResourceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TB_RESOURCE
+          example: TB_RESOURCE
+      required:
+      - entityType
+      - id
+    HasIdObject:
+      properties:
+        id: {}
+    ImageExportData:
+      properties:
+        mediaType:
+          type: string
+        fileName:
+          type: string
+        title:
+          type: string
+        resourceKey:
+          type: string
+        isPublic:
+          type: boolean
+          writeOnly: true
+        publicResourceKey:
+          type: string
+        data:
+          type: string
+        public:
+          type: boolean
+    PageDataTbResourceInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TbResourceInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TbImageDeleteResult:
+      properties:
+        success:
+          type: boolean
+        references:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/HasIdObject'
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

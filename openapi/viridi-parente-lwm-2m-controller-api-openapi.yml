@@ -1,0 +1,417 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Lwm 2m Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: lwm-2m-controller
+paths:
+  /api/lwm2m/device-credentials:
+    post:
+      tags:
+      - lwm-2m-controller
+      summary: Save device with credentials (Deprecated)
+      operationId: saveDeviceWithCredentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+  /api/lwm2m/deviceProfile/bootstrap/{isBootstrapServer}:
+    get:
+      tags:
+      - lwm-2m-controller
+      summary: Get Lwm2m Bootstrap SecurityInfo (getLwm2mBootstrapSecurityInfo)
+      description: 'Get the Lwm2m Bootstrap SecurityInfo object (of the current server) based on the provided isBootstrapServer parameter. If isBootstrapServer == true, get the parameters of the current Bootstrap Server. If isBootstrapServer == false, get the parameters of the current Lwm2m Server. Used for client settings when starting the client in Bootstrap mode.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getLwm2mBootstrapSecurityInfo
+      parameters:
+      - name: isBootstrapServer
+        in: path
+        description: 'A Boolean value representing the Server SecurityInfo for future Bootstrap client mode settings. Values: ''true'' for Bootstrap Server; ''false'' for Lwm2m Server. '
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LwM2MServerSecurityConfigDefault'
+components:
+  schemas:
+    Lwm2mDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    DeviceTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    DefaultDeviceConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceConfiguration'
+    DeviceConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    Device:
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the device creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Device Name in scope of Tenant
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Room 234 Sensor
+        deviceProfileId:
+          $ref: '#/components/schemas/DeviceProfileId'
+          description: JSON object with Device Profile Id.
+        firmwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        softwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+        deviceData:
+          $ref: '#/components/schemas/DeviceData'
+          description: JSON object with content specific to type of transport in the device profile.
+      required:
+      - deviceProfileId
+      - name
+    DefaultDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    DeviceProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
+      required:
+      - entityType
+      - id
+    DeviceData:
+      properties:
+        configuration:
+          description: Device configuration for device profile type. DEFAULT is only supported value for now
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
+        transportConfiguration:
+          description: Device transport configuration used to connect the device
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
+    LwM2MServerSecurityConfigDefault:
+      properties:
+        shortServerId:
+          type: integer
+          format: int32
+          description: Server short Id. Used as link to associate server Object Instance. This identifier uniquely identifies each LwM2M Server configured for the LwM2M Client. This Resource MUST be set when the Bootstrap-Server Resource has a value of 'false'. The values ID:1 and ID:65534 values MUST NOT be used for identifying the LwM2M Server.
+          example: 123
+          readOnly: true
+        bootstrapServerIs:
+          type: boolean
+          description: Is Bootstrap Server or Lwm2m Server. The LwM2M Client MAY be configured to use one or more LwM2M Server Account(s). The LwM2M Client MUST have at most one LwM2M Bootstrap-Server Account. (*) The LwM2M client MUST have at least one LwM2M server account after completing the boot sequence specified.
+          example: true
+          readOnly: true
+        host:
+          type: string
+          description: Host for 'No Security' mode
+          example: 0.0.0.0
+          readOnly: true
+        port:
+          type: integer
+          format: int32
+          description: 'Port for  Lwm2m Server: ''No Security'' mode: Lwm2m Server or Bootstrap Server'
+          example: '''5685'' or ''5687'''
+          readOnly: true
+        clientHoldOffTime:
+          type: integer
+          format: int32
+          description: Client Hold Off Time. The number of seconds to wait before initiating a Client Initiated Bootstrap once the LwM2M Client has determined it should initiate this bootstrap mode. (This information is relevant for use with a Bootstrap-Server only.)
+          example: 1
+          readOnly: true
+        serverPublicKey:
+          type: string
+          description: 'Server Public Key for ''Security'' mode (DTLS): RPK or X509. Format: base64 encoded'
+          example: 'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAZ0pSaGKHk/GrDaUDnQZpeEdGwX7m3Ws+U/kiVat
+
+            +44sgk3c8g0LotfMpLlZJPhPwJ6ipXV+O1r7IZUjBs3LNA=='
+          readOnly: true
+        serverCertificate:
+          type: string
+          description: 'Server Public Key for ''Security'' mode (DTLS): X509. Format: base64 encoded'
+          example: 'MMIICODCCAd6gAwIBAgIUI88U1zowOdrxDK/dOV+36gJxI2MwCgYIKoZIzj0EAwIwejELMAkGA1UEBhMCVUs
+
+            xEjAQBgNVBAgTCUt5aXYgY2l0eTENMAsGA1UEBxMES3lpdjEUMBIGA1UEChMLVGhpbmdzYm9hcmQxFzAVBgNVBAsMDkRFVkVMT1BFUl9URVNUMRkwFwYDVQQDDBBpbnRlcm1lZGlhdGVfY2EwMB4XDTIyMDEwOTEzMDMwMFoXDTI3MDEwODEzMDMwMFowFDESMBAGA1UEAxM
+
+            JbG9jYWxob3N0MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUO3vBo/JTv0eooY7XHiKAIVDoWKFqtrU7C6q8AIKqpLcqhCdW+haFeBOH3PjY6EwaWkY04Bir4oanU0s7tz2uKOBpzCBpDAOBgNVHQ8BAf8EBAMCBaAwEwYDVR0lBAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/
+
+            BAIwADAdBgNVHQ4EFgQUEjc3Q4a0TxzP/3x3EV4fHxYUg0YwHwYDVR0jBBgwFoAUuSquGycMU6Q0SYNcbtSkSD3TfH0wLwYDVR0RBCgwJoIVbG9jYWxob3N0LmxvY2FsZG9tYWlugglsb2NhbGhvc3SCAiAtMAoGCCqGSM49BAMCA0gAMEUCIQD7dbZObyUaoDiNbX+9fUNp
+
+            AWrD7N7XuJUwZ9FcN75R3gIgb2RNjDkHoyUyF1YajwkBk+7XmIXNClmizNJigj908mw='
+          readOnly: true
+        bootstrapServerAccountTimeout:
+          type: integer
+          format: int32
+          description: Bootstrap Server Account Timeout (If the value is set to 0, or if this resource is not instantiated, the Bootstrap-Server Account lifetime is infinite.)
+          example: 0
+          readOnly: true
+        lifetime:
+          type: integer
+          format: int32
+          description: Specify the lifetime of the registration in seconds.
+          example: 300
+          readOnly: true
+        defaultMinPeriod:
+          type: integer
+          format: int32
+          description: The default value the LwM2M Client should use for the Minimum Period of an Observation in the absence of this parameter being included in an Observation. If this Resource doesn’t exist, the default value is 0.
+          example: 1
+          readOnly: true
+        notifIfDisabled:
+          type: boolean
+          description: If true, the LwM2M Client stores “Notify” operations to the LwM2M Server while the LwM2M Server account is disabled or the LwM2M Client is offline. After the LwM2M Server account is enabled or the LwM2M Client is online, the LwM2M Client reports the stored “Notify” operations to the Server. If false, the LwM2M Client discards all the “Notify” operations or temporarily disables the Observe function while the LwM2M Server is disabled or the LwM2M Client is offline. The default value is true.
+          example: true
+          readOnly: true
+        binding:
+          type: string
+          description: This Resource defines the transport binding configured for the LwM2M Client. If the LwM2M Client supports the binding specified in this Resource, the LwM2M Client MUST use that transport for the Current Binding Mode.
+          example: U
+          readOnly: true
+        securityHost:
+          type: string
+          description: Host for 'Security' mode (DTLS)
+          example: 0.0.0.0
+          readOnly: true
+        securityPort:
+          type: integer
+          format: int32
+          description: 'Port for ''Security'' mode (DTLS): Lwm2m Server or Bootstrap Server'
+          example: 5686
+          readOnly: true
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    OtaPackageId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - OTA_PACKAGE
+          example: OTA_PACKAGE
+      required:
+      - entityType
+      - id
+    CoapDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    MqttDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    SnmpDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: integer
+            format: int32
+          protocolVersion:
+            type: string
+            enum:
+            - V1
+            - V2C
+            - V3
+          community:
+            type: string
+          username:
+            type: string
+          securityName:
+            type: string
+          contextName:
+            type: string
+          authenticationProtocol:
+            type: string
+            enum:
+            - SHA_1
+            - SHA_224
+            - SHA_256
+            - SHA_384
+            - SHA_512
+            - MD5
+          authenticationPassphrase:
+            type: string
+          privacyProtocol:
+            type: string
+            enum:
+            - DES
+            - AES_128
+            - AES_192
+            - AES_256
+          privacyPassphrase:
+            type: string
+          engineId:
+            type: string
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

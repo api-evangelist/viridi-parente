@@ -1,0 +1,454 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Tenant Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: tenant-controller
+paths:
+  /api/tenant:
+    post:
+      tags:
+      - tenant-controller
+      summary: Create Or update Tenant (saveTenant)
+      description: 'Create or update the Tenant. When creating tenant, platform generates Tenant Id as time-based UUID). Default Rule Chain and Device profile are also generated for the new tenants automatically. The newly created Tenant Id will be present in the response. Specify existing Tenant Id id to update the Tenant. Referencing non-existing Tenant Id will cause ''Not Found'' error.Remove ''id'', ''tenantId'' from the request body example (below) to create new Tenant entity.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: saveTenant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+  /api/tenants:
+    get:
+      tags:
+      - tenant-controller
+      summary: Get Tenants (getTenants)
+      description: 'Returns a page of tenants registered in the platform. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: getTenants
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the tenant name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+          - email
+          - country
+          - state
+          - city
+          - address
+          - address2
+          - zip
+          - phone
+          - email
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataTenant'
+  /api/tenantInfos:
+    get:
+      tags:
+      - tenant-controller
+      summary: Get Tenants Info (getTenants)
+      description: 'Returns a page of tenant info objects registered in the platform. The Tenant Info object extends regular Tenant object and includes Tenant Profile name. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: getTenantInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the tenant name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - tenantProfileName
+          - title
+          - email
+          - country
+          - state
+          - city
+          - address
+          - address2
+          - zip
+          - phone
+          - email
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataTenantInfo'
+  /api/tenant/{tenantId}:
+    get:
+      tags:
+      - tenant-controller
+      summary: Get Tenant (getTenantById)
+      description: 'Fetch the Tenant object based on the provided Tenant Id.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getTenantById
+      parameters:
+      - name: tenantId
+        in: path
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+    delete:
+      tags:
+      - tenant-controller
+      summary: Delete Tenant (deleteTenant)
+      description: 'Deletes the tenant, it''s customers, rule chains, devices and all other related entities. Referencing non-existing tenant Id will cause an error.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: deleteTenant
+      parameters:
+      - name: tenantId
+        in: path
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/tenant/info/{tenantId}:
+    get:
+      tags:
+      - tenant-controller
+      summary: Get Tenant Info (getTenantInfoById)
+      description: 'Fetch the Tenant Info object based on the provided Tenant Id. The Tenant Info object extends regular Tenant object and includes Tenant Profile name.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getTenantInfoById
+      parameters:
+      - name: tenantId
+        in: path
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantInfo'
+components:
+  schemas:
+    PageDataTenantInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TenantInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TenantProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT_PROFILE
+          example: TENANT_PROFILE
+      required:
+      - entityType
+      - id
+    Tenant:
+      description: A JSON value representing the tenant.
+      properties:
+        id:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with the tenant Id. Specify this field to update the tenant. Referencing non-existing tenant Id will cause error. Omit this field to create new tenant.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the tenant creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        country:
+          type: string
+          description: Country
+          example: US
+        state:
+          type: string
+          description: State
+          example: NY
+        city:
+          type: string
+          description: City
+          example: New York
+        address:
+          type: string
+          description: Address Line 1
+          example: 42
+        address2:
+          type: string
+          description: Address Line 2
+        zip:
+          type: string
+          description: Zip code
+          example: 10004
+        phone:
+          type: string
+          description: Phone number
+          example: +1(415)777-7777
+        email:
+          type: string
+          description: Email
+          example: example@company.com
+        title:
+          type: string
+          description: Title of the tenant
+          example: Company A
+        region:
+          type: string
+          description: Geo region of the tenant
+          example: North America
+        tenantProfileId:
+          $ref: '#/components/schemas/TenantProfileId'
+          description: JSON object with Tenant Profile Id
+        name:
+          type: string
+          description: Name of the tenant. Read-only, duplicated from title for backward compatibility
+          example: Company A
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+      required:
+      - title
+    TenantInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with the tenant Id. Specify this field to update the tenant. Referencing non-existing tenant Id will cause error. Omit this field to create new tenant.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the tenant creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        country:
+          type: string
+          description: Country
+          example: US
+        state:
+          type: string
+          description: State
+          example: NY
+        city:
+          type: string
+          description: City
+          example: New York
+        address:
+          type: string
+          description: Address Line 1
+          example: 42
+        address2:
+          type: string
+          description: Address Line 2
+        zip:
+          type: string
+          description: Zip code
+          example: 10004
+        phone:
+          type: string
+          description: Phone number
+          example: +1(415)777-7777
+        email:
+          type: string
+          description: Email
+          example: example@company.com
+        title:
+          type: string
+          description: Title of the tenant
+          example: Company A
+        region:
+          type: string
+          description: Geo region of the tenant
+          example: North America
+        tenantProfileId:
+          $ref: '#/components/schemas/TenantProfileId'
+          description: JSON object with Tenant Profile Id
+        tenantProfileName:
+          type: string
+          description: Tenant Profile name
+          example: Default
+        name:
+          type: string
+          description: Name of the tenant. Read-only, duplicated from title for backward compatibility
+          example: Company A
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+      required:
+      - title
+    PageDataTenant:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Tenant'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

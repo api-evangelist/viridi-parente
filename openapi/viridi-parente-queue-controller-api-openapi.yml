@@ -1,0 +1,319 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Queue Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: queue-controller
+paths:
+  /api/queues:
+    get:
+      tags:
+      - queue-controller
+      summary: Get Queues (getTenantQueuesByServiceType)
+      description: 'Returns a page of queues registered in the platform. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getTenantQueuesByServiceType
+      parameters:
+      - name: serviceType
+        in: query
+        description: Service type (implemented only for the TB-RULE-ENGINE)
+        required: true
+        schema:
+          enum:
+          - TB-RULE-ENGINE
+          - TB-CORE
+          - TB-TRANSPORT
+          - JS-EXECUTOR
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the queue name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - topic
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataQueue'
+    post:
+      tags:
+      - queue-controller
+      summary: Create Or Update Queue (saveQueue)
+      description: 'Create or update the Queue. When creating queue, platform generates Queue Id as time-based UUID). Specify existing Queue id to update the queue. Referencing non-existing Queue Id will cause ''Not Found'' error.
+
+
+        Queue name is unique in the scope of sysadmin. Remove ''id'', ''tenantId'' from the request body example (below) to create new Queue entity.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: saveQueue
+      parameters:
+      - name: serviceType
+        in: query
+        description: Service type (implemented only for the TB-RULE-ENGINE)
+        required: true
+        schema:
+          enum:
+          - TB-RULE-ENGINE
+          - TB-CORE
+          - TB-TRANSPORT
+          - JS-EXECUTOR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Queue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+  /api/queues/{queueId}:
+    get:
+      tags:
+      - queue-controller
+      summary: Get Queue (getQueueById)
+      description: 'Fetch the Queue object based on the provided Queue Id.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getQueueById
+      parameters:
+      - name: queueId
+        in: path
+        description: A string value representing the queue id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+    delete:
+      tags:
+      - queue-controller
+      summary: Delete Queue (deleteQueue)
+      description: 'Deletes the Queue.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: deleteQueue
+      parameters:
+      - name: queueId
+        in: path
+        description: A string value representing the queue id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/queues/name/{queueName}:
+    get:
+      tags:
+      - queue-controller
+      summary: Get Queue (getQueueByName)
+      description: 'Fetch the Queue object based on the provided Queue name.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getQueueByName
+      parameters:
+      - name: queueName
+        in: path
+        description: A string value representing the queue id. For example, 'Main'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+components:
+  schemas:
+    ProcessingStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
+          type: integer
+          format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
+    SubmitStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - BURST
+          - BATCH
+          - SEQUENTIAL_BY_ORIGINATOR
+          - SEQUENTIAL_BY_TENANT
+          - SEQUENTIAL
+        batchSize:
+          type: integer
+          format: int32
+    PageDataQueue:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Queue'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    QueueId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - QUEUE
+          example: QUEUE
+      required:
+      - entityType
+      - id
+    Queue:
+      description: A JSON value representing the queue.
+      properties:
+        id:
+          $ref: '#/components/schemas/QueueId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        topic:
+          type: string
+        pollInterval:
+          type: integer
+          format: int32
+        partitions:
+          type: integer
+          format: int32
+        consumerPerPartition:
+          type: boolean
+        packProcessingTimeout:
+          type: integer
+          format: int64
+        submitStrategy:
+          $ref: '#/components/schemas/SubmitStrategy'
+        processingStrategy:
+          $ref: '#/components/schemas/ProcessingStrategy'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

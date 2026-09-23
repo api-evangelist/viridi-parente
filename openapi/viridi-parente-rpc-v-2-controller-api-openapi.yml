@@ -1,0 +1,436 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Rpc V 2 Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: rpc-v-2-controller
+paths:
+  /api/rpc/twoway/{deviceId}:
+    post:
+      tags:
+      - rpc-v-2-controller
+      summary: Send two-way RPC request
+      description: 'Sends the two-way remote-procedure call (RPC) request to device. Sends the one-way remote-procedure call (RPC) request to device. The RPC call is A JSON that contains the method name (''method''), parameters (''params'') and multiple optional fields. See example below. We will review the properties of the RPC call one-by-one below.
+
+
+        ```json
+
+        {
+
+        "method": "setGpio",
+
+        "params": {
+
+        "pin": 7,
+
+        "value": 1
+
+        },
+
+        "persistent": false,
+
+        "timeout": 5000
+
+        }
+
+        ```
+
+
+        ### Server-side RPC structure
+
+
+        The body of server-side RPC request consists of multiple fields:
+
+
+        * **method** - mandatory, name of the method to distinct the RPC calls.
+
+        For example, "getCurrentTime" or "getWeatherForecast". The value of the parameter is a string.
+
+        * **params** - mandatory, parameters used for processing of the request. The value is a JSON. Leave empty JSON "{}" if no parameters needed.
+
+        * **timeout** - optional, value of the processing timeout in milliseconds. The default value is 10000 (10 seconds). The minimum value is 5000 (5 seconds).
+
+        * **expirationTime** - optional, value of the epoch time (in milliseconds, UTC timezone). Overrides **timeout** if present.
+
+        * **persistent** - optional, indicates persistent RPC. The default value is "false".
+
+        * **retries** - optional, defines how many times persistent RPC will be re-sent in case of failures on the network and/or device side.
+
+        * **additionalInfo** - optional, defines metadata for the persistent RPC that will be added to the persistent RPC events.
+
+
+        ### RPC Result
+
+        In case of persistent RPC, the result of this call is ''rpcId'' UUID. In case of lightweight RPC, the result of this call is the response from device, or 504 Gateway Timeout if device is offline.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: handleTwoWayDeviceRPCRequest
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              description: A JSON value representing the RPC request.
+        required: true
+      responses:
+        '401':
+          description: User is not authorized to send the RPC request. Most likely, User belongs to different Customer or Tenant.
+          content:
+            application/json:
+              schema: {}
+        '504':
+          description: Timeout to process the RPC call. Most likely, device is offline.
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Invalid structure of the request.
+          content:
+            application/json:
+              schema: {}
+        '200':
+          description: Persistent RPC request was saved to the database or lightweight RPC response received.
+          content:
+            application/json:
+              schema: {}
+  /api/rpc/oneway/{deviceId}:
+    post:
+      tags:
+      - rpc-v-2-controller
+      summary: Send one-way RPC request
+      description: 'Sends the one-way remote-procedure call (RPC) request to device. Sends the one-way remote-procedure call (RPC) request to device. The RPC call is A JSON that contains the method name (''method''), parameters (''params'') and multiple optional fields. See example below. We will review the properties of the RPC call one-by-one below.
+
+
+        ```json
+
+        {
+
+        "method": "setGpio",
+
+        "params": {
+
+        "pin": 7,
+
+        "value": 1
+
+        },
+
+        "persistent": false,
+
+        "timeout": 5000
+
+        }
+
+        ```
+
+
+        ### Server-side RPC structure
+
+
+        The body of server-side RPC request consists of multiple fields:
+
+
+        * **method** - mandatory, name of the method to distinct the RPC calls.
+
+        For example, "getCurrentTime" or "getWeatherForecast". The value of the parameter is a string.
+
+        * **params** - mandatory, parameters used for processing of the request. The value is a JSON. Leave empty JSON "{}" if no parameters needed.
+
+        * **timeout** - optional, value of the processing timeout in milliseconds. The default value is 10000 (10 seconds). The minimum value is 5000 (5 seconds).
+
+        * **expirationTime** - optional, value of the epoch time (in milliseconds, UTC timezone). Overrides **timeout** if present.
+
+        * **persistent** - optional, indicates persistent RPC. The default value is "false".
+
+        * **retries** - optional, defines how many times persistent RPC will be re-sent in case of failures on the network and/or device side.
+
+        * **additionalInfo** - optional, defines metadata for the persistent RPC that will be added to the persistent RPC events.
+
+
+        ### RPC Result
+
+        In case of persistent RPC, the result of this call is ''rpcId'' UUID. In case of lightweight RPC, the result of this call is either 200 OK if the message was sent to device, or 504 Gateway Timeout if device is offline.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: handleOneWayDeviceRPCRequest
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              description: A JSON value representing the RPC request.
+        required: true
+      responses:
+        '200':
+          description: Persistent RPC request was saved to the database or lightweight RPC request was sent to the device.
+          content:
+            application/json:
+              schema: {}
+        '401':
+          description: User is not authorized to send the RPC request. Most likely, User belongs to different Customer or Tenant.
+          content:
+            application/json:
+              schema: {}
+        '504':
+          description: Timeout to process the RPC call. Most likely, device is offline.
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Invalid structure of the request.
+          content:
+            application/json:
+              schema: {}
+  /api/rpc/persistent/{rpcId}:
+    get:
+      tags:
+      - rpc-v-2-controller
+      summary: Get persistent RPC request
+      description: 'Get information about the status of the RPC call.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getPersistedRpc
+      parameters:
+      - name: rpcId
+        in: path
+        description: A string value representing the rpc id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rpc'
+    delete:
+      tags:
+      - rpc-v-2-controller
+      summary: Delete persistent RPC
+      description: 'Deletes the persistent RPC request.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteRpc
+      parameters:
+      - name: rpcId
+        in: path
+        description: A string value representing the rpc id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/rpc/persistent/device/{deviceId}:
+    get:
+      tags:
+      - rpc-v-2-controller
+      summary: Get persistent RPC requests
+      description: 'Allows to query RPC calls for specific device using pagination.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getPersistedRpcByDevice
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: rpcStatus
+        in: query
+        description: Status of the RPC
+        required: false
+        schema:
+          enum:
+          - QUEUED
+          - SENT
+          - DELIVERED
+          - SUCCESSFUL
+          - TIMEOUT
+          - EXPIRED
+          - FAILED
+      - name: textSearch
+        in: query
+        description: Not implemented. Leave empty.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - expirationTime
+          - request
+          - response
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    Rpc:
+      properties:
+        id:
+          $ref: '#/components/schemas/RpcId'
+          description: JSON object with the rpc Id. Referencing non-existing rpc Id will cause error.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rpc creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        deviceId:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with Device Id.
+          readOnly: true
+        expirationTime:
+          type: integer
+          format: int64
+          description: Expiration time of the request.
+          readOnly: true
+        request:
+          $ref: '#/components/schemas/JsonNode'
+          description: The request body that will be used to send message to device.
+          readOnly: true
+        response:
+          $ref: '#/components/schemas/JsonNode'
+          description: The response from the device.
+          readOnly: true
+        status:
+          type: string
+          description: The current status of the RPC call.
+          enum:
+          - QUEUED
+          - SENT
+          - DELIVERED
+          - SUCCESSFUL
+          - TIMEOUT
+          - EXPIRED
+          - FAILED
+          - DELETED
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional info used in the rule engine to process the updates to the RPC state.
+          readOnly: true
+    RpcId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RPC
+          example: RPC
+      required:
+      - entityType
+      - id
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

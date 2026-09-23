@@ -1,0 +1,85 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Rpc V 1 Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: rpc-v-1-controller
+paths:
+  /api/plugins/rpc/twoway/{deviceId}:
+    post:
+      tags:
+      - rpc-v-1-controller
+      summary: Send two-way RPC request (handleTwoWayDeviceRPCRequest)
+      description: 'Deprecated. See ''Rpc V 2 Controller'' instead.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: handleTwoWayDeviceRPCRequest_1
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              description: A JSON value representing the RPC request.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+  /api/plugins/rpc/oneway/{deviceId}:
+    post:
+      tags:
+      - rpc-v-1-controller
+      summary: Send one-way RPC request (handleOneWayDeviceRPCRequest)
+      description: 'Deprecated. See ''Rpc V 2 Controller'' instead.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: handleOneWayDeviceRPCRequest_1
+      parameters:
+      - name: deviceId
+        in: path
+        description: A string value representing the device id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              description: A JSON value representing the RPC request.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

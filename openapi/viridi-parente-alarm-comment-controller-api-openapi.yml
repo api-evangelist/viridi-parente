@@ -1,0 +1,293 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Alarm Comment Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: alarm-comment-controller
+paths:
+  /api/alarm/{alarmId}/comment:
+    get:
+      tags:
+      - alarm-comment-controller
+      summary: Get Alarm comments (getAlarmComments)
+      description: 'Returns a page of alarm comments for specified alarm. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAlarmComments
+      parameters:
+      - name: alarmId
+        in: path
+        description: A string value representing the alarm id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - id
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAlarmCommentInfo'
+    post:
+      tags:
+      - alarm-comment-controller
+      summary: Create or update Alarm Comment
+      description: 'Creates or Updates the Alarm Comment. When creating comment, platform generates Alarm Comment Id as time-based UUID). The newly created Alarm Comment id will be present in the response. Specify existing Alarm Comment id to update the alarm. Referencing non-existing Alarm Comment Id will cause ''Not Found'' error.
+
+
+        To create new Alarm comment entity it is enough to specify ''comment'' json element with ''text'' node, for example: {"comment": { "text": "my comment"}}.
+
+
+        If comment type is not specified the default value ''OTHER'' will be saved. If ''alarmId'' or ''userId'' specified in body it will be ignored.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: saveAlarmComment
+      parameters:
+      - name: alarmId
+        in: path
+        description: A string value representing the alarm id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: A JSON value representing the comment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlarmComment'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmComment'
+  /api/alarm/{alarmId}/comment/{commentId}:
+    delete:
+      tags:
+      - alarm-comment-controller
+      summary: Delete Alarm comment (deleteAlarmComment)
+      description: 'Deletes the Alarm comment. Referencing non-existing Alarm comment Id will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: deleteAlarmComment
+      parameters:
+      - name: alarmId
+        in: path
+        description: A string value representing the alarm id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: commentId
+        in: path
+        description: A string value representing the alarm comment id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    AlarmCommentId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    PageDataAlarmCommentInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AlarmCommentInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    AlarmComment:
+      properties:
+        alarmId:
+          $ref: '#/components/schemas/AlarmId'
+          description: JSON object with Alarm id.
+          readOnly: true
+        userId:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with User id.
+          readOnly: true
+        type:
+          type: string
+          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
+          enum:
+          - SYSTEM
+          - OTHER
+          example: SYSTEM/OTHER
+          readOnly: true
+        comment:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with text of comment.
+        id:
+          $ref: '#/components/schemas/AlarmCommentId'
+          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm comment creation, in milliseconds
+          example: 1634058704567
+          readOnly: true
+        name:
+          type: string
+          description: representing comment text
+          example: Please take a look
+          readOnly: true
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    AlarmCommentInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/AlarmCommentId'
+          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm comment creation, in milliseconds
+          example: 1634058704567
+          readOnly: true
+        alarmId:
+          $ref: '#/components/schemas/AlarmId'
+          description: JSON object with Alarm id.
+          readOnly: true
+        userId:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with User id.
+          readOnly: true
+        type:
+          type: string
+          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
+          enum:
+          - SYSTEM
+          - OTHER
+          example: SYSTEM/OTHER
+          readOnly: true
+        comment:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with text of comment.
+        firstName:
+          type: string
+          description: User first name
+          example: John
+        lastName:
+          type: string
+          description: User last name
+          example: Brown
+        email:
+          type: string
+          description: User email address
+          example: johnBrown@gmail.com
+        name:
+          type: string
+          description: representing comment text
+          example: Please take a look
+          readOnly: true
+    AlarmId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ALARM
+          example: ALARM
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

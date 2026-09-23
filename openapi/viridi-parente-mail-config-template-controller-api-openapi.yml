@@ -1,0 +1,44 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Mail Config Template Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: mail-config-template-controller
+paths:
+  /api/mail/config/template:
+    get:
+      tags:
+      - mail-config-template-controller
+      summary: Get the list of all OAuth2 client registration templates…
+      description: Mail configuration template is set of default smtp settings for mail server that specific provider supports
+      operationId: getClientRegistrationTemplates_1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+components:
+  schemas:
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

@@ -1,0 +1,72 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Sbr 30 Data API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: sbr-30-data
+paths:
+  /api/telem:
+    post:
+      tags:
+      - sbr-30-data
+      operationId: getSBR30Telem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: byte
+      summary: Get SBR30 telem
+      x-summary-source: derived
+components:
+  schemas:
+    TelemRequest:
+      properties:
+        assets:
+          type: array
+          items:
+            type: string
+        keys:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        start_ts:
+          type: integer
+          format: int64
+        end_ts:
+          type: integer
+          format: int64
+        report:
+          type: boolean
+        limit:
+          type: integer
+          format: int32
+        interval:
+          type: string
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

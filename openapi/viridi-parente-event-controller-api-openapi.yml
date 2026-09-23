@@ -1,0 +1,808 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Event Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: event-controller
+paths:
+  /api/events/{entityType}/{entityId}:
+    get:
+      tags:
+      - event-controller
+      summary: Get Events (Deprecated)
+      description: Returns a page of events for specified entity. Deprecated and will be removed in next minor release. The call was deprecated to improve the performance of the system. Current implementation will return 'Lifecycle' events only. Use 'Get events by type' or 'Get events by filter' instead. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details.
+      operationId: getEvents_1
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: tenantId
+        in: query
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The value is not used in searching.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - ts
+          - id
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: Timestamp. Events with creation time before it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Events with creation time after it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEventInfo'
+    post:
+      tags:
+      - event-controller
+      summary: Get Events by event filter (getEvents)
+      description: 'Returns a page of events for the chosen entity by specifying the event filter. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        # Event Filter Definition
+
+
+        5 different eventFilter objects could be set for different event types. The eventType field is required. Others are optional. If some of them are set, the filtering will be applied according to them. See the examples below for all the fields used for each event type filtering.
+
+
+        Note,
+
+
+        * ''server'' - string value representing the server name, identifier or ip address where the platform is running;
+
+        * ''errorStr'' - the case insensitive ''contains'' filter based on error message.
+
+
+        ## Error Event Filter
+
+
+        ```json
+
+        {
+
+        "eventType":"ERROR",
+
+        "server":"ip-172-31-24-152",
+
+        "method":"onClusterEventMsg",
+
+        "errorStr":"Error Message"
+
+        }
+
+        ```
+
+
+        * ''method'' - string value representing the method name when the error happened.
+
+
+        ## Lifecycle Event Filter
+
+
+        ```json
+
+        {
+
+        "eventType":"LC_EVENT",
+
+        "server":"ip-172-31-24-152",
+
+        "event":"STARTED",
+
+        "status":"Success",
+
+        "errorStr":"Error Message"
+
+        }
+
+        ```
+
+
+        * ''event'' - string value representing the lifecycle event type;
+
+        * ''status'' - string value representing status of the lifecycle event.
+
+
+        ## Statistics Event Filter
+
+
+        ```json
+
+        {
+
+        "eventType":"STATS",
+
+        "server":"ip-172-31-24-152",
+
+        "messagesProcessed":10,
+
+        "errorsOccurred":5
+
+        }
+
+        ```
+
+
+        * ''messagesProcessed'' - the minimum number of successfully processed messages;
+
+        * ''errorsOccurred'' - the minimum number of errors occurred during messages processing.
+
+
+        ## Debug Rule Node Event Filter
+
+
+        ```json
+
+        {
+
+        "eventType":"DEBUG_RULE_NODE",
+
+        "msgDirectionType":"IN",
+
+        "server":"ip-172-31-24-152",
+
+        "dataSearch":"humidity",
+
+        "metadataSearch":"deviceName",
+
+        "entityName":"DEVICE",
+
+        "relationType":"Success",
+
+        "entityId":"de9d54a0-2b7a-11ec-a3cc-23386423d98f",
+
+        "msgType":"POST_TELEMETRY_REQUEST",
+
+        "isError":"false",
+
+        "errorStr":"Error Message"
+
+        }
+
+        ```
+
+
+        ## Debug Rule Chain Event Filter
+
+
+        ```json
+
+        {
+
+        "eventType":"DEBUG_RULE_CHAIN",
+
+        "msgDirectionType":"IN",
+
+        "server":"ip-172-31-24-152",
+
+        "dataSearch":"humidity",
+
+        "metadataSearch":"deviceName",
+
+        "entityName":"DEVICE",
+
+        "relationType":"Success",
+
+        "entityId":"de9d54a0-2b7a-11ec-a3cc-23386423d98f",
+
+        "msgType":"POST_TELEMETRY_REQUEST",
+
+        "isError":"false",
+
+        "errorStr":"Error Message"
+
+        }
+
+        ```
+
+
+        * ''msgDirectionType'' - string value representing msg direction type (incoming to entity or outcoming from entity);
+
+        * ''dataSearch'' - the case insensitive ''contains'' filter based on data (key and value) for the message;
+
+        * ''metadataSearch'' - the case insensitive ''contains'' filter based on metadata (key and value) for the message;
+
+        * ''entityName'' - string value representing the entity type;
+
+        * ''relationType'' - string value representing the type of message routing;
+
+        * ''entityId'' - string value representing the entity id in the event body (originator of the message);
+
+        * ''msgType'' - string value representing the message type;
+
+        * ''isError'' - boolean value to filter the errors.'
+      operationId: getEvents
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: tenantId
+        in: query
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The value is not used in searching.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - ts
+          - id
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: Timestamp. Events with creation time before it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Events with creation time after it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: A JSON value representing the event filter.
+              oneOf:
+              - $ref: '#/components/schemas/ErrorEventFilter'
+              - $ref: '#/components/schemas/LifeCycleEventFilter'
+              - $ref: '#/components/schemas/RuleChainDebugEventFilter'
+              - $ref: '#/components/schemas/RuleNodeDebugEventFilter'
+              - $ref: '#/components/schemas/StatisticsEventFilter'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEventInfo'
+  /api/events/{entityType}/{entityId}/clear:
+    post:
+      tags:
+      - event-controller
+      summary: Clear Events (clearEvents)
+      description: Clears events by filter for specified entity.
+      operationId: clearEvents
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: Timestamp. Events with creation time before it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Events with creation time after it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: "# Event Filter Definition\n\n5 different eventFilter objects could be set for different event types. The eventType field is required. Others are optional. If some of them are set, the filtering will be applied according to them. See the examples below for all the fields used for each event type filtering. \n\nNote,\n\n * 'server' - string value representing the server name, identifier or ip address where the platform is running;\n * 'errorStr' - the case insensitive 'contains' filter based on error message.\n\n## Error Event Filter\n\n```json\n{\n   \"eventType\":\"ERROR\",\n   \"server\":\"ip-172-31-24-152\",\n   \"method\":\"onClusterEventMsg\",\n   \"errorStr\":\"Error Message\"\n}\n```\n\n * 'method' - string value representing the method name when the error happened.\n\n## Lifecycle Event Filter\n\n```json\n{\n   \"eventType\":\"LC_EVENT\",\n   \"server\":\"ip-172-31-24-152\",\n   \"event\":\"STARTED\",\n   \"status\":\"Success\",\n   \"errorStr\":\"Error Message\"\n}\n```\n\n * 'event' - string value representing the lifecycle event type;\n * 'status' - string value representing status of the lifecycle event.\n\n## Statistics Event Filter\n\n```json\n{\n   \"eventType\":\"STATS\",\n   \"server\":\"ip-172-31-24-152\",\n   \"messagesProcessed\":10,\n   \"errorsOccurred\":5\n}\n```\n\n * 'messagesProcessed' - the minimum number of successfully processed messages;\n * 'errorsOccurred' - the minimum number of errors occurred during messages processing.\n\n## Debug Rule Node Event Filter\n\n```json\n{\n   \"eventType\":\"DEBUG_RULE_NODE\",\n   \"msgDirectionType\":\"IN\",\n   \"server\":\"ip-172-31-24-152\",\n   \"dataSearch\":\"humidity\",\n   \"metadataSearch\":\"deviceName\",\n   \"entityName\":\"DEVICE\",\n   \"relationType\":\"Success\",\n   \"entityId\":\"de9d54a0-2b7a-11ec-a3cc-23386423d98f\",\n   \"msgType\":\"POST_TELEMETRY_REQUEST\",\n   \"isError\":\"false\",\n   \"errorStr\":\"Error Message\"\n}\n```\n\n## Debug Rule Chain Event Filter\n\n```json\n{\n   \"eventType\":\"DEBUG_RULE_CHAIN\",\n   \"msgDirectionType\":\"IN\",\n   \"server\":\"ip-172-31-24-152\",\n   \"dataSearch\":\"humidity\",\n   \"metadataSearch\":\"deviceName\",\n   \"entityName\":\"DEVICE\",\n   \"relationType\":\"Success\",\n   \"entityId\":\"de9d54a0-2b7a-11ec-a3cc-23386423d98f\",\n   \"msgType\":\"POST_TELEMETRY_REQUEST\",\n   \"isError\":\"false\",\n   \"errorStr\":\"Error Message\"\n}\n```\n\n * 'msgDirectionType' - string value representing msg direction type (incoming to entity or outcoming from entity);\n * 'dataSearch' - the case insensitive 'contains' filter based on data (key and value) for the message;\n * 'metadataSearch' - the case insensitive 'contains' filter based on metadata (key and value) for the message;\n * 'entityName' - string value representing the entity type;\n * 'relationType' - string value representing the type of message routing;\n * 'entityId' - string value representing the entity id in the event body (originator of the message);\n * 'msgType' - string value representing the message type;\n * 'isError' - boolean value to filter the errors.\n\n"
+              oneOf:
+              - $ref: '#/components/schemas/ErrorEventFilter'
+              - $ref: '#/components/schemas/LifeCycleEventFilter'
+              - $ref: '#/components/schemas/RuleChainDebugEventFilter'
+              - $ref: '#/components/schemas/RuleNodeDebugEventFilter'
+              - $ref: '#/components/schemas/StatisticsEventFilter'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/events/{entityType}/{entityId}/{eventType}:
+    get:
+      tags:
+      - event-controller
+      summary: Get Events by type (getEvents)
+      description: Returns a page of events for specified entity by specifying event type. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details.
+      operationId: getEvents_2
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: eventType
+        in: path
+        description: A string value representing event type
+        required: true
+        schema:
+          type: string
+        example: STATS
+      - name: tenantId
+        in: query
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The value is not used in searching.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - ts
+          - id
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: Timestamp. Events with creation time before it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Events with creation time after it won't be queried.
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEventInfo'
+components:
+  schemas:
+    EventId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    StatisticsEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          minMessagesProcessed:
+            type: integer
+            format: int32
+            description: The minimum number of successfully processed messages
+            example: 25
+          maxMessagesProcessed:
+            type: integer
+            format: int32
+            description: The maximum number of successfully processed messages
+            example: 250
+          minErrorsOccurred:
+            type: integer
+            format: int32
+            description: The minimum number of errors occurred during messages processing
+            example: 30
+          maxErrorsOccurred:
+            type: integer
+            format: int32
+            description: The maximum number of errors occurred during messages processing
+            example: 300
+      required:
+      - eventType
+    EventInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EventId'
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the event creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        type:
+          type: string
+          description: Event type
+          example: STATS
+        uid:
+          type: string
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with Entity Id for which event is created.
+          readOnly: true
+        body:
+          $ref: '#/components/schemas/JsonNode'
+    LifeCycleEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          event:
+            type: string
+            description: String value representing the lifecycle event type
+            example: STARTED
+          status:
+            type: string
+            description: String value representing status of the lifecycle event
+            enum:
+            - Success
+            - Failure
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
+      required:
+      - eventType
+    EventFilter:
+      discriminator:
+        propertyName: eventType
+      properties:
+        eventType:
+          type: string
+          description: String value representing the event type
+          enum:
+          - ERROR
+          - LC_EVENT
+          - STATS
+          - DEBUG_RULE_NODE
+          - DEBUG_RULE_CHAIN
+          example: STATS
+        notEmpty:
+          type: boolean
+      required:
+      - eventType
+    RuleNodeDebugEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          isError:
+            type: boolean
+            writeOnly: true
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
+          msgDirectionType:
+            type: string
+            description: String value representing msg direction type (incoming to entity or outcoming from entity)
+            enum:
+            - IN
+            - OUT
+          entityId:
+            type: string
+            description: String value representing the entity id in the event body (originator of the message)
+            example: de9d54a0-2b7a-11ec-a3cc-23386423d98f
+          entityType:
+            type: string
+            description: String value representing the entity type
+            enum:
+            - DEVICE
+          msgId:
+            type: string
+            description: String value representing the message id in the rule engine
+            example: de9d54a0-2b7a-11ec-a3cc-23386423d98f
+          msgType:
+            type: string
+            description: String value representing the message type
+            example: POST_TELEMETRY_REQUEST
+          relationType:
+            type: string
+            description: String value representing the type of message routing
+            example: Success
+          dataSearch:
+            type: string
+            description: The case insensitive 'contains' filter based on data (key and value) for the message.
+            example: humidity
+          metadataSearch:
+            type: string
+            description: The case insensitive 'contains' filter based on metadata (key and value) for the message.
+            example: deviceName
+          error:
+            type: boolean
+      required:
+      - eventType
+    RuleChainDebugEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          isError:
+            type: boolean
+            writeOnly: true
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
+          message:
+            type: string
+            description: String value representing the message
+          error:
+            type: boolean
+      required:
+      - eventType
+    PageDataEventInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EventInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    ErrorEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          method:
+            type: string
+            description: String value representing the method name when the error happened
+            example: onClusterEventMsg
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
+      required:
+      - eventType
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

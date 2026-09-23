@@ -1,0 +1,521 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Asset Profile Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: asset-profile-controller
+paths:
+  /api/assetProfile:
+    post:
+      tags:
+      - asset-profile-controller
+      summary: Create Or Update Asset Profile (saveAssetProfile)
+      description: 'Create or update the Asset Profile. When creating asset profile, platform generates asset profile id as time-based UUID). The newly created asset profile id will be present in the response. Specify existing asset profile id to update the asset profile. Referencing non-existing asset profile Id will cause ''Not Found'' error.
+
+
+        Asset profile name is unique in the scope of tenant. Only one ''default'' asset profile may exist in scope of tenant. Remove ''id'', ''tenantId'' from the request body example (below) to create new Asset Profile entity.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveAssetProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetProfile'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetProfile'
+  /api/assetProfile/{assetProfileId}/default:
+    post:
+      tags:
+      - asset-profile-controller
+      summary: Make Asset Profile Default (setDefaultAssetProfile)
+      description: 'Marks asset profile as default within a tenant scope.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setDefaultAssetProfile
+      parameters:
+      - name: assetProfileId
+        in: path
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetProfile'
+  /api/assetProfiles:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Asset Profiles (getAssetProfiles)
+      description: 'Returns a page of asset profile objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAssetProfiles
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset profile name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - description
+          - isDefault
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAssetProfile'
+  /api/assetProfileInfos:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Asset Profile infos (getAssetProfileInfos)
+      description: 'Returns a page of asset profile info objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details. Asset Profile Info is a lightweight object that includes main information about Asset Profile.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetProfileInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the asset profile name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - description
+          - isDefault
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataAssetProfileInfo'
+  /api/assetProfileInfo/{assetProfileId}:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Asset Profile Info (getAssetProfileInfoById)
+      description: 'Fetch the Asset Profile Info object based on the provided Asset Profile Id. Asset Profile Info is a lightweight object that includes main information about Asset Profile.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetProfileInfoById
+      parameters:
+      - name: assetProfileId
+        in: path
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetProfileInfo'
+  /api/assetProfileInfo/default:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Default Asset Profile (getDefaultAssetProfileInfo)
+      description: 'Fetch the Default Asset Profile Info object. Asset Profile Info is a lightweight object that includes main information about Asset Profile.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDefaultAssetProfileInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetProfileInfo'
+  /api/assetProfile/{assetProfileId}:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Asset Profile (getAssetProfileById)
+      description: 'Fetch the Asset Profile object based on the provided Asset Profile Id. The server checks that the asset profile is owned by the same tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getAssetProfileById
+      parameters:
+      - name: assetProfileId
+        in: path
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetProfile'
+    delete:
+      tags:
+      - asset-profile-controller
+      summary: Delete asset profile (deleteAssetProfile)
+      description: 'Deletes the asset profile. Referencing non-existing asset profile Id will cause an error. Can''t delete the asset profile if it is referenced by existing assets.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteAssetProfile
+      parameters:
+      - name: assetProfileId
+        in: path
+        description: A string value representing the asset profile id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/assetProfile/names:
+    get:
+      tags:
+      - asset-profile-controller
+      summary: Get Asset Profile names (getAssetProfileNames)
+      description: 'Returns a set of unique asset profile names owned by the tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getAssetProfileNames
+      parameters:
+      - name: activeOnly
+        in: query
+        description: Flag indicating whether to retrieve exclusively the names of asset profiles that are referenced by tenant's assets.
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityInfo'
+components:
+  schemas:
+    PageDataAssetProfileInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetProfileInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    PageDataAssetProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    EntityInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
+          type: string
+          description: Entity Name
+    AssetProfileInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: Tenant id.
+        name:
+          type: string
+          description: Entity Name
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
+    AssetProfile:
+      description: A JSON value representing the asset profile.
+      properties:
+        id:
+          $ref: '#/components/schemas/AssetProfileId'
+          description: JSON object with the asset profile Id. Specify this field to update the asset profile. Referencing non-existing asset profile Id will cause error. Omit this field to create new asset profile.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the profile creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id that owns the profile.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Asset Profile Name in scope of Tenant.
+          example: Building
+        description:
+          type: string
+          description: 'Asset Profile description. '
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
+        defaultRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the rule chain. If present, the specified rule chain will be used to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the root rule chain will be used to process those messages.
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
+        defaultQueueName:
+          type: string
+          description: Rule engine queue name. If present, the specified queue will be used to store all unprocessed messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the 'Main' queue will be used to store those messages.
+        defaultEdgeRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the edge rule chain. If present, the specified edge rule chain will be used on the edge to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the edge root rule chain will be used to process those messages.
+        default:
+          type: boolean
+          description: Used to mark the default profile. Default profile is used when the asset profile is not specified during asset creation.
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
+    AssetProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET_PROFILE
+          example: ASSET_PROFILE
+      required:
+      - entityType
+      - id
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

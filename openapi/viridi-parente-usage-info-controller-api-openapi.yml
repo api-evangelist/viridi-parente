@@ -1,0 +1,110 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Usage Info Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: usage-info-controller
+paths:
+  /api/usage:
+    get:
+      tags:
+      - usage-info-controller
+      operationId: getTenantUsageInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageInfo'
+      summary: Get tenant usage info
+      x-summary-source: derived
+components:
+  schemas:
+    UsageInfo:
+      properties:
+        devices:
+          type: integer
+          format: int64
+        maxDevices:
+          type: integer
+          format: int64
+        assets:
+          type: integer
+          format: int64
+        maxAssets:
+          type: integer
+          format: int64
+        customers:
+          type: integer
+          format: int64
+        maxCustomers:
+          type: integer
+          format: int64
+        users:
+          type: integer
+          format: int64
+        maxUsers:
+          type: integer
+          format: int64
+        dashboards:
+          type: integer
+          format: int64
+        maxDashboards:
+          type: integer
+          format: int64
+        transportMessages:
+          type: integer
+          format: int64
+        maxTransportMessages:
+          type: integer
+          format: int64
+        jsExecutions:
+          type: integer
+          format: int64
+        tbelExecutions:
+          type: integer
+          format: int64
+        maxJsExecutions:
+          type: integer
+          format: int64
+        maxTbelExecutions:
+          type: integer
+          format: int64
+        emails:
+          type: integer
+          format: int64
+        maxEmails:
+          type: integer
+          format: int64
+        sms:
+          type: integer
+          format: int64
+        maxSms:
+          type: integer
+          format: int64
+        smsEnabled:
+          type: boolean
+        alarms:
+          type: integer
+          format: int64
+        maxAlarms:
+          type: integer
+          format: int64
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

@@ -1,0 +1,957 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Dashboard Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: dashboard-controller
+paths:
+  /api/tenant/dashboard/home/info:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Tenant Home Dashboard Info (getTenantHomeDashboardInfo)
+      description: 'Returns the home dashboard info object that is configured as ''homeDashboardId'' parameter in the ''additionalInfo'' of the corresponding tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantHomeDashboardInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeDashboardInfo'
+    post:
+      tags:
+      - dashboard-controller
+      summary: Update Tenant Home Dashboard Info (getTenantHomeDashboardInfo)
+      description: 'Update the home dashboard assignment for the current tenant.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setTenantHomeDashboardInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeDashboardInfo'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/edge/{edgeId}/dashboard/{dashboardId}:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Assign dashboard to edge (assignDashboardToEdge)
+      description: 'Creates assignment of an existing dashboard to an instance of The Edge. Assignment works in async way - first, notification event pushed to edge service queue on platform. Second, remote edge service will receive a copy of assignment dashboard (Edge will receive this instantly, if it''s currently connected, or once it''s going to be connected to platform). Third, once dashboard will be delivered to edge service, it''s going to be available for usage on remote edge instance.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignDashboardToEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: dashboardId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+    delete:
+      tags:
+      - dashboard-controller
+      summary: Unassign dashboard from edge (unassignDashboardFromEdge)
+      description: 'Clears assignment of the dashboard to the edge. Unassignment works in async way - first, ''unassign'' notification event pushed to edge queue on platform. Second, remote edge service will receive an ''unassign'' command to remove dashboard (Edge will receive this instantly, if it''s currently connected, or once it''s going to be connected to platform). Third, once ''unassign'' command will be delivered to edge service, it''s going to remove dashboard locally.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignDashboardFromEdge
+      parameters:
+      - name: edgeId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: dashboardId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/dashboard:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Create Or Update Dashboard (saveDashboard)
+      description: 'Create or update the Dashboard. When creating dashboard, platform generates Dashboard Id as time-based UUID). The newly created Dashboard id will be present in the response. Specify existing Dashboard id to update the dashboard. Referencing non-existing dashboard Id will cause ''Not Found'' error. Remove ''id'', ''tenantId'' and optionally ''customerId'' from the request body example (below) to create new Dashboard entity.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveDashboard
+      requestBody:
+        description: A JSON value representing the dashboard.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/dashboard/{dashboardId}/customers:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Update the Dashboard Customers (updateDashboardCustomers)
+      description: 'Updates the list of Customers that this Dashboard is assigned to. Removes previous assignments to customers that are not in the provided list. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: updateDashboardCustomers
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON array with the list of customer ids, or empty to remove all customers
+              items:
+                type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/dashboard/{dashboardId}/customers/remove:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Remove the Dashboard Customers (removeDashboardCustomers)
+      description: 'Removes the list of Customers from the existing list of assignments for the Dashboard. Keeps other assignments to customers that are not in the provided list. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: removeDashboardCustomers
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON array with the list of customer ids
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/dashboard/{dashboardId}/customers/add:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Adds the Dashboard Customers (addDashboardCustomers)
+      description: 'Adds the list of Customers to the existing list of assignments for the Dashboard. Keeps previous assignments to customers that are not in the provided list. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: addDashboardCustomers
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON array with the list of customer ids
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/customer/{customerId}/dashboard/{dashboardId}:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Assign the Dashboard (assignDashboardToCustomer)
+      description: 'Assign the Dashboard to specified Customer or do nothing if the Dashboard is already assigned to that Customer. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignDashboardToCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+    delete:
+      tags:
+      - dashboard-controller
+      summary: Unassign the Dashboard (unassignDashboardFromCustomer)
+      description: 'Unassign the Dashboard from specified Customer or do nothing if the Dashboard is already assigned to that Customer. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignDashboardFromCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/customer/public/dashboard/{dashboardId}:
+    post:
+      tags:
+      - dashboard-controller
+      summary: Assign the Dashboard to Public Customer (assignDashboardToPublicCustomer)
+      description: 'Assigns the dashboard to a special, auto-generated ''Public'' Customer. Once assigned, unauthenticated users may browse the dashboard. This method is useful if you like to embed the dashboard on public web pages to be available for users that are not logged in. Be aware that making the dashboard public does not mean that it automatically makes all devices and assets you use in the dashboard to be public.Use assign Asset to Public Customer and assign Device to Public Customer for this purpose. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignDashboardToPublicCustomer
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+    delete:
+      tags:
+      - dashboard-controller
+      summary: Unassign the Dashboard from Public Customer…
+      description: 'Unassigns the dashboard from a special, auto-generated ''Public'' Customer. Once unassigned, unauthenticated users may no longer browse the dashboard. Returns the Dashboard object.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignDashboardFromPublicCustomer
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+  /api/tenant/{tenantId}/dashboards:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Tenant Dashboards by System Administrator (getTenantDashboards)
+      description: 'Returns a page of dashboard info objects owned by tenant. The Dashboard Info object contains lightweight information about the dashboard (e.g. title, image, assigned customers) but does not contain the heavyweight configuration JSON. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: getTenantDashboards
+      parameters:
+      - name: tenantId
+        in: path
+        description: A string value representing the tenant id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the dashboard title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDashboardInfo'
+  /api/tenant/dashboards:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Tenant Dashboards (getTenantDashboards)
+      description: 'Returns a page of dashboard info objects owned by the tenant of a current user. The Dashboard Info object contains lightweight information about the dashboard (e.g. title, image, assigned customers) but does not contain the heavyweight configuration JSON. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantDashboards_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: mobile
+        in: query
+        description: Exclude dashboards that are hidden for mobile
+        required: false
+        schema:
+          type: boolean
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the dashboard title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDashboardInfo'
+  /api/edge/{edgeId}/dashboards:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Edge Dashboards (getEdgeDashboards)
+      description: 'Returns a page of dashboard info objects assigned to the specified edge. The Dashboard Info object contains lightweight information about the dashboard (e.g. title, image, assigned customers) but does not contain the heavyweight configuration JSON. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEdgeDashboards
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the dashboard title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDashboardInfo'
+  /api/dashboard/{dashboardId}:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Dashboard (getDashboardById)
+      description: 'Get the dashboard based on ''dashboardId'' parameter. The Dashboard object is a heavyweight object that contains information about the dashboard (e.g. title, image, assigned customers) and also configuration JSON (e.g. layouts, widgets, entity aliases).
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getDashboardById
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: inlineImages
+        in: query
+        description: Inline images as a data URL (Base64)
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+    delete:
+      tags:
+      - dashboard-controller
+      summary: Delete the Dashboard (deleteDashboard)
+      description: 'Delete the Dashboard.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteDashboard
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/dashboard/serverTime:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get server time (getServerTime)
+      description: Get the server time (milliseconds since January 1, 1970 UTC). Used to adjust view of the dashboards according to the difference between browser and server time.
+      operationId: getServerTime
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: 1636023857137
+  /api/dashboard/maxDatapointsLimit:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get max data points limit (getMaxDatapointsLimit)
+      description: Get the maximum number of data points that dashboard may request from the server per in a single subscription command. This value impacts the time window behavior. It impacts 'Max values' parameter in case user selects 'None' as 'Data aggregation function'. It also impacts the 'Grouping interval' in case of any other 'Data aggregation function' is selected. The actual value of the limit is configurable in the system configuration file.
+      operationId: getMaxDatapointsLimit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: 5000
+  /api/dashboard/info/{dashboardId}:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Dashboard Info (getDashboardInfoById)
+      description: Get the information about the dashboard based on 'dashboardId' parameter. The Dashboard Info object contains lightweight information about the dashboard (e.g. title, image, assigned customers) but does not contain the heavyweight configuration JSON.
+      operationId: getDashboardInfoById
+      parameters:
+      - name: dashboardId
+        in: path
+        description: A string value representing the dashboard id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardInfo'
+  /api/dashboard/home:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Home Dashboard (getHomeDashboard)
+      description: 'Returns the home dashboard object that is configured as ''homeDashboardId'' parameter in the ''additionalInfo'' of the User. If ''homeDashboardId'' parameter is not set on the User level and the User has authority ''CUSTOMER_USER'', check the same parameter for the corresponding Customer. If ''homeDashboardId'' parameter is not set on the User and Customer levels then checks the same parameter for the Tenant that owns the user. The Dashboard object is a heavyweight object that contains information about the dashboard (e.g. title, image, assigned customers) and also configuration JSON (e.g. layouts, widgets, entity aliases).
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getHomeDashboard
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeDashboard'
+  /api/dashboard/home/info:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Home Dashboard Info (getHomeDashboardInfo)
+      description: 'Returns the home dashboard info object that is configured as ''homeDashboardId'' parameter in the ''additionalInfo'' of the User. If ''homeDashboardId'' parameter is not set on the User level and the User has authority ''CUSTOMER_USER'', check the same parameter for the corresponding Customer. If ''homeDashboardId'' parameter is not set on the User and Customer levels then checks the same parameter for the Tenant that owns the user.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getHomeDashboardInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeDashboardInfo'
+  /api/customer/{customerId}/dashboards:
+    get:
+      tags:
+      - dashboard-controller
+      summary: Get Customer Dashboards (getCustomerDashboards)
+      description: 'Returns a page of dashboard info objects owned by the specified customer. The Dashboard Info object contains lightweight information about the dashboard (e.g. title, image, assigned customers) but does not contain the heavyweight configuration JSON. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getCustomerDashboards
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: mobile
+        in: query
+        description: Exclude dashboards that are hidden for mobile
+        required: false
+        schema:
+          type: boolean
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the dashboard title.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - title
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataDashboardInfo'
+components:
+  schemas:
+    ShortCustomerInfo:
+      properties:
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with the customer Id.
+        title:
+          type: string
+          description: Title of the customer.
+        isPublic:
+          type: boolean
+          writeOnly: true
+        public:
+          type: boolean
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    DashboardInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the dashboard creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        image:
+          type: string
+          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
+          readOnly: true
+        assignedCustomers:
+          type: array
+          description: List of assigned customers with their info.
+          items:
+            $ref: '#/components/schemas/ShortCustomerInfo'
+          readOnly: true
+          uniqueItems: true
+        mobileHide:
+          type: boolean
+          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
+          readOnly: true
+        mobileOrder:
+          type: integer
+          format: int32
+          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
+          readOnly: true
+        name:
+          type: string
+          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
+          readOnly: true
+      required:
+      - title
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    Dashboard:
+      properties:
+        id:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the dashboard creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        image:
+          type: string
+          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
+          readOnly: true
+        assignedCustomers:
+          type: array
+          description: List of assigned customers with their info.
+          items:
+            $ref: '#/components/schemas/ShortCustomerInfo'
+          readOnly: true
+          uniqueItems: true
+        mobileHide:
+          type: boolean
+          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
+          readOnly: true
+        mobileOrder:
+          type: integer
+          format: int32
+          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
+          readOnly: true
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+          description: 'JSON object with main configuration of the dashboard: layouts, widgets, aliases, etc. The JSON structure of the dashboard configuration is quite complex. The easiest way to learn it is to export existing dashboard to JSON.'
+        name:
+          type: string
+          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
+          readOnly: true
+      required:
+      - title
+    HomeDashboard:
+      properties:
+        id:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the dashboard creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        image:
+          type: string
+          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
+          readOnly: true
+        assignedCustomers:
+          type: array
+          description: List of assigned customers with their info.
+          items:
+            $ref: '#/components/schemas/ShortCustomerInfo'
+          readOnly: true
+          uniqueItems: true
+        mobileHide:
+          type: boolean
+          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
+          readOnly: true
+        mobileOrder:
+          type: integer
+          format: int32
+          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
+          readOnly: true
+        hideDashboardToolbar:
+          type: boolean
+          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+          description: 'JSON object with main configuration of the dashboard: layouts, widgets, aliases, etc. The JSON structure of the dashboard configuration is quite complex. The easiest way to learn it is to export existing dashboard to JSON.'
+        name:
+          type: string
+          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
+          readOnly: true
+      required:
+      - title
+    PageDataDashboardInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DashboardInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
+    HomeDashboardInfo:
+      description: A JSON object that represents home dashboard id and other parameters
+      properties:
+        dashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id.
+        hideDashboardToolbar:
+          type: boolean
+          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

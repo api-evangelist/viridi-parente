@@ -1,0 +1,549 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Entity Relation Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: entity-relation-controller
+paths:
+  /api/relations:
+    get:
+      tags:
+      - entity-relation-controller
+      summary: Get List of Relations (findByFrom)
+      description: 'Returns list of relation objects for the specified entity by the ''from'' direction and relation type.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that the entity is owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that the entity is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the entity is assigned to the same customer.'
+      operationId: findByTo_1_1_1
+      parameters:
+      - name: toId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: toType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: relationTypeGroup
+        in: query
+        description: A string value representing relation type group. For example, 'COMMON'
+        required: false
+        schema:
+          type: string
+      - name: relationType
+        in: query
+        description: A string value representing relation type between entities. For example, 'Contains', 'Manages'. It can be any string value.
+        required: true
+        schema:
+          type: string
+      - name: fromId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: fromType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityRelation'
+    post:
+      tags:
+      - entity-relation-controller
+      summary: Find related entities (findByQuery)
+      description: Returns all entities that are related to the specific entity. The entity id, relation type, entity types, depth of the search, and other query parameters defined using complex 'EntityRelationsQuery' object. See 'Model' tab of the Parameters for more info.
+      operationId: findByQuery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRelationsQuery'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityRelation'
+    delete:
+      tags:
+      - entity-relation-controller
+      summary: Delete common relations (deleteCommonRelations)
+      description: 'Deletes all the relations (''from'' and ''to'' direction) for the specified entity and relation type group: ''COMMON''.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that the entity is owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that the entity is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the entity is assigned to the same customer.'
+      operationId: deleteRelations
+      parameters:
+      - name: entityId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: entityType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/relations/info:
+    get:
+      tags:
+      - entity-relation-controller
+      summary: Get List of Relation Infos (findInfoByFrom)
+      description: 'Returns list of relation info objects for the specified entity by the ''from'' direction.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that the entity is owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that the entity is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the entity is assigned to the same customer. Relation Info is an extension of the default Relation object that contains information about the ''from'' and ''to'' entity names.'
+      operationId: findInfoByTo_1
+      parameters:
+      - name: toId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: toType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: relationTypeGroup
+        in: query
+        description: A string value representing relation type group. For example, 'COMMON'
+        required: false
+        schema:
+          type: string
+      - name: fromId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: fromType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityRelationInfo'
+    post:
+      tags:
+      - entity-relation-controller
+      summary: Find related entity infos (findInfoByQuery)
+      description: Returns all entity infos that are related to the specific entity. The entity id, relation type, entity types, depth of the search, and other query parameters defined using complex 'EntityRelationsQuery' object. See 'Model' tab of the Parameters for more info. Relation Info is an extension of the default Relation object that contains information about the 'from' and 'to' entity names.
+      operationId: findInfoByQuery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRelationsQuery'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityRelationInfo'
+  /api/relation:
+    get:
+      tags:
+      - entity-relation-controller
+      summary: Get Relation (getRelation)
+      description: 'Returns relation object between two specified entities if present. Otherwise throws exception.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that ''from'' and ''to'' entities are owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that ''from'' and ''to'' entities are owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the ''from'' and ''to'' entities are assigned to the same customer.'
+      operationId: getRelation
+      parameters:
+      - name: fromId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: fromType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: relationType
+        in: query
+        description: A string value representing relation type between entities. For example, 'Contains', 'Manages'. It can be any string value.
+        required: true
+        schema:
+          type: string
+      - name: relationTypeGroup
+        in: query
+        description: A string value representing relation type group. For example, 'COMMON'
+        required: false
+        schema:
+          type: string
+      - name: toId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: toType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityRelation'
+    post:
+      tags:
+      - entity-relation-controller
+      summary: Create Relation (saveRelation)
+      description: 'Creates or updates a relation between two entities in the platform. Relations unique key is a combination of from/to entity id and relation type group and relation type.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that ''from'' and ''to'' entities are owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that ''from'' and ''to'' entities are owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the ''from'' and ''to'' entities are assigned to the same customer.'
+      operationId: saveRelation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRelation'
+        required: true
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - entity-relation-controller
+      summary: Delete Relation (deleteRelation)
+      description: 'Deletes a relation between two entities in the platform.
+
+
+        If the user has the authority of ''System Administrator'', the server checks that ''from'' and ''to'' entities are owned by the sysadmin. If the user has the authority of ''Tenant Administrator'', the server checks that ''from'' and ''to'' entities are owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the ''from'' and ''to'' entities are assigned to the same customer.'
+      operationId: deleteRelation
+      parameters:
+      - name: fromId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: fromType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      - name: relationType
+        in: query
+        description: A string value representing relation type between entities. For example, 'Contains', 'Manages'. It can be any string value.
+        required: true
+        schema:
+          type: string
+      - name: relationTypeGroup
+        in: query
+        description: A string value representing relation type group. For example, 'COMMON'
+        required: false
+        schema:
+          type: string
+      - name: toId
+        in: query
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: toType
+        in: query
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    RelationsSearchParameters:
+      properties:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
+          type: integer
+          format: int32
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
+          type: boolean
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    EntityRelationsQuery:
+      description: A JSON value representing the entity relations query object.
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        filters:
+          type: array
+          description: Main filters.
+          items:
+            $ref: '#/components/schemas/RelationEntityTypeFilter'
+    RelationEntityTypeFilter:
+      properties:
+        relationType:
+          type: string
+          description: Type of the relation between root entity and other entity (e.g. 'Contains' or 'Manages').
+          example: Contains
+        entityTypes:
+          type: array
+          description: Array of entity types to filter the related entities (e.g. 'DEVICE', 'ASSET').
+          items:
+            type: string
+            enum:
+            - TENANT
+            - CUSTOMER
+            - USER
+            - DASHBOARD
+            - ASSET
+            - DEVICE
+            - ALARM
+            - RULE_CHAIN
+            - RULE_NODE
+            - ROLE
+            - ENTITY_VIEW
+            - WIDGETS_BUNDLE
+            - WIDGET_TYPE
+            - TENANT_PROFILE
+            - DEVICE_PROFILE
+            - ASSET_PROFILE
+            - API_USAGE_STATE
+            - TB_RESOURCE
+            - OTA_PACKAGE
+            - EDGE
+            - RPC
+            - QUEUE
+            - NOTIFICATION_TARGET
+            - NOTIFICATION_TEMPLATE
+            - NOTIFICATION_REQUEST
+            - NOTIFICATION
+            - NOTIFICATION_RULE
+            - QUEUE_STATS
+        negate:
+          type: boolean
+          description: Negate relation type between root entity and other entity.
+    EntityRelation:
+      description: A JSON value representing the relation.
+      properties:
+        from:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [from] Entity Id.
+          readOnly: true
+        to:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [to] Entity Id.
+          readOnly: true
+        type:
+          type: string
+          description: String value of relation type.
+          example: Contains
+        typeGroup:
+          type: string
+          description: Represents the type group of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+          example: COMMON
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the relation
+    EntityRelationInfo:
+      properties:
+        from:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [from] Entity Id.
+          readOnly: true
+        to:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [to] Entity Id.
+          readOnly: true
+        type:
+          type: string
+          description: String value of relation type.
+          example: Contains
+        typeGroup:
+          type: string
+          description: Represents the type group of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+          example: COMMON
+        fromName:
+          type: string
+          description: Name of the entity for [from] direction.
+          example: A4B72CCDFF33
+          readOnly: true
+        toName:
+          type: string
+          description: Name of the entity for [to] direction.
+          example: A4B72CCDFF35
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the relation
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

@@ -1,0 +1,200 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Component Descriptor Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: component-descriptor-controller
+paths:
+  /api/components:
+    get:
+      tags:
+      - component-descriptor-controller
+      summary: Get Component Descriptors (getComponentDescriptorsByTypes)
+      description: 'Gets the Component Descriptors using coma separated list of rule node types and optional rule chain type request parameters. Each Component Descriptor represents configuration of specific rule node (e.g. ''Save Timeseries'' or ''Send Email''.). The Component Descriptors are used by the rule chain Web UI to build the configuration forms for the rule nodes. The Component Descriptors are discovered at runtime by scanning the class path and searching for @RuleNode annotation. Once discovered, the up to date list of descriptors is persisted to the database.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getComponentDescriptorsByTypes
+      parameters:
+      - name: componentTypes
+        in: query
+        description: List of types of the Rule Nodes, (ENRICHMENT, FILTER, TRANSFORMATION, ACTION or EXTERNAL)
+        required: true
+        schema:
+          items: {}
+      - name: ruleChainType
+        in: query
+        description: Type of the Rule Chain
+        required: false
+        schema:
+          enum:
+          - CORE
+          - EDGE
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentDescriptor'
+  /api/components/{componentType}:
+    get:
+      tags:
+      - component-descriptor-controller
+      summary: Get Component Descriptors (getComponentDescriptorsByType)
+      description: 'Gets the Component Descriptors using rule node type and optional rule chain type request parameters. Each Component Descriptor represents configuration of specific rule node (e.g. ''Save Timeseries'' or ''Send Email''.). The Component Descriptors are used by the rule chain Web UI to build the configuration forms for the rule nodes. The Component Descriptors are discovered at runtime by scanning the class path and searching for @RuleNode annotation. Once discovered, the up to date list of descriptors is persisted to the database.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getComponentDescriptorsByType
+      parameters:
+      - name: componentType
+        in: path
+        description: Type of the Rule Node
+        required: true
+        schema:
+          enum:
+          - ENRICHMENT
+          - FILTER
+          - TRANSFORMATION
+          - ACTION
+          - EXTERNAL
+      - name: ruleChainType
+        in: query
+        description: Type of the Rule Chain
+        required: false
+        schema:
+          enum:
+          - CORE
+          - EDGE
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentDescriptor'
+  /api/component/{componentDescriptorClazz}:
+    get:
+      tags:
+      - component-descriptor-controller
+      summary: Get Component Descriptor (getComponentDescriptorByClazz)
+      description: 'Gets the Component Descriptor object using class name from the path parameters. Each Component Descriptor represents configuration of specific rule node (e.g. ''Save Timeseries'' or ''Send Email''.). The Component Descriptors are used by the rule chain Web UI to build the configuration forms for the rule nodes. The Component Descriptors are discovered at runtime by scanning the class path and searching for @RuleNode annotation. Once discovered, the up to date list of descriptors is persisted to the database.
+
+
+        Available for users with ''SYS_ADMIN'' or ''TENANT_ADMIN'' authority.'
+      operationId: getComponentDescriptorByClazz
+      parameters:
+      - name: componentDescriptorClazz
+        in: path
+        description: Component Descriptor class name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComponentDescriptor'
+components:
+  schemas:
+    ComponentDescriptor:
+      properties:
+        id:
+          $ref: '#/components/schemas/ComponentDescriptorId'
+          description: JSON object with the descriptor Id. Specify existing descriptor id to update the descriptor. Referencing non-existing descriptor Id will cause error. Omit this field to create new descriptor.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the descriptor creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        type:
+          type: string
+          description: Type of the Rule Node
+          enum:
+          - ENRICHMENT
+          - FILTER
+          - TRANSFORMATION
+          - ACTION
+          - EXTERNAL
+          - FLOW
+          readOnly: true
+        scope:
+          type: string
+          description: Scope of the Rule Node. Always set to 'TENANT', since no rule chains on the 'SYSTEM' level yet.
+          enum:
+          - TENANT
+          example: TENANT
+          readOnly: true
+        clusteringMode:
+          type: string
+          description: Clustering mode of the RuleNode. This mode represents the ability to start Rule Node in multiple microservices.
+          enum:
+          - USER_PREFERENCE
+          - ENABLED
+          - SINGLETON
+          example: ENABLED
+          readOnly: true
+        name:
+          type: string
+          description: Name of the Rule Node. Taken from the @RuleNode annotation.
+          example: Custom Rule Node
+          readOnly: true
+        clazz:
+          type: string
+          description: Full name of the Java class that implements the Rule Engine Node interface.
+          example: com.mycompany.CustomRuleNode
+          readOnly: true
+        configurationVersion:
+          type: integer
+          format: int32
+          description: Rule node configuration version. By default, this value is 0. If the rule node is a versioned node, this value might be greater than 0.
+          readOnly: true
+        actions:
+          type: string
+          description: Rule Node Actions. Deprecated. Always null.
+          readOnly: true
+        hasQueueName:
+          type: boolean
+          description: Indicates that the RuleNode supports queue name configuration.
+          example: true
+          readOnly: true
+        configurationDescriptor:
+          $ref: '#/components/schemas/JsonNode'
+    ComponentDescriptorId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

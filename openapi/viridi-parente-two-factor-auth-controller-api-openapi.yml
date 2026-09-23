@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Two Factor Auth Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: two-factor-auth-controller
+paths:
+  /api/auth/2fa/verification/send:
+    post:
+      tags:
+      - two-factor-auth-controller
+      summary: Request 2FA verification code (requestTwoFaVerificationCode)
+      description: 'Request 2FA verification code.
+
+
+        To make a request to this endpoint, you need an access token with the scope of PRE_VERIFICATION_TOKEN, which is issued on username/password auth if 2FA is enabled.
+
+
+        The API method is rate limited (using rate limit config from TwoFactorAuthSettings). Will return a Bad Request error if provider is not configured for usage, and Too Many Requests error if rate limits are exceeded.'
+      operationId: requestTwoFaVerificationCode
+      parameters:
+      - name: providerType
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - TOTP
+          - SMS
+          - EMAIL
+          - BACKUP_CODE
+      responses:
+        '200':
+          description: OK
+  /api/auth/2fa/verification/check:
+    post:
+      tags:
+      - two-factor-auth-controller
+      summary: Check 2FA verification code (checkTwoFaVerificationCode)
+      description: 'Checks 2FA verification code, and if it is correct the method returns a regular access and refresh token pair.
+
+
+        The API method is rate limited (using rate limit config from TwoFactorAuthSettings), and also will block a user after X unsuccessful verification attempts if such behavior is configured (in TwoFactorAuthSettings).
+
+
+        Will return a Bad Request error if provider is not configured for usage, and Too Many Requests error if rate limits are exceeded.'
+      operationId: checkTwoFaVerificationCode
+      parameters:
+      - name: providerType
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - TOTP
+          - SMS
+          - EMAIL
+          - BACKUP_CODE
+      - name: verificationCode
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtPair'
+  /api/auth/2fa/providers:
+    get:
+      tags:
+      - two-factor-auth-controller
+      summary: Get available 2FA providers (getAvailableTwoFaProviders)
+      description: 'Get the list of 2FA provider infos available for user to use. Example:
+
+        ```
+
+        [
+
+        {
+
+        "type": "EMAIL",
+
+        "default": true,
+
+        "contact": "ab*****ko@gmail.com"
+
+        },
+
+        {
+
+        "type": "TOTP",
+
+        "default": false,
+
+        "contact": null
+
+        },
+
+        {
+
+        "type": "SMS",
+
+        "default": false,
+
+        "contact": "+38********12"
+
+        }
+
+        ]
+
+        ```'
+      operationId: getAvailableTwoFaProviders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TwoFaProviderInfo'
+components:
+  schemas:
+    TwoFaProviderInfo:
+      properties:
+        type:
+          type: string
+          enum:
+          - TOTP
+          - SMS
+          - EMAIL
+          - BACKUP_CODE
+        isDefault:
+          type: boolean
+          writeOnly: true
+        contact:
+          type: string
+        minVerificationCodeSendPeriod:
+          type: integer
+          format: int32
+        default:
+          type: boolean
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

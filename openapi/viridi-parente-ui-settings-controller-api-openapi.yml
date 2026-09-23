@@ -1,0 +1,39 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST UI Settings Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: ui-settings-controller
+paths:
+  /api/uiSettings/helpBaseUrl:
+    get:
+      tags:
+      - ui-settings-controller
+      summary: Get UI help base url (getHelpBaseUrl)
+      description: Get UI help base url used to fetch help assets. The actual value of the base url is configurable in the system configuration file.
+      operationId: getHelpBaseUrl
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

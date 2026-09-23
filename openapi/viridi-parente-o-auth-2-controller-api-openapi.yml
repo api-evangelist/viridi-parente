@@ -1,0 +1,317 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST O Auth 2 Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: o auth 2 controller
+paths:
+  /api/oauth2/config:
+    get:
+      tags:
+      - o auth 2 controller
+      summary: Get current OAuth2 settings (getCurrentOAuth2Info)
+      description: Available for users with 'SYS_ADMIN' authority.
+      operationId: getCurrentOAuth2Info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2Info'
+    post:
+      tags:
+      - o auth 2 controller
+      summary: Save OAuth2 settings (saveOAuth2Info)
+      description: Available for users with 'SYS_ADMIN' authority.
+      operationId: saveOAuth2Info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2Info'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2Info'
+  /api/noauth/oauth2Clients:
+    post:
+      tags:
+      - o auth 2 controller
+      summary: Get OAuth2 clients (getOAuth2Clients)
+      description: Get the list of OAuth2 clients to log in with, available for such domain scheme (HTTP or HTTPS) (if x-forwarded-proto request header is present - the scheme is known from it) and domain name and port (port may be known from x-forwarded-port header)
+      operationId: getOAuth2Clients
+      parameters:
+      - name: pkgName
+        in: query
+        description: Mobile application package name, to find OAuth2 clients where there is configured mobile application with such package name
+        required: false
+        schema:
+          type: string
+      - name: platform
+        in: query
+        description: Platform type to search OAuth2 clients for which the usage with this platform type is allowed in the settings. If platform type is not one of allowable values - it will just be ignored
+        required: false
+        schema:
+          enum:
+          - WEB
+          - ANDROID
+          - IOS
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OAuth2ClientInfo'
+  /api/oauth2/loginProcessingUrl:
+    get:
+      tags:
+      - o auth 2 controller
+      summary: Get OAuth2 log in processing URL (getLoginProcessingUrl)
+      description: 'Returns the URL enclosed in double quotes. After successful authentication with OAuth2 provider, it makes a redirect to this path so that the platform can do further log in processing. This URL may be configured as ''security.oauth2.loginProcessingUrl'' property in yml configuration file, or as ''SECURITY_OAUTH2_LOGIN_PROCESSING_URL'' env variable. By default it is ''/login/oauth2/code/''
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: getLoginProcessingUrl
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    OAuth2MapperConfig:
+      properties:
+        allowUserCreation:
+          type: boolean
+          description: Whether user should be created if not yet present on the platform after successful authentication
+        activateUser:
+          type: boolean
+          description: Whether user credentials should be activated when user is created after successful authentication
+        type:
+          type: string
+          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
+          enum:
+          - BASIC
+          - CUSTOM
+          - GITHUB
+          - APPLE
+        basic:
+          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
+          description: Mapper config for BASIC and GITHUB mapper types
+        custom:
+          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
+          description: Mapper config for CUSTOM mapper type
+      required:
+      - type
+    OAuth2ParamsInfo:
+      properties:
+        domainInfos:
+          type: array
+          description: List of configured domains where OAuth2 platform will redirect a user after successful authentication. Cannot be empty. There have to be only one domain with specific name with scheme type 'MIXED'. Configured domains with the same name must have different scheme types
+          items:
+            $ref: '#/components/schemas/OAuth2DomainInfo'
+        mobileInfos:
+          type: array
+          description: Mobile applications settings. Application package name must be unique within the list
+          items:
+            $ref: '#/components/schemas/OAuth2MobileInfo'
+        clientRegistrations:
+          type: array
+          description: List of OAuth2 provider settings. Cannot be empty
+          items:
+            $ref: '#/components/schemas/OAuth2RegistrationInfo'
+      required:
+      - clientRegistrations
+      - domainInfos
+      - mobileInfos
+    OAuth2DomainInfo:
+      properties:
+        scheme:
+          type: string
+          description: Domain scheme. Mixed scheme means than both HTTP and HTTPS are going to be used
+          enum:
+          - HTTP
+          - HTTPS
+          - MIXED
+        name:
+          type: string
+          description: Domain name. Cannot be empty
+      required:
+      - name
+      - scheme
+    OAuth2ClientInfo:
+      properties:
+        name:
+          type: string
+          description: OAuth2 client name
+          example: GitHub
+        icon:
+          type: string
+          description: Name of the icon, displayed on OAuth2 log in button
+          example: github-logo
+        url:
+          type: string
+          description: URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page
+          example: /oauth2/authorization/8352f191-2b4d-11ec-9ed1-cbf57c026ecc
+    OAuth2Info:
+      properties:
+        enabled:
+          type: boolean
+          description: Whether OAuth2 settings are enabled or not
+        edgeEnabled:
+          type: boolean
+          description: Whether OAuth2 settings are enabled on Edge or not
+        oauth2ParamsInfos:
+          type: array
+          description: List of configured OAuth2 clients. Cannot contain null values
+          items:
+            $ref: '#/components/schemas/OAuth2ParamsInfo'
+      required:
+      - oauth2ParamsInfos
+    OAuth2MobileInfo:
+      properties:
+        pkgName:
+          type: string
+          description: Application package name. Cannot be empty
+        appSecret:
+          type: string
+          description: Application secret. The length must be at least 16 characters
+      required:
+      - appSecret
+      - pkgName
+    OAuth2BasicMapperConfig:
+      properties:
+        emailAttributeKey:
+          type: string
+          description: Email attribute key of OAuth2 principal attributes. Must be specified for BASIC mapper type and cannot be specified for GITHUB type
+        firstNameAttributeKey:
+          type: string
+          description: First name attribute key
+        lastNameAttributeKey:
+          type: string
+          description: Last name attribute key
+        tenantNameStrategy:
+          type: string
+          description: Tenant naming strategy. For DOMAIN type, domain for tenant name will be taken from the email (substring before '@')
+          enum:
+          - DOMAIN
+          - EMAIL
+          - CUSTOM
+        tenantNamePattern:
+          type: string
+          description: Tenant name pattern for CUSTOM naming strategy. OAuth2 attributes in the pattern can be used by enclosing attribute key in '%{' and '}'
+          example: '%{email}'
+        customerNamePattern:
+          type: string
+          description: Customer name pattern. When creating a user on the first OAuth2 log in, if specified, customer name will be used to create or find existing customer in the platform and assign customerId to the user
+        defaultDashboardName:
+          type: string
+          description: Name of the tenant's dashboard to set as default dashboard for newly created user
+        alwaysFullScreen:
+          type: boolean
+          description: Whether default dashboard should be open in full screen
+      required:
+      - tenantNameStrategy
+    OAuth2CustomMapperConfig:
+      properties:
+        url:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        sendToken:
+          type: boolean
+    OAuth2RegistrationInfo:
+      properties:
+        mapperConfig:
+          $ref: '#/components/schemas/OAuth2MapperConfig'
+          description: Config for mapping OAuth2 log in response to platform entities
+        clientId:
+          type: string
+          description: OAuth2 client ID. Cannot be empty
+        clientSecret:
+          type: string
+          description: OAuth2 client secret. Cannot be empty
+        authorizationUri:
+          type: string
+          description: Authorization URI of the OAuth2 provider. Cannot be empty
+        accessTokenUri:
+          type: string
+          description: Access token URI of the OAuth2 provider. Cannot be empty
+        scope:
+          type: array
+          description: OAuth scopes that will be requested from OAuth2 platform. Cannot be empty
+          items:
+            type: string
+        userInfoUri:
+          type: string
+          description: User info URI of the OAuth2 provider
+        userNameAttributeName:
+          type: string
+          description: Name of the username attribute in OAuth2 provider response. Cannot be empty
+        jwkSetUri:
+          type: string
+          description: JSON Web Key URI of the OAuth2 provider
+        clientAuthenticationMethod:
+          type: string
+          description: 'Client authentication method to use: ''BASIC'' or ''POST''. Cannot be empty'
+        loginButtonLabel:
+          type: string
+          description: OAuth2 provider label. Cannot be empty
+        loginButtonIcon:
+          type: string
+          description: Log in button icon for OAuth2 provider
+        platforms:
+          type: array
+          description: List of platforms for which usage of the OAuth2 client is allowed (empty for all allowed)
+          items:
+            type: string
+            enum:
+            - WEB
+            - ANDROID
+            - IOS
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional info of OAuth2 client (e.g. providerName)
+      required:
+      - accessTokenUri
+      - additionalInfo
+      - authorizationUri
+      - clientAuthenticationMethod
+      - clientId
+      - clientSecret
+      - loginButtonLabel
+      - mapperConfig
+      - scope
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

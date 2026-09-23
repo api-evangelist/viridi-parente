@@ -1,0 +1,2089 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Entities Version Control Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: entities-version-control-controller
+paths:
+  /api/entities/vc/version:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List all versions (listVersions)
+      description: 'Lists all available versions in a branch for all entity types.
+
+        If specified branch does not exist - empty page data will be returned. The response format is the same as for `listEntityVersions` API method.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: listVersions
+      parameters:
+      - name: branch
+        in: query
+        description: The name of the working branch, for example 'master'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity version name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - timestamp
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityVersion'
+    post:
+      tags:
+      - entities-version-control-controller
+      summary: Save entities version (saveEntitiesVersion)
+      description: 'Creates a new version of entities (or a single entity) by request.
+
+        Supported entity types: CUSTOMER, ASSET, RULE_CHAIN, DASHBOARD, DEVICE_PROFILE, DEVICE, ENTITY_VIEW, WIDGETS_BUNDLE.
+
+
+        There are two available types of request: `SINGLE_ENTITY` and `COMPLEX`. Each of them contains version name (`versionName`) and name of a branch (`branch`) to create version (commit) in. If specified branch does not exists in a remote repo, then new empty branch will be created. Request of the `SINGLE_ENTITY` type has id of an entity (`entityId`) and additional configuration (`config`) which has following options:
+
+        - `saveRelations` - whether to add inbound and outbound relations of type COMMON to created entity version;
+
+        - `saveAttributes` - to save attributes of server scope (and also shared scope for devices);
+
+        - `saveCredentials` - when saving a version of a device, to add its credentials to the version.
+
+
+        An example of a `SINGLE_ENTITY` version create request:
+
+        ```json
+
+        {
+
+        "type": "SINGLE_ENTITY",
+
+
+        "versionName": "Version 1.0",
+
+        "branch": "dev",
+
+
+        "entityId": {
+
+        "entityType": "DEVICE",
+
+        "id": "b79448e0-d4f4-11ec-847b-0f432358ab48"
+
+        },
+
+        "config": {
+
+        "saveRelations": true,
+
+        "saveAttributes": true,
+
+        "saveCredentials": false
+
+        }
+
+        }
+
+        ```
+
+
+        Second request type (`COMPLEX`), additionally to `branch` and `versionName`, contains following properties:
+
+        - `entityTypes` - a structure with entity types to export and configuration for each entity type; this configuration has all the options available for `SINGLE_ENTITY` and additionally has these ones:
+
+        - `allEntities` and `entityIds` - if you want to save the version of all entities of the entity type then set `allEntities` param to true, otherwise set it to false and specify the list of specific entities (`entityIds`);
+
+        - `syncStrategy` - synchronization strategy to use for this entity type: when set to `OVERWRITE` then the list of remote entities of this type will be overwritten by newly added entities. If set to `MERGE` - existing remote entities of this entity type will not be removed, new entities will just be added on top (or existing remote entities will be updated).
+
+        - `syncStrategy` - default synchronization strategy to use when it is not specified for an entity type.
+
+
+        Example for this type of request:
+
+        ```json
+
+        {
+
+        "type": "COMPLEX",
+
+
+        "versionName": "Devices and profiles: release 2",
+
+        "branch": "master",
+
+
+        "syncStrategy": "OVERWRITE",
+
+        "entityTypes": {
+
+        "DEVICE": {
+
+        "syncStrategy": null,
+
+        "allEntities": true,
+
+        "saveRelations": true,
+
+        "saveAttributes": true,
+
+        "saveCredentials": true
+
+        },
+
+        "DEVICE_PROFILE": {
+
+        "syncStrategy": "MERGE",
+
+        "allEntities": false,
+
+        "entityIds": [
+
+        "b79448e0-d4f4-11ec-847b-0f432358ab48"
+
+        ],
+
+        "saveRelations": true
+
+        }
+
+        }
+
+        }
+
+        ```
+
+
+        Response wil contain generated request UUID, that can be then used to retrieve status of operation via `getVersionCreateRequestStatus`.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveEntitiesVersion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/ComplexVersionCreateRequest'
+              - $ref: '#/components/schemas/SingleEntityVersionCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+  /api/entities/vc/entity:
+    post:
+      tags:
+      - entities-version-control-controller
+      summary: Load entities version (loadEntitiesVersion)
+      description: 'Loads specific version of remote entities (or single entity) by request. Supported entity types: CUSTOMER, ASSET, RULE_CHAIN, DASHBOARD, DEVICE_PROFILE, DEVICE, ENTITY_VIEW, WIDGETS_BUNDLE.
+
+
+        There are multiple types of request. Each of them requires branch name (`branch`) and version id (`versionId`). Request of type `SINGLE_ENTITY` is needed to restore a concrete version of a specific entity. It contains id of a remote entity (`externalEntityId`) and additional configuration (`config`):
+
+        - `loadRelations` - to update relations list (in case `saveRelations` option was enabled during version creation);
+
+        - `loadAttributes` - to load entity attributes (if `saveAttributes` config option was enabled);
+
+        - `loadCredentials` - to update device credentials (if `saveCredentials` option was enabled during version creation).
+
+
+        An example of such request:
+
+        ```json
+
+        {
+
+        "type": "SINGLE_ENTITY",
+
+
+        "branch": "dev",
+
+        "versionId": "b3c28d722d328324c7c15b0b30047b0c40011cf7",
+
+
+        "externalEntityId": {
+
+        "entityType": "DEVICE",
+
+        "id": "b7944123-d4f4-11ec-847b-0f432358ab48"
+
+        },
+
+        "config": {
+
+        "loadRelations": false,
+
+        "loadAttributes": true,
+
+        "loadCredentials": true
+
+        }
+
+        }
+
+        ```
+
+
+        Another request type (`ENTITY_TYPE`) is needed to load specific version of the whole entity types. It contains a structure with entity types to load and configs for each entity type (`entityTypes`). For each specified entity type, the method will load all remote entities of this type that are present at the version. A config for each entity type contains the same options as in `SINGLE_ENTITY` request type, and additionally contains following options:
+
+        - `removeOtherEntities` - to remove local entities that are not present on the remote - basically to overwrite local entity type with the remote one;
+
+        - `findExistingEntityByName` - when you are loading some remote entities that are not yet present at this tenant, try to find existing entity by name and update it rather than create new.
+
+
+        Here is an example of the request to completely restore version of the whole device entity type:
+
+        ```json
+
+        {
+
+        "type": "ENTITY_TYPE",
+
+
+        "branch": "dev",
+
+        "versionId": "b3c28d722d328324c7c15b0b30047b0c40011cf7",
+
+
+        "entityTypes": {
+
+        "DEVICE": {
+
+        "removeOtherEntities": true,
+
+        "findExistingEntityByName": false,
+
+        "loadRelations": true,
+
+        "loadAttributes": true,
+
+        "loadCredentials": true
+
+        }
+
+        }
+
+        }
+
+        ```
+
+
+        The response will contain generated request UUID that is to be used to check the status of operation via `getVersionLoadRequestStatus`.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: loadEntitiesVersion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/EntityTypeVersionLoadRequest'
+              - $ref: '#/components/schemas/SingleEntityVersionLoadRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+  /api/entities/vc/version/{requestId}/status:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: Get version create request status (getVersionCreateRequestStatus)
+      description: 'Returns the status of previously made version create request.
+
+
+        This status contains following properties:
+
+        - `done` - whether request processing is finished;
+
+        - `version` - created version info: timestamp, version id (commit hash), commit name and commit author;
+
+        - `added` - count of items that were created in the remote repo;
+
+        - `modified` - modified items count;
+
+        - `removed` - removed items count;
+
+        - `error` - error message, if an error occurred while handling the request.
+
+
+        An example of successful status:
+
+        ```json
+
+        {
+
+        "done": true,
+
+        "added": 10,
+
+        "modified": 2,
+
+        "removed": 5,
+
+        "version": {
+
+        "timestamp": 1655198528000,
+
+        "id":"8a834dd389ed80e0759ba8ee338b3f1fd160a114",
+
+        "name": "My devices v2.0",
+
+        "author": "John Doe"
+
+        },
+
+        "error": null
+
+        }
+
+        ```
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getVersionCreateRequestStatus
+      parameters:
+      - name: requestId
+        in: path
+        description: A string value representing the version control request id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionCreationResult'
+  /api/entities/vc/version/{entityType}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List entity type versions (listEntityTypeVersions)
+      description: 'Returns list of versions of an entity type in a branch. This is a collected list of versions that were created for entities of this type in a remote branch.
+
+        If specified branch does not exist - empty page data will be returned. The response structure is the same as for `listEntityVersions` API method.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: listEntityTypeVersions
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+      - name: branch
+        in: query
+        description: The name of the working branch, for example 'master'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity version name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - timestamp
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityVersion'
+  /api/entities/vc/version/{entityType}/{externalEntityUuid}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List entity versions (listEntityVersions)
+      description: 'Returns list of versions for a specific entity in a concrete branch.
+
+        You need to specify external id of an entity to list versions for. This is `externalId` property of an entity, or otherwise if not set - simply id of this entity.
+
+        If specified branch does not exist - empty page data will be returned.
+
+
+        Each version info item has timestamp, id, name and author. Version id can then be used to restore the version. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Response example:
+
+        ```json
+
+        {
+
+        "data": [
+
+        {
+
+        "timestamp": 1655198593000,
+
+        "id": "fd82625bdd7d6131cf8027b44ee967012ecaf990",
+
+        "name": "Devices and assets - v2.0",
+
+        "author": "John Doe "
+
+        },
+
+        {
+
+        "timestamp": 1655198528000,
+
+        "id": "682adcffa9c8a2f863af6f00c4850323acbd4219",
+
+        "name": "Update my device",
+
+        "author": "John Doe "
+
+        },
+
+        {
+
+        "timestamp": 1655198280000,
+
+        "id": "d2a6087c2b30e18cc55e7cdda345a8d0dfb959a4",
+
+        "name": "Devices and assets - v1.0",
+
+        "author": "John Doe "
+
+        }
+
+        ],
+
+        "totalPages": 1,
+
+        "totalElements": 3,
+
+        "hasNext": false
+
+        }
+
+        ```
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: listEntityVersions
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+      - name: externalEntityUuid
+        in: path
+        description: A string value representing external entity id. This is `externalId` property of an entity, or otherwise if not set - simply id of this entity.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: branch
+        in: query
+        description: The name of the working branch, for example 'master'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the entity version name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - timestamp
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEntityVersion'
+  /api/entities/vc/info/{versionId}/{entityType}/{externalEntityUuid}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: Get entity data info (getEntityDataInfo)
+      description: 'Retrieves short info about the remote entity by external id at a concrete version.
+
+        Returned entity data info contains following properties: `hasRelations` (whether stored entity data contains relations), `hasAttributes` (contains attributes) and `hasCredentials` (whether stored device data has credentials).
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getEntityDataInfo
+      parameters:
+      - name: versionId
+        in: path
+        description: Version id, for example fd82625bdd7d6131cf8027b44ee967012ecaf990. Represents commit hash.
+        required: true
+        schema:
+          type: string
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+      - name: externalEntityUuid
+        in: path
+        description: A string value representing external entity id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityDataInfo'
+  /api/entities/vc/entity/{versionId}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List all entities at version (listAllEntitiesAtVersion)
+      description: 'Returns a list of all remote entities available in a specific version. Response type is the same as for listAllEntitiesAtVersion API method.
+
+        Returned entities order will be the same as in the repository.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: listAllEntitiesAtVersion
+      parameters:
+      - name: versionId
+        in: path
+        description: Version id, for example fd82625bdd7d6131cf8027b44ee967012ecaf990. Represents commit hash.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VersionedEntityInfo'
+  /api/entities/vc/entity/{requestId}/status:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: Get version load request status (getVersionLoadRequestStatus)
+      description: 'Returns the status of previously made version load request. The structure contains following parameters:
+
+        - `done` - if the request was successfully processed;
+
+        - `result` - a list of load results for each entity type:
+
+        - `created` - created entities count;
+
+        - `updated` - updated entities count;
+
+        - `deleted` - removed entities count.
+
+        - `error` - if an error occurred during processing, error info:
+
+        - `type` - error type;
+
+        - `source` - an external id of remote entity;
+
+        - `target` - if failed to find referenced entity by external id - this external id;
+
+        - `message` - error message.
+
+
+        An example of successfully processed request status:
+
+        ```json
+
+        {
+
+        "done": true,
+
+        "result": [
+
+        {
+
+        "entityType": "DEVICE",
+
+        "created": 10,
+
+        "updated": 5,
+
+        "deleted": 5
+
+        },
+
+        {
+
+        "entityType": "ASSET",
+
+        "created": 4,
+
+        "updated": 0,
+
+        "deleted": 8
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getVersionLoadRequestStatus
+      parameters:
+      - name: requestId
+        in: path
+        description: A string value representing the version control request id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionLoadResult'
+  /api/entities/vc/entity/{entityType}/{versionId}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List entities at version (listEntitiesAtVersion)
+      description: 'Returns a list of remote entities of a specific entity type that are available at a concrete version.
+
+        Each entity item in the result has `externalId` property. Entities order will be the same as in the repository.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: listEntitiesAtVersion
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+      - name: versionId
+        in: path
+        description: Version id, for example fd82625bdd7d6131cf8027b44ee967012ecaf990. Represents commit hash.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VersionedEntityInfo'
+  /api/entities/vc/diff/{entityType}/{internalEntityUuid}:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: Compare entity data to version (compareEntityDataToVersion)
+      description: 'Returns an object with current entity data and the one at a specific version. Entity data structure is the same as stored in a repository.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: compareEntityDataToVersion
+      parameters:
+      - name: entityType
+        in: path
+        description: A string value representing the entity type. For example, 'DEVICE'
+        required: true
+        schema:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+      - name: internalEntityUuid
+        in: path
+        description: A string value representing the entity id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: query
+        description: Version id, for example fd82625bdd7d6131cf8027b44ee967012ecaf990. Represents commit hash.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityDataDiff'
+  /api/entities/vc/branches:
+    get:
+      tags:
+      - entities-version-control-controller
+      summary: List branches (listBranches)
+      description: 'Lists branches available in the remote repository.
+
+
+        Response example:
+
+        ```json
+
+        [
+
+        {
+
+        "name": "master",
+
+        "default": true
+
+        },
+
+        {
+
+        "name": "dev",
+
+        "default": false
+
+        },
+
+        {
+
+        "name": "dev-2",
+
+        "default": false
+
+        }
+
+        ]
+
+        ```'
+      operationId: listBranches
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BranchInfo'
+components:
+  schemas:
+    EntityExportDataObject:
+      discriminator:
+        propertyName: entityType
+      properties:
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        entity: {}
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityRelation'
+        attributes:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/AttributeExportData'
+    Lwm2mDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    EntityLoadError:
+      properties:
+        type:
+          type: string
+        source:
+          $ref: '#/components/schemas/EntityId'
+        target:
+          $ref: '#/components/schemas/EntityId'
+        message:
+          type: string
+    DefaultDeviceConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceConfiguration'
+    BranchInfo:
+      properties:
+        name:
+          type: string
+        default:
+          type: boolean
+    SingleEntityVersionLoadRequest:
+      allOf:
+      - $ref: '#/components/schemas/VersionLoadRequest'
+      - type: object
+        properties:
+          externalEntityId:
+            $ref: '#/components/schemas/EntityId'
+          config:
+            $ref: '#/components/schemas/VersionLoadConfig'
+    EntityDataDiff:
+      properties:
+        currentVersion:
+          oneOf:
+          - $ref: '#/components/schemas/EntityExportDataObject'
+          - $ref: '#/components/schemas/DeviceExportData'
+          - $ref: '#/components/schemas/RuleChainExportData'
+          - $ref: '#/components/schemas/WidgetTypeExportData'
+          - $ref: '#/components/schemas/WidgetsBundleExportData'
+        otherVersion:
+          oneOf:
+          - $ref: '#/components/schemas/EntityExportDataObject'
+          - $ref: '#/components/schemas/DeviceExportData'
+          - $ref: '#/components/schemas/RuleChainExportData'
+          - $ref: '#/components/schemas/WidgetTypeExportData'
+          - $ref: '#/components/schemas/WidgetsBundleExportData'
+    RuleChainMetaData:
+      description: A JSON value representing the rule chain metadata.
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Rule Chain Id.
+          readOnly: true
+        firstNodeIndex:
+          type: integer
+          format: int32
+          description: Index of the first rule node in the 'nodes' list
+        nodes:
+          type: array
+          description: List of rule node JSON objects
+          items:
+            $ref: '#/components/schemas/RuleNode'
+        connections:
+          type: array
+          description: List of JSON objects that represent connections between rule nodes
+          items:
+            $ref: '#/components/schemas/NodeConnectionInfo'
+        ruleChainConnections:
+          type: array
+          description: List of JSON objects that represent connections between rule nodes and other rule chains.
+          items:
+            $ref: '#/components/schemas/RuleChainConnectionInfo'
+      required:
+      - connections
+      - firstNodeIndex
+      - nodes
+      - ruleChainConnections
+      - ruleChainId
+    RuleChainExportData:
+      allOf:
+      - $ref: '#/components/schemas/EntityExportDataObject'
+      - type: object
+        properties:
+          entity:
+            $ref: '#/components/schemas/RuleChain'
+          metaData:
+            $ref: '#/components/schemas/RuleChainMetaData'
+    DeviceExportData:
+      allOf:
+      - $ref: '#/components/schemas/EntityExportDataObject'
+      - type: object
+        properties:
+          entity:
+            $ref: '#/components/schemas/Device'
+          credentials:
+            $ref: '#/components/schemas/DeviceCredentials'
+    EntityVersion:
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+        id:
+          type: string
+        name:
+          type: string
+        author:
+          type: string
+    VersionCreationResult:
+      properties:
+        version:
+          $ref: '#/components/schemas/EntityVersion'
+        added:
+          type: integer
+          format: int32
+        modified:
+          type: integer
+          format: int32
+        removed:
+          type: integer
+          format: int32
+        error:
+          type: string
+        done:
+          type: boolean
+    DeviceCredentials:
+      description: A JSON value representing the device credentials.
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceCredentialsId'
+          description: 'The Id is automatically generated during device creation. Use ''getDeviceCredentialsByDeviceId'' to obtain the id based on device id. Use ''updateDeviceCredentials'' to update device credentials. '
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the device credentials creation, in milliseconds
+          example: 1609459200000
+        deviceId:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with the device Id.
+        credentialsType:
+          type: string
+          description: Type of the credentials
+          enum:
+          - ACCESS_TOKEN
+          - X509_CERTIFICATE
+          - MQTT_BASIC
+          - LWM2M_CREDENTIALS
+        credentialsId:
+          type: string
+          description: Unique Credentials Id per platform instance. Used to lookup credentials from the database. By default, new access token for your device. Depends on the type of the credentials.
+          example: Access token or other value that depends on the credentials type
+        credentialsValue:
+          type: string
+          description: Value of the credentials. Null in case of ACCESS_TOKEN credentials type. Base64 value in case of X509_CERTIFICATE. Complex object in case of MQTT_BASIC and LWM2M_CREDENTIALS
+          example: Null in case of ACCESS_TOKEN. See model definition.
+      required:
+      - credentialsId
+      - deviceId
+      - id
+    Device:
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the device creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Device Name in scope of Tenant
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Room 234 Sensor
+        deviceProfileId:
+          $ref: '#/components/schemas/DeviceProfileId'
+          description: JSON object with Device Profile Id.
+        firmwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        softwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+        deviceData:
+          $ref: '#/components/schemas/DeviceData'
+          description: JSON object with content specific to type of transport in the device profile.
+      required:
+      - deviceProfileId
+      - name
+    DefaultDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    DeviceProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
+      required:
+      - entityType
+      - id
+    DeviceData:
+      properties:
+        configuration:
+          description: Device configuration for device profile type. DEFAULT is only supported value for now
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
+        transportConfiguration:
+          description: Device transport configuration used to connect the device
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
+    EntityDataInfo:
+      properties:
+        hasRelations:
+          type: boolean
+        hasAttributes:
+          type: boolean
+        hasCredentials:
+          type: boolean
+    VersionLoadRequest:
+      discriminator:
+        propertyName: type
+      properties:
+        versionId:
+          type: string
+        type:
+          type: string
+          enum:
+          - SINGLE_ENTITY
+          - ENTITY_TYPE
+    WidgetTypeDetails:
+      description: A JSON value representing the Widget Type Details.
+      properties:
+        fqn:
+          type: string
+          description: Unique FQN that is used in dashboards as a reference widget type
+          readOnly: true
+        name:
+          type: string
+          description: Widget name used in search and UI
+          readOnly: true
+        deprecated:
+          type: boolean
+          description: Whether widget type is deprecated.
+          example: true
+        image:
+          type: string
+          description: Relative or external image URL. Replaced with image data URL (Base64) in case of relative URL and 'inlineImages' option enabled.
+        description:
+          type: string
+          description: Description of the widget
+        descriptor:
+          $ref: '#/components/schemas/JsonNode'
+        id:
+          $ref: '#/components/schemas/WidgetTypeId'
+          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Type creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        tags:
+          type: array
+          description: Tags of the widget type
+          items:
+            type: string
+    VersionCreateConfig:
+      properties:
+        saveRelations:
+          type: boolean
+        saveAttributes:
+          type: boolean
+        saveCredentials:
+          type: boolean
+    OtaPackageId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - OTA_PACKAGE
+          example: OTA_PACKAGE
+      required:
+      - entityType
+      - id
+    WidgetsBundleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGETS_BUNDLE
+          example: WIDGETS_BUNDLE
+      required:
+      - entityType
+      - id
+    SingleEntityVersionCreateRequest:
+      allOf:
+      - $ref: '#/components/schemas/VersionCreateRequest'
+      - type: object
+        properties:
+          entityId:
+            $ref: '#/components/schemas/EntityId'
+          config:
+            $ref: '#/components/schemas/VersionCreateConfig'
+    WidgetTypeExportData:
+      allOf:
+      - $ref: '#/components/schemas/EntityExportDataObject'
+      - type: object
+        properties:
+          entity:
+            $ref: '#/components/schemas/WidgetTypeDetails'
+    SnmpDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: integer
+            format: int32
+          protocolVersion:
+            type: string
+            enum:
+            - V1
+            - V2C
+            - V3
+          community:
+            type: string
+          username:
+            type: string
+          securityName:
+            type: string
+          contextName:
+            type: string
+          authenticationProtocol:
+            type: string
+            enum:
+            - SHA_1
+            - SHA_224
+            - SHA_256
+            - SHA_384
+            - SHA_512
+            - MD5
+          authenticationPassphrase:
+            type: string
+          privacyProtocol:
+            type: string
+            enum:
+            - DES
+            - AES_128
+            - AES_192
+            - AES_256
+          privacyPassphrase:
+            type: string
+          engineId:
+            type: string
+    WidgetTypeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGET_TYPE
+          example: WIDGET_TYPE
+      required:
+      - entityType
+      - id
+    RuleNode:
+      properties:
+        id:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: JSON object with the Rule Node Id. Specify this field to update the Rule Node. Referencing non-existing Rule Node Id will cause error. Omit this field to create new rule node.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rule node creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: 'JSON object with the Rule Chain Id. '
+          readOnly: true
+        type:
+          type: string
+          description: 'Full Java Class Name of the rule node implementation. '
+          example: com.mycompany.iot.rule.engine.ProcessingNode
+        name:
+          type: string
+          description: 'User defined name of the rule node. Used on UI and for logging. '
+          example: Process sensor reading
+        debugMode:
+          type: boolean
+          description: 'Enable/disable debug. '
+          example: false
+        singletonMode:
+          type: boolean
+          description: 'Enable/disable singleton mode. '
+          example: false
+        queueName:
+          type: string
+          description: 'Queue name. '
+          example: Main
+        configurationVersion:
+          type: integer
+          format: int32
+          description: 'Version of rule node configuration. '
+          example: 0
+        externalId:
+          $ref: '#/components/schemas/RuleNodeId'
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the rule node. Contains 'layoutX' and 'layoutY' properties for visualization.
+    RuleChainConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        targetRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with the additional information about the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - additionalInfo
+      - fromIndex
+      - targetRuleChainId
+      - type
+    WidgetsBundleExportData:
+      allOf:
+      - $ref: '#/components/schemas/EntityExportDataObject'
+      - type: object
+        properties:
+          entity:
+            $ref: '#/components/schemas/WidgetsBundle'
+          widgets:
+            type: array
+            items:
+              type: object
+          fqns:
+            type: array
+            items:
+              type: string
+    DeviceConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    EntityTypeLoadResult:
+      properties:
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        created:
+          type: integer
+          format: int32
+        updated:
+          type: integer
+          format: int32
+        deleted:
+          type: integer
+          format: int32
+    VersionedEntityInfo:
+      properties:
+        externalId:
+          $ref: '#/components/schemas/EntityId'
+    RuleChain:
+      description: A JSON value representing the rule chain.
+      properties:
+        id:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id. Specify this field to update the Rule Chain. Referencing non-existing Rule Chain Id will cause error. Omit this field to create new rule chain.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rule chain creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        name:
+          type: string
+          description: Rule Chain name
+          example: Humidity data processing
+        type:
+          type: string
+          description: Rule Chain type. 'EDGE' rule chains are processing messages on the edge devices only.
+          enum:
+          - CORE
+          - EDGE
+          example: A4B72CCDFF33
+        firstRuleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: JSON object with Rule Chain Id. Pointer to the first rule node that should receive all messages pushed to this rule chain.
+        root:
+          type: boolean
+          description: Indicates root rule chain. The root rule chain process messages from all devices and entities by default. User may configure default rule chain per device profile.
+        debugMode:
+          type: boolean
+          description: Reserved for future usage.
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - tenantId
+    VersionLoadResult:
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityTypeLoadResult'
+        error:
+          $ref: '#/components/schemas/EntityLoadError'
+        done:
+          type: boolean
+    EntityTypeVersionLoadConfig:
+      properties:
+        loadRelations:
+          type: boolean
+        loadAttributes:
+          type: boolean
+        loadCredentials:
+          type: boolean
+        removeOtherEntities:
+          type: boolean
+        findExistingEntityByName:
+          type: boolean
+    EntityTypeVersionCreateConfig:
+      properties:
+        saveRelations:
+          type: boolean
+        saveAttributes:
+          type: boolean
+        saveCredentials:
+          type: boolean
+        syncStrategy:
+          type: string
+          enum:
+          - MERGE
+          - OVERWRITE
+        entityIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        allEntities:
+          type: boolean
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    DeviceCredentialsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    PageDataEntityVersion:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityVersion'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    VersionLoadConfig:
+      properties:
+        loadRelations:
+          type: boolean
+        loadAttributes:
+          type: boolean
+        loadCredentials:
+          type: boolean
+    DeviceTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    EntityTypeVersionLoadRequest:
+      allOf:
+      - $ref: '#/components/schemas/VersionLoadRequest'
+      - type: object
+        properties:
+          entityTypes:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/EntityTypeVersionLoadConfig'
+          rollbackOnError:
+            type: boolean
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    NodeConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        toIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - fromIndex
+      - toIndex
+      - type
+    AttributeExportData:
+      properties:
+        key:
+          type: string
+        lastUpdateTs:
+          type: integer
+          format: int64
+        booleanValue:
+          type: boolean
+        strValue:
+          type: string
+        longValue:
+          type: integer
+          format: int64
+        doubleValue:
+          type: number
+          format: double
+        jsonValue:
+          type: string
+    EntityRelation:
+      description: A JSON value representing the relation.
+      properties:
+        from:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [from] Entity Id.
+          readOnly: true
+        to:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with [to] Entity Id.
+          readOnly: true
+        type:
+          type: string
+          description: String value of relation type.
+          example: Contains
+        typeGroup:
+          type: string
+          description: Represents the type group of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+          example: COMMON
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the relation
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    WidgetsBundle:
+      description: A JSON value representing the Widget Bundle.
+      properties:
+        id:
+          $ref: '#/components/schemas/WidgetsBundleId'
+          description: JSON object with the Widget Bundle Id. Specify this field to update the Widget Bundle. Referencing non-existing Widget Bundle Id will cause error. Omit this field to create new Widget Bundle.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Bundle creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        alias:
+          type: string
+          description: Unique alias that is used in widget types as a reference widget bundle
+          readOnly: true
+        title:
+          type: string
+          description: Title used in search and UI
+          readOnly: true
+        image:
+          type: string
+          description: Relative or external image URL. Replaced with image data URL (Base64) in case of relative URL and 'inlineImages' option enabled.
+          readOnly: true
+        description:
+          type: string
+          description: Description
+          readOnly: true
+        order:
+          type: integer
+          format: int32
+          description: Order
+          readOnly: true
+        name:
+          type: string
+          description: Same as title of the Widget Bundle. Read-only field. Update the 'title' to change the 'name' of the Widget Bundle.
+          readOnly: true
+    CoapDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    RuleNodeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_NODE
+          example: RULE_NODE
+      required:
+      - entityType
+      - id
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    ComplexVersionCreateRequest:
+      allOf:
+      - $ref: '#/components/schemas/VersionCreateRequest'
+      - type: object
+        properties:
+          syncStrategy:
+            type: string
+            enum:
+            - MERGE
+            - OVERWRITE
+          entityTypes:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/EntityTypeVersionCreateConfig'
+    VersionCreateRequest:
+      discriminator:
+        propertyName: type
+      properties:
+        versionName:
+          type: string
+        branch:
+          type: string
+        type:
+          type: string
+          enum:
+          - SINGLE_ENTITY
+          - COMPLEX
+    MqttDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

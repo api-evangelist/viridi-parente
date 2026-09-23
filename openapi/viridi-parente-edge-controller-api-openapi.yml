@@ -1,0 +1,1238 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Edge Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: edge-controller
+paths:
+  /api/edges:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edges By Ids (getEdgesByIds)
+      description: 'Requested edges must be owned by tenant or assigned to customer which user is performing the request.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEdges_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: edgeIds
+        in: query
+        description: A list of edges ids, separated by comma ','
+        required: true
+        schema:
+          items: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/Edge'
+                - $ref: '#/components/schemas/PageDataEdge'
+    post:
+      tags:
+      - edge-controller
+      summary: Find related edges (findByQuery)
+      description: 'Returns all edges that are related to the specific entity. The entity id, relation type, edge types, depth of the search, and other query parameters defined using complex ''EdgeSearchQuery'' object. See ''Model'' tab of the Parameters for more info.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: findByQuery_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdgeSearchQuery'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Edge'
+  /api/edge:
+    post:
+      tags:
+      - edge-controller
+      summary: Create Or Update Edge (saveEdge)
+      description: 'Create or update the Edge. When creating edge, platform generates Edge Id as time-based UUID). The newly created edge id will be present in the response. Specify existing Edge id to update the edge. Referencing non-existing Edge Id will cause ''Not Found'' error.
+
+
+        Edge name is unique in the scope of tenant. Use unique identifiers like MAC or IMEI for the edge names and non-unique ''label'' field for user-friendly visualization purposes.Remove ''id'', ''tenantId'' and optionally ''customerId'' from the request body example (below) to create new Edge entity.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: saveEdge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Edge'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+  /api/edge/{edgeId}/{ruleChainId}/root:
+    post:
+      tags:
+      - edge-controller
+      summary: Set root rule chain for provided edge (setEdgeRootRuleChain)
+      description: 'Change root rule chain of the edge to the new provided rule chain.
+
+        This operation will send a notification to update root rule chain on remote edge service.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: setEdgeRootRuleChain
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: ruleChainId
+        in: path
+        description: A string value representing the rule chain id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+  /api/edge/sync/{edgeId}:
+    post:
+      tags:
+      - edge-controller
+      summary: Sync edge (syncEdge)
+      description: 'Starts synchronization process between edge and cloud.
+
+        All entities that are assigned to particular edge are going to be send to remote edge service.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: syncEdge
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+  /api/edge/bulk_import:
+    post:
+      tags:
+      - edge-controller
+      summary: Import the bulk of edges (processEdgesBulkImport)
+      description: 'There''s an ability to import the bulk of edges using the only .csv file.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: processEdgesBulkImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkImportRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkImportResultEdge'
+  /api/customer/{customerId}/edge/{edgeId}:
+    post:
+      tags:
+      - edge-controller
+      summary: Assign edge to customer (assignEdgeToCustomer)
+      description: 'Creates assignment of the edge to customer. Customer will be able to query edge afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignEdgeToCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+  /api/customer/public/edge/{edgeId}:
+    post:
+      tags:
+      - edge-controller
+      summary: Make edge publicly available (assignEdgeToPublicCustomer)
+      description: 'Edge will be available for non-authorized (not logged-in) users. This is useful to create dashboards that you plan to share/embed on a publicly available website. However, users that are logged-in and belong to different tenant will not be able to access the edge.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: assignEdgeToPublicCustomer
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+  /api/tenant/edges:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Tenant Edge (getTenantEdge)
+      description: 'Requested edge must be owned by tenant or customer that the user belongs to. Edge name is an unique property of edge. So it can be used to identify the edge.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantEdges_1
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: A string value representing the edge type. For example, 'default'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: edgeName
+        in: query
+        description: Unique name of the edge
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Edge'
+                - $ref: '#/components/schemas/PageDataEdge'
+  /api/tenant/edgeInfos:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Tenant Edge Infos (getTenantEdgeInfos)
+      description: 'Returns a page of edges info objects owned by tenant. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details. Edge Info is an extension of the default Edge object that contains information about the assigned customer name.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getTenantEdgeInfos
+      parameters:
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: A string value representing the edge type. For example, 'default'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEdgeInfo'
+  /api/edges/enabled:
+    get:
+      tags:
+      - edge-controller
+      summary: Is edges support enabled (isEdgesSupportEnabled)
+      description: Returns 'true' if edges support enabled on server, 'false' - otherwise.
+      operationId: isEdgesSupportEnabled
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/edge/{edgeId}:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edge (getEdgeById)
+      description: 'Get the Edge object based on the provided Edge Id. If the user has the authority of ''Tenant Administrator'', the server checks that the edge is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the edge is assigned to the same customer.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEdgeById
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+    delete:
+      tags:
+      - edge-controller
+      summary: Delete edge (deleteEdge)
+      description: 'Deletes the edge. Referencing non-existing edge Id will cause an error.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: deleteEdge
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /api/edge/{edgeId}/upgrade/available:
+    get:
+      tags:
+      - edge-controller
+      summary: Is edge upgrade enabled (isEdgeUpgradeAvailable)
+      description: Returns 'true' if upgrade available for connected edge, 'false' - otherwise.
+      operationId: isEdgeUpgradeAvailable
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/edge/types:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edge Types (getEdgeTypes)
+      description: 'Returns a set of unique edge types based on edges that are either owned by the tenant or assigned to the customer which user is performing the request.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEdgeTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntitySubtype'
+  /api/edge/missingToRelatedRuleChains/{edgeId}:
+    get:
+      tags:
+      - edge-controller
+      summary: Find missing rule chains (findMissingToRelatedRuleChains)
+      description: 'Returns list of rule chains ids that are not assigned to particular edge, but these rule chains are present in the already assigned rule chains to edge.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: findMissingToRelatedRuleChains
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/edge/instructions/upgrade/{edgeVersion}/{method}:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edge Upgrade Instructions (getEdgeUpgradeInstructions)
+      description: 'Get an upgrade instructions for provided edge version.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getEdgeUpgradeInstructions
+      parameters:
+      - name: edgeVersion
+        in: path
+        description: Edge version
+        required: true
+        schema:
+          type: string
+      - name: method
+        in: path
+        description: Upgrade method ('docker', 'ubuntu' or 'centos')
+        required: true
+        schema:
+          enum:
+          - docker
+          - ubuntu
+          - centos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeInstructions'
+  /api/edge/instructions/install/{edgeId}/{method}:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edge Install Instructions (getEdgeInstallInstructions)
+      description: 'Get an install instructions for provided edge id.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: getEdgeInstallInstructions
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: method
+        in: path
+        description: Installation method ('docker', 'ubuntu' or 'centos')
+        required: true
+        schema:
+          enum:
+          - docker
+          - ubuntu
+          - centos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeInstructions'
+  /api/edge/info/{edgeId}:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Edge Info (getEdgeInfoById)
+      description: 'Get the Edge Info object based on the provided Edge Id. If the user has the authority of ''Tenant Administrator'', the server checks that the edge is owned by the same tenant. If the user has the authority of ''Customer User'', the server checks that the edge is assigned to the same customer.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getEdgeInfoById
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeInfo'
+  /api/customer/{customerId}/edges:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Customer Edges (getCustomerEdges)
+      description: 'Returns a page of edges objects assigned to customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getCustomerEdges
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: A string value representing the edge type. For example, 'default'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEdge'
+  /api/customer/{customerId}/edgeInfos:
+    get:
+      tags:
+      - edge-controller
+      summary: Get Customer Edge Infos (getCustomerEdgeInfos)
+      description: 'Returns a page of edges info objects assigned to customer. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the ''Model'' tab of the Response Class for more details. Edge Info is an extension of the default Edge object that contains information about the assigned customer name.
+
+
+        Available for users with ''TENANT_ADMIN'' or ''CUSTOMER_USER'' authority.'
+      operationId: getCustomerEdgeInfos
+      parameters:
+      - name: customerId
+        in: path
+        description: A string value representing the customer id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: type
+        in: query
+        description: A string value representing the edge type. For example, 'default'
+        required: false
+        schema:
+          type: string
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEdgeInfo'
+  /api/customer/edge/{edgeId}:
+    delete:
+      tags:
+      - edge-controller
+      summary: Unassign edge from customer (unassignEdgeFromCustomer)
+      description: 'Clears assignment of the edge to customer. Customer will not be able to query edge afterwards.
+
+
+        Available for users with ''TENANT_ADMIN'' authority.'
+      operationId: unassignEdgeFromCustomer
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+components:
+  schemas:
+    BulkImportResultEdge:
+      properties:
+        created:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        updated:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        errors:
+          properties:
+            opaque:
+              type: integer
+              format: int32
+            acquire:
+              type: integer
+              format: int32
+            release:
+              type: integer
+              format: int32
+              writeOnly: true
+            andIncrement:
+              type: integer
+              format: int32
+            andDecrement:
+              type: integer
+              format: int32
+            plain:
+              type: integer
+              format: int32
+        errorsList:
+          type: array
+          items:
+            type: string
+    RelationsSearchParameters:
+      properties:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
+          type: integer
+          format: int32
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
+          type: boolean
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    EdgeInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EdgeId'
+          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the edge creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
+          readOnly: true
+        rootRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Edge Name in scope of Tenant
+          example: Silo_A_Edge
+        type:
+          type: string
+          description: Edge type
+          example: Silos
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Silo Edge on far field
+        routingKey:
+          type: string
+          description: Edge routing key ('username') to authorize on cloud
+        secret:
+          type: string
+          description: Edge secret ('password') to authorize on cloud
+        customerTitle:
+          type: string
+        customerIsPublic:
+          type: boolean
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - routingKey
+      - secret
+      - type
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    EdgeSearchQuery:
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
+          type: string
+          description: Type of the relation between root entity and edge (e.g. 'Contains' or 'Manages').
+        edgeTypes:
+          type: array
+          description: Array of edge types to filter the related entities (e.g. 'Silos', 'Stores').
+          items:
+            type: string
+    EdgeInstructions:
+      properties:
+        instructions:
+          type: string
+          description: Markdown with install/upgrade instructions
+    PageDataEdge:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Edge'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    BulkImportRequest:
+      properties:
+        file:
+          type: string
+        mapping:
+          $ref: '#/components/schemas/Mapping'
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    EdgeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - EDGE
+          example: EDGE
+      required:
+      - entityType
+      - id
+    PageDataEdgeInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EdgeInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    Edge:
+      description: A JSON value representing the edge.
+      properties:
+        id:
+          $ref: '#/components/schemas/EdgeId'
+          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the edge creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
+          readOnly: true
+        rootRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Edge Name in scope of Tenant
+          example: Silo_A_Edge
+        type:
+          type: string
+          description: Edge type
+          example: Silos
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Silo Edge on far field
+        routingKey:
+          type: string
+          description: Edge routing key ('username') to authorize on cloud
+        secret:
+          type: string
+          description: Edge secret ('password') to authorize on cloud
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - routingKey
+      - secret
+      - type
+    Mapping:
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapping'
+        delimiter:
+          type: string
+        update:
+          type: boolean
+        header:
+          type: boolean
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    ColumnMapping:
+      properties:
+        type:
+          type: string
+          enum:
+          - NAME
+          - TYPE
+          - LABEL
+          - SHARED_ATTRIBUTE
+          - SERVER_ATTRIBUTE
+          - TIMESERIES
+          - ACCESS_TOKEN
+          - X509
+          - MQTT_CLIENT_ID
+          - MQTT_USER_NAME
+          - MQTT_PASSWORD
+          - LWM2M_CLIENT_ENDPOINT
+          - LWM2M_CLIENT_SECURITY_CONFIG_MODE
+          - LWM2M_CLIENT_IDENTITY
+          - LWM2M_CLIENT_KEY
+          - LWM2M_CLIENT_CERT
+          - LWM2M_BOOTSTRAP_SERVER_SECURITY_MODE
+          - LWM2M_BOOTSTRAP_SERVER_PUBLIC_KEY_OR_ID
+          - LWM2M_BOOTSTRAP_SERVER_SECRET_KEY
+          - LWM2M_SERVER_SECURITY_MODE
+          - LWM2M_SERVER_CLIENT_PUBLIC_KEY_OR_ID
+          - LWM2M_SERVER_CLIENT_SECRET_KEY
+          - SNMP_HOST
+          - SNMP_PORT
+          - SNMP_VERSION
+          - SNMP_COMMUNITY_STRING
+          - IS_GATEWAY
+          - DESCRIPTION
+          - ROUTING_KEY
+          - SECRET
+        key:
+          type: string
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

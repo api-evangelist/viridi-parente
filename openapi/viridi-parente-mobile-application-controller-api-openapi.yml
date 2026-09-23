@@ -1,0 +1,265 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Mobile Application Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: mobile-application-controller
+paths:
+  /api/mobile/app/settings:
+    get:
+      tags:
+      - mobile-application-controller
+      summary: Get Mobile application settings (getMobileAppSettings)
+      description: 'The response payload contains configuration for android/iOS applications and platform qr code widget settings.
+
+
+        Available for any authorized user.'
+      operationId: getMobileAppSettings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileAppSettings'
+    post:
+      tags:
+      - mobile-application-controller
+      summary: Create Or Update the Mobile application settings (saveMobileAppSettings)
+      description: 'The request payload contains configuration for android/iOS applications and platform qr code widget settings.
+
+
+        Available for users with ''SYS_ADMIN'' authority.'
+      operationId: saveMobileAppSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileAppSettings'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileAppSettings'
+  /api/noauth/qr:
+    get:
+      tags:
+      - mobile-application-controller
+      operationId: getApplicationRedirect
+      parameters:
+      - name: User-Agent
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Get application redirect
+      x-summary-source: derived
+  /api/noauth/qr/{secret}:
+    get:
+      tags:
+      - mobile-application-controller
+      summary: Get User Token (getUserTokenByMobileSecret)
+      description: Returns the token of the User based on the provided secret key.
+      operationId: getUserTokenByMobileSecret
+      parameters:
+      - name: secret
+        in: path
+        description: A string value representing short-lived secret key
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtPair'
+  /api/mobile/deepLink:
+    get:
+      tags:
+      - mobile-application-controller
+      summary: Get the deep link to the associated mobile application (getMobileAppDeepLink)
+      description: 'Fetch the url that takes user to linked mobile application
+
+
+        Available for any authorized user.'
+      operationId: getMobileAppDeepLink
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /.well-known/assetlinks.json:
+    get:
+      tags:
+      - mobile-application-controller
+      summary: Get associated android applications (getAssetLinks)
+      operationId: getAssetLinks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+  /.well-known/apple-app-site-association:
+    get:
+      tags:
+      - mobile-application-controller
+      summary: Get associated ios applications (getAppleAppSiteAssociation)
+      operationId: getAppleAppSiteAssociation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+components:
+  schemas:
+    MobileAppSettings:
+      description: A JSON value representing the mobile apps configuration
+      properties:
+        id:
+          $ref: '#/components/schemas/MobileAppSettingsId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        useDefaultApp:
+          type: boolean
+          description: 'Type of application: true means use default Thingsboard app'
+          example: true
+        androidConfig:
+          $ref: '#/components/schemas/AndroidConfig'
+          description: Android mobile app configuration.
+        iosConfig:
+          $ref: '#/components/schemas/IosConfig'
+          description: Ios mobile app configuration.
+        qrCodeConfig:
+          $ref: '#/components/schemas/QRCodeConfig'
+          description: QR code config configuration.
+        defaultGooglePlayLink:
+          type: string
+          readOnly: true
+        defaultAppStoreLink:
+          type: string
+          readOnly: true
+      required:
+      - androidConfig
+      - iosConfig
+      - qrCodeConfig
+      - useDefaultApp
+    QRCodeConfig:
+      properties:
+        showOnHomePage:
+          type: boolean
+        badgeEnabled:
+          type: boolean
+        qrCodeLabelEnabled:
+          type: boolean
+        badgePosition:
+          type: string
+          enum:
+          - RIGHT
+          - LEFT
+        qrCodeLabel:
+          type: string
+    AndroidConfig:
+      properties:
+        enabled:
+          type: boolean
+        appPackage:
+          type: string
+        sha256CertFingerprints:
+          type: string
+        storeLink:
+          type: string
+    MobileAppSettingsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    IosConfig:
+      properties:
+        enabled:
+          type: boolean
+        appId:
+          type: string
+        storeLink:
+          type: string
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization

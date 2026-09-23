@@ -1,0 +1,245 @@
+openapi: 3.2.0
+info:
+  title: ThingsBoard REST Edge Event Controller API
+  description: ThingsBoard open-source IoT platform REST API documentation.
+  contact:
+    name: ThingsBoard team
+    url: https://thingsboard.io
+    email: info@thingsboard.io
+  license:
+    name: Apache License Version 2.0
+    url: https://github.com/thingsboard/thingsboard/blob/master/LICENSE
+  version: 3.7.0
+servers:
+- url: https://vista.viridiparente.com
+  description: Generated server url
+tags:
+- name: edge-event-controller
+paths:
+  /api/edge/{edgeId}/events:
+    get:
+      tags:
+      - edge-event-controller
+      summary: Get Edge Events (getEdgeEvents)
+      description: Returns a page of edge events for the requested edge. You can specify parameters to filter the results. The result is wrapped with PageData object that allows you to iterate over result set using pagination. See the 'Model' tab of the Response Class for more details.
+      operationId: getEdgeEvents
+      parameters:
+      - name: edgeId
+        in: path
+        description: A string value representing the edge id. For example, '784f394c-42b6-435a-983c-b7beff2784f9'
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Maximum amount of entities in a one page
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: Sequence number of page starting from 0
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: textSearch
+        in: query
+        description: The case insensitive 'substring' filter based on the edge event type name.
+        required: false
+        schema:
+          type: string
+      - name: sortProperty
+        in: query
+        description: Property of entity to sort by
+        required: false
+        schema:
+          enum:
+          - createdTime
+          - name
+          - type
+          - label
+          - customerTitle
+      - name: sortOrder
+        in: query
+        description: Sort order. ASC (ASCENDING) or DESC (DESCENDING)
+        required: false
+        schema:
+          enum:
+          - ASC
+          - DESC
+      - name: startTime
+        in: query
+        description: Timestamp. Edge events with creation time before it won't be queried
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: endTime
+        in: query
+        description: Timestamp. Edge events with creation time after it won't be queried
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataEdgeEvent'
+components:
+  schemas:
+    PageDataEdgeEvent:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EdgeEvent'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EdgeEventId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    EdgeEvent:
+      properties:
+        id:
+          $ref: '#/components/schemas/EdgeEventId'
+        createdTime:
+          type: integer
+          format: int64
+        seqId:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        edgeId:
+          $ref: '#/components/schemas/EdgeId'
+        action:
+          type: string
+          enum:
+          - ADDED
+          - UPDATED
+          - DELETED
+          - POST_ATTRIBUTES
+          - ATTRIBUTES_UPDATED
+          - ATTRIBUTES_DELETED
+          - TIMESERIES_UPDATED
+          - CREDENTIALS_UPDATED
+          - ASSIGNED_TO_CUSTOMER
+          - UNASSIGNED_FROM_CUSTOMER
+          - RELATION_ADD_OR_UPDATE
+          - RELATION_DELETED
+          - RPC_CALL
+          - ALARM_ACK
+          - ALARM_CLEAR
+          - ALARM_DELETE
+          - ALARM_ASSIGNED
+          - ALARM_UNASSIGNED
+          - ADDED_COMMENT
+          - UPDATED_COMMENT
+          - DELETED_COMMENT
+          - ASSIGNED_TO_EDGE
+          - UNASSIGNED_FROM_EDGE
+          - CREDENTIALS_REQUEST
+          - ENTITY_MERGE_REQUEST
+        entityId:
+          type: string
+          format: uuid
+        uid:
+          type: string
+        type:
+          type: string
+          enum:
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - ENTITY_VIEW
+          - ALARM
+          - ALARM_COMMENT
+          - RULE_CHAIN
+          - RULE_CHAIN_METADATA
+          - EDGE
+          - USER
+          - CUSTOMER
+          - RELATION
+          - TENANT
+          - TENANT_PROFILE
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - ADMIN_SETTINGS
+          - OTA_PACKAGE
+          - QUEUE
+          - NOTIFICATION_RULE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - TB_RESOURCE
+          - OAUTH2
+        body:
+          $ref: '#/components/schemas/JsonNode'
+    EdgeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - EDGE
+          example: EDGE
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+  securitySchemes:
+    HTTP_login_form:
+      type: http
+      description: Enter Username / Password
+      scheme: loginPassword
+      bearerFormat: /api/auth/login|X-Authorization
