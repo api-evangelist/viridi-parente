@@ -682,6 +682,45 @@ paths:
                 $ref: '#/components/schemas/Asset'
 components:
   schemas:
+    Asset:
+      properties:
+        id:
+          $ref: '#/components/schemas/AssetId'
+          description: JSON object with the asset Id. Specify this field to update the asset. Referencing non-existing asset Id will cause error. Omit this field to create new asset.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the asset creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignAssetToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Asset Name in scope of Tenant
+          example: Empire State Building
+        type:
+          type: string
+          description: Asset type
+          example: Building
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: NY Building
+        assetProfileId:
+          $ref: '#/components/schemas/AssetProfileId'
+          description: JSON object with Asset Profile Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the asset
+      required:
+      - name
     BulkImportResultAsset:
       properties:
         created:
@@ -773,282 +812,16 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    RelationsSearchParameters:
-      properties:
-        rootId:
-          type: string
-          format: uuid
-          description: Root entity id to start search from.
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        rootType:
-          type: string
-          description: Type of the root entity.
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        direction:
-          type: string
-          description: Type of the root entity.
-          enum:
-          - FROM
-          - TO
-        relationTypeGroup:
-          type: string
-          description: Type of the relation.
-          enum:
-          - COMMON
-          - DASHBOARD
-          - RULE_CHAIN
-          - RULE_NODE
-          - EDGE
-          - EDGE_AUTO_ASSIGN_RULE_CHAIN
-        maxLevel:
-          type: integer
-          format: int32
-          description: Maximum level of the search depth.
-        fetchLastLevelOnly:
-          type: boolean
-          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
-    PageDataAsset:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/Asset'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    EntitySubtype:
-      properties:
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        type:
-          type: string
-    Mapping:
-      properties:
-        columns:
-          type: array
-          items:
-            $ref: '#/components/schemas/ColumnMapping'
-        delimiter:
-          type: string
-        update:
-          type: boolean
-        header:
-          type: boolean
-    Asset:
-      properties:
-        id:
-          $ref: '#/components/schemas/AssetId'
-          description: JSON object with the asset Id. Specify this field to update the asset. Referencing non-existing asset Id will cause error. Omit this field to create new asset.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the asset creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignAssetToCustomer' to change the Customer Id.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Asset Name in scope of Tenant
-          example: Empire State Building
-        type:
-          type: string
-          description: Asset type
-          example: Building
-        label:
-          type: string
-          description: Label that may be used in widgets
-          example: NY Building
-        assetProfileId:
-          $ref: '#/components/schemas/AssetProfileId'
-          description: JSON object with Asset Profile Id.
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-          description: Additional parameters of the asset
-      required:
-      - name
-    AssetId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ASSET
-          example: ASSET
-      required:
-      - entityType
-      - id
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    AssetProfileId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ASSET_PROFILE
-          example: ASSET_PROFILE
-      required:
-      - entityType
-      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     BulkImportRequest:
       properties:
         file:
           type: string
         mapping:
           $ref: '#/components/schemas/Mapping'
-    ColumnMapping:
-      properties:
-        type:
-          type: string
-          enum:
-          - NAME
-          - TYPE
-          - LABEL
-          - SHARED_ATTRIBUTE
-          - SERVER_ATTRIBUTE
-          - TIMESERIES
-          - ACCESS_TOKEN
-          - X509
-          - MQTT_CLIENT_ID
-          - MQTT_USER_NAME
-          - MQTT_PASSWORD
-          - LWM2M_CLIENT_ENDPOINT
-          - LWM2M_CLIENT_SECURITY_CONFIG_MODE
-          - LWM2M_CLIENT_IDENTITY
-          - LWM2M_CLIENT_KEY
-          - LWM2M_CLIENT_CERT
-          - LWM2M_BOOTSTRAP_SERVER_SECURITY_MODE
-          - LWM2M_BOOTSTRAP_SERVER_PUBLIC_KEY_OR_ID
-          - LWM2M_BOOTSTRAP_SERVER_SECRET_KEY
-          - LWM2M_SERVER_SECURITY_MODE
-          - LWM2M_SERVER_CLIENT_PUBLIC_KEY_OR_ID
-          - LWM2M_SERVER_CLIENT_SECRET_KEY
-          - SNMP_HOST
-          - SNMP_PORT
-          - SNMP_VERSION
-          - SNMP_COMMUNITY_STRING
-          - IS_GATEWAY
-          - DESCRIPTION
-          - ROUTING_KEY
-          - SECRET
-        key:
-          type: string
-    AssetSearchQuery:
-      properties:
-        parameters:
-          $ref: '#/components/schemas/RelationsSearchParameters'
-          description: Main search parameters.
-        relationType:
-          type: string
-          description: Type of the relation between root entity and asset (e.g. 'Contains' or 'Manages').
-        assetTypes:
-          type: array
-          description: Array of asset types to filter the related entities (e.g. 'Building', 'Vehicle').
-          items:
-            type: string
     AssetInfo:
       properties:
         id:
@@ -1116,10 +889,237 @@ components:
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    ColumnMapping:
+      properties:
+        type:
+          type: string
+          enum:
+          - NAME
+          - TYPE
+          - LABEL
+          - SHARED_ATTRIBUTE
+          - SERVER_ATTRIBUTE
+          - TIMESERIES
+          - ACCESS_TOKEN
+          - X509
+          - MQTT_CLIENT_ID
+          - MQTT_USER_NAME
+          - MQTT_PASSWORD
+          - LWM2M_CLIENT_ENDPOINT
+          - LWM2M_CLIENT_SECURITY_CONFIG_MODE
+          - LWM2M_CLIENT_IDENTITY
+          - LWM2M_CLIENT_KEY
+          - LWM2M_CLIENT_CERT
+          - LWM2M_BOOTSTRAP_SERVER_SECURITY_MODE
+          - LWM2M_BOOTSTRAP_SERVER_PUBLIC_KEY_OR_ID
+          - LWM2M_BOOTSTRAP_SERVER_SECRET_KEY
+          - LWM2M_SERVER_SECURITY_MODE
+          - LWM2M_SERVER_CLIENT_PUBLIC_KEY_OR_ID
+          - LWM2M_SERVER_CLIENT_SECRET_KEY
+          - SNMP_HOST
+          - SNMP_PORT
+          - SNMP_VERSION
+          - SNMP_COMMUNITY_STRING
+          - IS_GATEWAY
+          - DESCRIPTION
+          - ROUTING_KEY
+          - SECRET
+        key:
+          type: string
+    Mapping:
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapping'
+        delimiter:
+          type: string
+        update:
+          type: boolean
+        header:
+          type: boolean
+    AssetSearchQuery:
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
+          type: string
+          description: Type of the relation between root entity and asset (e.g. 'Contains' or 'Manages').
+        assetTypes:
+          type: array
+          description: Array of asset types to filter the related entities (e.g. 'Building', 'Vehicle').
+          items:
+            type: string
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    AssetProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET_PROFILE
+          example: ASSET_PROFILE
+      required:
+      - entityType
+      - id
+    RelationsSearchParameters:
+      properties:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
+          type: integer
+          format: int32
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
+          type: boolean
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    AssetId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET
+          example: ASSET
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    PageDataAsset:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Asset'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -267,41 +267,33 @@ components:
       required:
       - body
       - subject
-    MicrosoftTeamsDeliveryMethodNotificationTemplate:
+    MobileAppDeliveryMethodNotificationTemplate:
       allOf:
       - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
       - type: object
         properties:
           subject:
             type: string
-          themeColor:
-            type: string
-          button:
-            $ref: '#/components/schemas/Button'
+          additionalConfig: {}
       required:
       - body
-    SlackConversation:
+      - subject
+    NotificationTemplateId:
       properties:
-        type:
-          type: string
-          enum:
-          - DIRECT
-          - PUBLIC_CHANNEL
-          - PRIVATE_CHANNEL
         id:
           type: string
-        name:
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
           type: string
-        wholeName:
-          type: string
-        email:
-          type: string
-        title:
-          type: string
+          description: string
+          enum:
+          - NOTIFICATION_TEMPLATE
+          example: NOTIFICATION_TEMPLATE
       required:
+      - entityType
       - id
-      - name
-      - type
     NotificationTemplate:
       properties:
         id:
@@ -337,11 +329,78 @@ components:
       - configuration
       - name
       - notificationType
+    SlackDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      required:
+      - body
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    SlackConversation:
+      properties:
+        type:
+          type: string
+          enum:
+          - DIRECT
+          - PUBLIC_CHANNEL
+          - PRIVATE_CHANNEL
+        id:
+          type: string
+        name:
+          type: string
+        wholeName:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    EmailDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+      required:
+      - body
+      - subject
     SmsDeliveryMethodNotificationTemplate:
       allOf:
       - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
       required:
       - body
+    NotificationTemplateConfig:
+      properties:
+        deliveryMethodsTemplates:
+          type: object
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/EmailDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MicrosoftTeamsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MobileAppDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SlackDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SmsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/WebDeliveryMethodNotificationTemplate'
+      required:
+      - deliveryMethodsTemplates
     Button:
       properties:
         enabled:
@@ -362,22 +421,6 @@ components:
           type: string
         setEntityIdInState:
           type: boolean
-    NotificationTemplateId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - NOTIFICATION_TEMPLATE
-          example: NOTIFICATION_TEMPLATE
-      required:
-      - entityType
-      - id
     DeliveryMethodNotificationTemplate:
       discriminator:
         propertyName: method
@@ -391,6 +434,19 @@ components:
       required:
       - body
       - method
+    MicrosoftTeamsDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          themeColor:
+            type: string
+          button:
+            $ref: '#/components/schemas/Button'
+      required:
+      - body
     PageDataNotificationTemplate:
       properties:
         data:
@@ -413,62 +469,6 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    EmailDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      - type: object
-        properties:
-          subject:
-            type: string
-      required:
-      - body
-      - subject
-    SlackDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      required:
-      - body
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    NotificationTemplateConfig:
-      properties:
-        deliveryMethodsTemplates:
-          type: object
-          additionalProperties:
-            oneOf:
-            - $ref: '#/components/schemas/EmailDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/MicrosoftTeamsDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/MobileAppDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/SlackDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/SmsDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/WebDeliveryMethodNotificationTemplate'
-      required:
-      - deliveryMethodsTemplates
-    MobileAppDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      - type: object
-        properties:
-          subject:
-            type: string
-          additionalConfig: {}
-      required:
-      - body
-      - subject
   securitySchemes:
     HTTP_login_form:
       type: http

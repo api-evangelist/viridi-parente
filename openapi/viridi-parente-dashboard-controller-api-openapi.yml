@@ -712,19 +712,15 @@ paths:
                 $ref: '#/components/schemas/PageDataDashboardInfo'
 components:
   schemas:
-    ShortCustomerInfo:
+    HomeDashboardInfo:
+      description: A JSON object that represents home dashboard id and other parameters
       properties:
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with the customer Id.
-        title:
-          type: string
-          description: Title of the customer.
-        isPublic:
+        dashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id.
+        hideDashboardToolbar:
           type: boolean
-          writeOnly: true
-        public:
-          type: boolean
+          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
     TenantId:
       properties:
         id:
@@ -741,113 +737,6 @@ components:
       required:
       - entityType
       - id
-    DashboardInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/DashboardId'
-          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the dashboard creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
-          readOnly: true
-        title:
-          type: string
-          description: Title of the dashboard.
-        image:
-          type: string
-          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
-          readOnly: true
-        assignedCustomers:
-          type: array
-          description: List of assigned customers with their info.
-          items:
-            $ref: '#/components/schemas/ShortCustomerInfo'
-          readOnly: true
-          uniqueItems: true
-        mobileHide:
-          type: boolean
-          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
-          readOnly: true
-        mobileOrder:
-          type: integer
-          format: int32
-          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
-          readOnly: true
-        name:
-          type: string
-          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
-          readOnly: true
-      required:
-      - title
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    Dashboard:
-      properties:
-        id:
-          $ref: '#/components/schemas/DashboardId'
-          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the dashboard creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
-          readOnly: true
-        title:
-          type: string
-          description: Title of the dashboard.
-        image:
-          type: string
-          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
-          readOnly: true
-        assignedCustomers:
-          type: array
-          description: List of assigned customers with their info.
-          items:
-            $ref: '#/components/schemas/ShortCustomerInfo'
-          readOnly: true
-          uniqueItems: true
-        mobileHide:
-          type: boolean
-          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
-          readOnly: true
-        mobileOrder:
-          type: integer
-          format: int32
-          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
-          readOnly: true
-        configuration:
-          $ref: '#/components/schemas/JsonNode'
-          description: 'JSON object with main configuration of the dashboard: layouts, widgets, aliases, etc. The JSON structure of the dashboard configuration is quite complex. The easiest way to learn it is to export existing dashboard to JSON.'
-        name:
-          type: string
-          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
-          readOnly: true
-      required:
-      - title
     HomeDashboard:
       properties:
         id:
@@ -920,6 +809,53 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
+    Dashboard:
+      properties:
+        id:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the dashboard creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        image:
+          type: string
+          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
+          readOnly: true
+        assignedCustomers:
+          type: array
+          description: List of assigned customers with their info.
+          items:
+            $ref: '#/components/schemas/ShortCustomerInfo'
+          readOnly: true
+          uniqueItems: true
+        mobileHide:
+          type: boolean
+          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
+          readOnly: true
+        mobileOrder:
+          type: integer
+          format: int32
+          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
+          readOnly: true
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+          description: 'JSON object with main configuration of the dashboard: layouts, widgets, aliases, etc. The JSON structure of the dashboard configuration is quite complex. The easiest way to learn it is to export existing dashboard to JSON.'
+        name:
+          type: string
+          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
+          readOnly: true
+      required:
+      - title
     JsonNode:
       description: A value representing the any type (object or primitive)
       examples:
@@ -940,15 +876,79 @@ components:
       required:
       - entityType
       - id
-    HomeDashboardInfo:
-      description: A JSON object that represents home dashboard id and other parameters
+    DashboardInfo:
       properties:
-        dashboardId:
+        id:
           $ref: '#/components/schemas/DashboardId'
-          description: JSON object with the dashboard Id.
-        hideDashboardToolbar:
+          description: JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the dashboard creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        image:
+          type: string
+          description: Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.
+          readOnly: true
+        assignedCustomers:
+          type: array
+          description: List of assigned customers with their info.
+          items:
+            $ref: '#/components/schemas/ShortCustomerInfo'
+          readOnly: true
+          uniqueItems: true
+        mobileHide:
           type: boolean
-          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
+          description: Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.
+          readOnly: true
+        mobileOrder:
+          type: integer
+          format: int32
+          description: Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications
+          readOnly: true
+        name:
+          type: string
+          description: Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.
+          readOnly: true
+      required:
+      - title
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    ShortCustomerInfo:
+      properties:
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with the customer Id.
+        title:
+          type: string
+          description: Title of the customer.
+        isPublic:
+          type: boolean
+          writeOnly: true
+        public:
+          type: boolean
   securitySchemes:
     HTTP_login_form:
       type: http

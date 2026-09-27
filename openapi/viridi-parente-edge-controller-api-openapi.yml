@@ -776,6 +776,81 @@ paths:
                 $ref: '#/components/schemas/Edge'
 components:
   schemas:
+    Edge:
+      description: A JSON value representing the edge.
+      properties:
+        id:
+          $ref: '#/components/schemas/EdgeId'
+          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the edge creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
+          readOnly: true
+        rootRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Edge Name in scope of Tenant
+          example: Silo_A_Edge
+        type:
+          type: string
+          description: Edge type
+          example: Silos
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Silo Edge on far field
+        routingKey:
+          type: string
+          description: Edge routing key ('username') to authorize on cloud
+        secret:
+          type: string
+          description: Edge secret ('password') to authorize on cloud
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - routingKey
+      - secret
+      - type
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    BulkImportRequest:
+      properties:
+        file:
+          type: string
+        mapping:
+          $ref: '#/components/schemas/Mapping'
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     BulkImportResultEdge:
       properties:
         created:
@@ -845,6 +920,71 @@ components:
           type: array
           items:
             type: string
+    EdgeInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EdgeId'
+          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the edge creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
+          readOnly: true
+        rootRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Edge Name in scope of Tenant
+          example: Silo_A_Edge
+        type:
+          type: string
+          description: Edge type
+          example: Silos
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Silo Edge on far field
+        routingKey:
+          type: string
+          description: Edge routing key ('username') to authorize on cloud
+        secret:
+          type: string
+          description: Edge secret ('password') to authorize on cloud
+        customerTitle:
+          type: string
+        customerIsPublic:
+          type: boolean
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - name
+      - routingKey
+      - secret
+      - type
+    EdgeSearchQuery:
+      properties:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
+          type: string
+          description: Type of the relation between root entity and edge (e.g. 'Contains' or 'Manages').
+        edgeTypes:
+          type: array
+          description: Array of edge types to filter the related entities (e.g. 'Silos', 'Stores').
+          items:
+            type: string
     RelationsSearchParameters:
       properties:
         rootId:
@@ -907,272 +1047,6 @@ components:
         fetchLastLevelOnly:
           type: boolean
           description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
-    EdgeInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/EdgeId'
-          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the edge creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
-          readOnly: true
-        rootRuleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Edge Name in scope of Tenant
-          example: Silo_A_Edge
-        type:
-          type: string
-          description: Edge type
-          example: Silos
-        label:
-          type: string
-          description: Label that may be used in widgets
-          example: Silo Edge on far field
-        routingKey:
-          type: string
-          description: Edge routing key ('username') to authorize on cloud
-        secret:
-          type: string
-          description: Edge secret ('password') to authorize on cloud
-        customerTitle:
-          type: string
-        customerIsPublic:
-          type: boolean
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-      required:
-      - name
-      - routingKey
-      - secret
-      - type
-    EntitySubtype:
-      properties:
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        type:
-          type: string
-    EdgeSearchQuery:
-      properties:
-        parameters:
-          $ref: '#/components/schemas/RelationsSearchParameters'
-          description: Main search parameters.
-        relationType:
-          type: string
-          description: Type of the relation between root entity and edge (e.g. 'Contains' or 'Manages').
-        edgeTypes:
-          type: array
-          description: Array of edge types to filter the related entities (e.g. 'Silos', 'Stores').
-          items:
-            type: string
-    EdgeInstructions:
-      properties:
-        instructions:
-          type: string
-          description: Markdown with install/upgrade instructions
-    PageDataEdge:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/Edge'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    BulkImportRequest:
-      properties:
-        file:
-          type: string
-        mapping:
-          $ref: '#/components/schemas/Mapping'
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    EdgeId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - EDGE
-          example: EDGE
-      required:
-      - entityType
-      - id
-    PageDataEdgeInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EdgeInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    Edge:
-      description: A JSON value representing the edge.
-      properties:
-        id:
-          $ref: '#/components/schemas/EdgeId'
-          description: JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the edge creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.
-          readOnly: true
-        rootRuleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Edge Name in scope of Tenant
-          example: Silo_A_Edge
-        type:
-          type: string
-          description: Edge type
-          example: Silos
-        label:
-          type: string
-          description: Label that may be used in widgets
-          example: Silo Edge on far field
-        routingKey:
-          type: string
-          description: Edge routing key ('username') to authorize on cloud
-        secret:
-          type: string
-          description: Edge secret ('password') to authorize on cloud
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-      required:
-      - name
-      - routingKey
-      - secret
-      - type
-    Mapping:
-      properties:
-        columns:
-          type: array
-          items:
-            $ref: '#/components/schemas/ColumnMapping'
-        delimiter:
-          type: string
-        update:
-          type: boolean
-        header:
-          type: boolean
-    RuleChainId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
-      required:
-      - entityType
-      - id
     ColumnMapping:
       properties:
         type:
@@ -1210,7 +1084,56 @@ components:
           - SECRET
         key:
           type: string
-    TenantId:
+    Mapping:
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapping'
+        delimiter:
+          type: string
+        update:
+          type: boolean
+        header:
+          type: boolean
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    RuleChainId:
       properties:
         id:
           type: string
@@ -1221,15 +1144,92 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - RULE_CHAIN
+          example: RULE_CHAIN
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    EdgeInstructions:
+      properties:
+        instructions:
+          type: string
+          description: Markdown with install/upgrade instructions
+    PageDataEdgeInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EdgeInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    PageDataEdge:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Edge'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    EdgeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - EDGE
+          example: EDGE
+      required:
+      - entityType
+      - id
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -732,11 +732,113 @@ paths:
           description: OK
 components:
   schemas:
-    MobileSessionInfo:
+    UserId:
       properties:
-        fcmTokenTimestamp:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    StarredDashboardInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: JSON object with Dashboard id.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        starredAt:
           type: integer
           format: int64
+          description: Starred timestamp
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     UserEmailInfo:
       properties:
         id:
@@ -754,20 +856,6 @@ components:
           type: string
           description: User last name
           example: Brown
-    StarredDashboardInfo:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: JSON object with Dashboard id.
-          readOnly: true
-        title:
-          type: string
-          description: Title of the dashboard.
-        starredAt:
-          type: integer
-          format: int64
-          description: Starred timestamp
     User:
       description: A JSON value representing the User.
       properties:
@@ -827,48 +915,6 @@ components:
       required:
       - authority
       - email
-    RoleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
     UserDashboardsInfo:
       properties:
         last:
@@ -883,41 +929,32 @@ components:
           items:
             $ref: '#/components/schemas/StarredDashboardInfo'
           readOnly: true
-    UserId:
+    LastVisitedDashboardInfo:
       properties:
         id:
           type: string
           format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
+          description: JSON object with Dashboard id.
+          readOnly: true
+        title:
           type: string
-          description: string
-          enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
-    JwtPair:
-      description: JWT Pair
+          description: Title of the dashboard.
+        starred:
+          type: boolean
+          description: Starred flag
+        lastVisited:
+          type: integer
+          format: int64
+          description: Last visit timestamp
+    MobileSessionInfo:
       properties:
-        token:
-          type: string
-          description: The JWT Access Token. Used to perform API calls.
-          example: AAB254FF67D..
-        refreshToken:
-          type: string
-          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
-          example: AAB254FF67D..
-        scope:
-          type: string
-          enum:
-          - SYS_ADMIN
-          - TENANT_ADMIN
-          - CUSTOMER_USER
-          - REFRESH_TOKEN
-          - PRE_VERIFICATION_TOKEN
+        fcmTokenTimestamp:
+          type: integer
+          format: int64
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     PageDataUserEmailInfo:
       properties:
         data:
@@ -978,43 +1015,6 @@ components:
       required:
       - entityType
       - id
-    LastVisitedDashboardInfo:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: JSON object with Dashboard id.
-          readOnly: true
-        title:
-          type: string
-          description: Title of the dashboard.
-        starred:
-          type: boolean
-          description: Starred flag
-        lastVisited:
-          type: integer
-          format: int64
-          description: Last visit timestamp
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

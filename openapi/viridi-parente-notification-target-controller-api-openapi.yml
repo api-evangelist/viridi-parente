@@ -242,28 +242,150 @@ paths:
           description: OK
 components:
   schemas:
-    PageDataNotificationTarget:
+    UserId:
       properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/NotificationTarget'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    NotificationTarget:
+      properties:
+        id:
+          $ref: '#/components/schemas/NotificationTargetId'
+        createdTime:
           type: integer
           format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/MicrosoftTeamsNotificationTargetConfig'
+          - $ref: '#/components/schemas/PlatformUsersNotificationTargetConfig'
+          - $ref: '#/components/schemas/SlackNotificationTargetConfig'
+      required:
+      - configuration
+      - name
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    NotificationTargetConfig:
+      discriminator:
+        propertyName: type
+      properties:
+        description:
+          type: string
+        type:
+          type: string
+      required:
+      - type
+    MicrosoftTeamsNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          webhookUrl:
+            type: string
+          channelName:
+            type: string
+          title:
+            type: string
+          id: {}
+          email:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+      required:
+      - channelName
+      - webhookUrl
     SlackConversation:
       properties:
         type:
@@ -286,6 +408,23 @@ components:
       - id
       - name
       - type
+    UsersFilter:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    PlatformUsersNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          usersFilter:
+            $ref: '#/components/schemas/UsersFilter'
+      required:
+      - usersFilter
     SlackNotificationTargetConfig:
       allOf:
       - $ref: '#/components/schemas/NotificationTargetConfig'
@@ -301,16 +440,50 @@ components:
             $ref: '#/components/schemas/SlackConversation'
       required:
       - conversation
-    NotificationTargetConfig:
-      discriminator:
-        propertyName: type
+    PageDataUser:
       properties:
-        description:
-          type: string
-        type:
-          type: string
-      required:
-      - type
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    PageDataNotificationTarget:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/NotificationTarget'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     User:
       description: A JSON value representing the User.
       properties:
@@ -370,23 +543,6 @@ components:
       required:
       - authority
       - email
-    UsersFilter:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    PlatformUsersNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          usersFilter:
-            $ref: '#/components/schemas/UsersFilter'
-      required:
-      - usersFilter
     NotificationTargetId:
       properties:
         id:
@@ -403,162 +559,6 @@ components:
       required:
       - entityType
       - id
-    UserId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
-    RoleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    PageDataUser:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/User'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    NotificationTarget:
-      properties:
-        id:
-          $ref: '#/components/schemas/NotificationTargetId'
-        createdTime:
-          type: integer
-          format: int64
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          type: string
-        configuration:
-          oneOf:
-          - $ref: '#/components/schemas/MicrosoftTeamsNotificationTargetConfig'
-          - $ref: '#/components/schemas/PlatformUsersNotificationTargetConfig'
-          - $ref: '#/components/schemas/SlackNotificationTargetConfig'
-      required:
-      - configuration
-      - name
-    MicrosoftTeamsNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          webhookUrl:
-            type: string
-          channelName:
-            type: string
-          title:
-            type: string
-          id: {}
-          email:
-            type: string
-          firstName:
-            type: string
-          lastName:
-            type: string
-      required:
-      - channelName
-      - webhookUrl
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

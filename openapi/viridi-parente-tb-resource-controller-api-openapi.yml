@@ -476,66 +476,60 @@ paths:
                 $ref: '#/components/schemas/TbResourceInfo'
 components:
   schemas:
-    TbResourceInfo:
+    TbResourceId:
       properties:
         id:
-          $ref: '#/components/schemas/TbResourceId'
-          description: JSON object with the Resource Id. Specify this field to update the Resource. Referencing non-existing Resource Id will cause error. Omit this field to create new Resource.
-        createdTime:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TB_RESOURCE
+          example: TB_RESOURCE
+      required:
+      - entityType
+      - id
+    PageDataTbResourceInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TbResourceInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
           type: integer
           format: int64
-          description: Timestamp of the resource creation, in milliseconds
-          example: 1609459200000
+          description: Total number of elements in all available pages
           readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Tenant Id of the resource can't be changed.
-          readOnly: true
-        title:
-          type: string
-          description: Resource title.
-          example: BinaryAppDataContainer id=19 v1.0
-        resourceType:
-          type: string
-          description: Resource type.
-          enum:
-          - LWM2M_MODEL
-          - JKS
-          - PKCS_12
-          - JS_MODULE
-          - IMAGE
-          example: LWM2M_MODEL
-          readOnly: true
-        resourceKey:
-          type: string
-          description: Resource key.
-          example: '19_1.0'
-          readOnly: true
-        publicResourceKey:
-          type: string
-        etag:
-          type: string
-          description: Resource etag.
-          example: 33a64df551425fcc55e4d42a148795d9f25f89d4
-          readOnly: true
-        fileName:
-          type: string
-          description: Resource file name.
-          example: 19.xml
-          readOnly: true
-        descriptor:
-          $ref: '#/components/schemas/JsonNode'
-        name:
-          type: string
-          readOnly: true
-        public:
+        hasNext:
           type: boolean
-        link:
-          type: string
+          description: '''false'' value indicates the end of the result set'
           readOnly: true
-        publicLink:
+    TenantId:
+      properties:
+        id:
           type: string
-          readOnly: true
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     TbResource:
       description: A JSON value representing the Resource.
       properties:
@@ -603,34 +597,6 @@ components:
         publicLink:
           type: string
           readOnly: true
-    LwM2mInstance:
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: LwM2M Instance id.
-          example: 0
-        resources:
-          type: array
-          description: LwM2M Resource observe.
-          items:
-            $ref: '#/components/schemas/LwM2mResourceObserve'
-    TbResourceId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TB_RESOURCE
-          example: TB_RESOURCE
-      required:
-      - entityType
-      - id
     LwM2mObject:
       properties:
         id:
@@ -659,6 +625,82 @@ components:
           description: LwM2M Object instances.
           items:
             $ref: '#/components/schemas/LwM2mInstance'
+    LwM2mInstance:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: LwM2M Instance id.
+          example: 0
+        resources:
+          type: array
+          description: LwM2M Resource observe.
+          items:
+            $ref: '#/components/schemas/LwM2mResourceObserve'
+    TbResourceInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/TbResourceId'
+          description: JSON object with the Resource Id. Specify this field to update the Resource. Referencing non-existing Resource Id will cause error. Omit this field to create new Resource.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the resource creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Tenant Id of the resource can't be changed.
+          readOnly: true
+        title:
+          type: string
+          description: Resource title.
+          example: BinaryAppDataContainer id=19 v1.0
+        resourceType:
+          type: string
+          description: Resource type.
+          enum:
+          - LWM2M_MODEL
+          - JKS
+          - PKCS_12
+          - JS_MODULE
+          - IMAGE
+          example: LWM2M_MODEL
+          readOnly: true
+        resourceKey:
+          type: string
+          description: Resource key.
+          example: '19_1.0'
+          readOnly: true
+        publicResourceKey:
+          type: string
+        etag:
+          type: string
+          description: Resource etag.
+          example: 33a64df551425fcc55e4d42a148795d9f25f89d4
+          readOnly: true
+        fileName:
+          type: string
+          description: Resource file name.
+          example: 19.xml
+          readOnly: true
+        descriptor:
+          $ref: '#/components/schemas/JsonNode'
+        name:
+          type: string
+          readOnly: true
+        public:
+          type: boolean
+        link:
+          type: string
+          readOnly: true
+        publicLink:
+          type: string
+          readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     LwM2mResourceObserve:
       properties:
         id:
@@ -686,48 +728,6 @@ components:
           type: string
           description: LwM2M Resource Observe key name.
           example: data
-    PageDataTbResourceInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/TbResourceInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

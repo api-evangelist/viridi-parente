@@ -186,29 +186,69 @@ paths:
                 $ref: '#/components/schemas/Queue'
 components:
   schemas:
-    ProcessingStrategy:
+    Queue:
+      description: A JSON value representing the queue.
       properties:
-        type:
+        id:
+          $ref: '#/components/schemas/QueueId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
           type: string
-          enum:
-          - SKIP_ALL_FAILURES
-          - SKIP_ALL_FAILURES_AND_TIMED_OUT
-          - RETRY_ALL
-          - RETRY_FAILED
-          - RETRY_TIMED_OUT
-          - RETRY_FAILED_AND_TIMED_OUT
-        retries:
+        topic:
+          type: string
+        pollInterval:
           type: integer
           format: int32
-        failurePercentage:
-          type: number
-          format: double
-        pauseBetweenRetries:
+        partitions:
+          type: integer
+          format: int32
+        consumerPerPartition:
+          type: boolean
+        packProcessingTimeout:
           type: integer
           format: int64
-        maxPauseBetweenRetries:
-          type: integer
-          format: int64
+        submitStrategy:
+          $ref: '#/components/schemas/SubmitStrategy'
+        processingStrategy:
+          $ref: '#/components/schemas/ProcessingStrategy'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+    QueueId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - QUEUE
+          example: QUEUE
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     SubmitStrategy:
       properties:
         type:
@@ -244,73 +284,33 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    QueueId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - QUEUE
-          example: QUEUE
-      required:
-      - entityType
-      - id
-    Queue:
-      description: A JSON value representing the queue.
-      properties:
-        id:
-          $ref: '#/components/schemas/QueueId'
-        createdTime:
-          type: integer
-          format: int64
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          type: string
-        topic:
-          type: string
-        pollInterval:
-          type: integer
-          format: int32
-        partitions:
-          type: integer
-          format: int32
-        consumerPerPartition:
-          type: boolean
-        packProcessingTimeout:
-          type: integer
-          format: int64
-        submitStrategy:
-          $ref: '#/components/schemas/SubmitStrategy'
-        processingStrategy:
-          $ref: '#/components/schemas/ProcessingStrategy'
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
     JsonNode:
       description: A value representing the any type (object or primitive)
       examples:
       - {}
+    ProcessingStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
+          type: integer
+          format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
   securitySchemes:
     HTTP_login_form:
       type: http

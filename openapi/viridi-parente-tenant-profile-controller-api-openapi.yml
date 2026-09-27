@@ -400,117 +400,6 @@ components:
           $ref: '#/components/schemas/ProcessingStrategy'
         additionalInfo:
           $ref: '#/components/schemas/JsonNode'
-    PageDataTenantProfile:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/TenantProfile'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    ProcessingStrategy:
-      properties:
-        type:
-          type: string
-          enum:
-          - SKIP_ALL_FAILURES
-          - SKIP_ALL_FAILURES_AND_TIMED_OUT
-          - RETRY_ALL
-          - RETRY_FAILED
-          - RETRY_TIMED_OUT
-          - RETRY_FAILED_AND_TIMED_OUT
-        retries:
-          type: integer
-          format: int32
-        failurePercentage:
-          type: number
-          format: double
-        pauseBetweenRetries:
-          type: integer
-          format: int64
-        maxPauseBetweenRetries:
-          type: integer
-          format: int64
-    EntityInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
-        name:
-          type: string
-          description: Entity Name
-    EntityId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    TenantProfileId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT_PROFILE
-          example: TENANT_PROFILE
-      required:
-      - entityType
-      - id
     TenantProfile:
       description: A JSON value representing the tenant profile.
       properties:
@@ -539,19 +428,89 @@ components:
           type: boolean
         profileData:
           $ref: '#/components/schemas/TenantProfileData'
-    SubmitStrategy:
+    TenantProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT_PROFILE
+          example: TENANT_PROFILE
+      required:
+      - entityType
+      - id
+    ProcessingStrategy:
       properties:
         type:
           type: string
           enum:
-          - BURST
-          - BATCH
-          - SEQUENTIAL_BY_ORIGINATOR
-          - SEQUENTIAL_BY_TENANT
-          - SEQUENTIAL
-        batchSize:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
           type: integer
           format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
+    PageDataEntityInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    PageDataTenantProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TenantProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     DefaultTenantProfileConfiguration:
       allOf:
       - $ref: '#/components/schemas/TenantProfileConfiguration'
@@ -709,40 +668,19 @@ components:
           warnThreshold:
             type: number
             format: double
-    PageDataEntityInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EntityInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    TenantProfileConfiguration:
-      discriminator:
-        propertyName: type
+    SubmitStrategy:
       properties:
         type:
           type: string
-      required:
-      - type
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+          enum:
+          - BURST
+          - BATCH
+          - SEQUENTIAL_BY_ORIGINATOR
+          - SEQUENTIAL_BY_TENANT
+          - SEQUENTIAL
+        batchSize:
+          type: integer
+          format: int32
     TenantProfileData:
       properties:
         configuration:
@@ -754,6 +692,68 @@ components:
           description: JSON array of queue configuration per tenant profile
           items:
             $ref: '#/components/schemas/TenantProfileQueueConfiguration'
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    EntityInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
+          type: string
+          description: Entity Name
+    TenantProfileConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -179,6 +179,22 @@ paths:
                 $ref: '#/components/schemas/User'
 components:
   schemas:
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
     UserPasswordPolicy:
       properties:
         minimumLength:
@@ -219,17 +235,112 @@ components:
           type: integer
           format: int32
           description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
-    ActivateUserRequest:
-      description: Activate user request.
+    ResetPasswordRequest:
+      description: Reset password request.
       properties:
-        activateToken:
+        resetToken:
           type: string
-          description: The activate token to verify
+          description: The reset token to verify
           example: AAB254FF67D..
         password:
           type: string
           description: The new password to set
           example: secret
+    ChangePasswordRequest:
+      description: Change Password Request
+      properties:
+        currentPassword:
+          type: string
+          description: The old password
+          example: OldPassword
+        newPassword:
+          type: string
+          description: The new password
+          example: NewPassword
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    ResetPasswordEmailRequest:
+      description: The JSON object representing the reset password email request.
+      properties:
+        email:
+          type: string
+          description: The email of the user
+          example: user@example.com
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     User:
       description: A JSON value representing the User.
       properties:
@@ -289,94 +400,10 @@ components:
       required:
       - authority
       - email
-    ResetPasswordRequest:
-      description: Reset password request.
-      properties:
-        resetToken:
-          type: string
-          description: The reset token to verify
-          example: AAB254FF67D..
-        password:
-          type: string
-          description: The new password to set
-          example: secret
-    RoleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    JwtPair:
-      description: JWT Pair
-      properties:
-        token:
-          type: string
-          description: The JWT Access Token. Used to perform API calls.
-          example: AAB254FF67D..
-        refreshToken:
-          type: string
-          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
-          example: AAB254FF67D..
-        scope:
-          type: string
-          enum:
-          - SYS_ADMIN
-          - TENANT_ADMIN
-          - CUSTOMER_USER
-          - REFRESH_TOKEN
-          - PRE_VERIFICATION_TOKEN
-    UserId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     CustomerId:
       properties:
         id:
@@ -393,44 +420,17 @@ components:
       required:
       - entityType
       - id
-    ResetPasswordEmailRequest:
-      description: The JSON object representing the reset password email request.
+    ActivateUserRequest:
+      description: Activate user request.
       properties:
-        email:
+        activateToken:
           type: string
-          description: The email of the user
-          example: user@example.com
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    TenantId:
-      properties:
-        id:
+          description: The activate token to verify
+          example: AAB254FF67D..
+        password:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    ChangePasswordRequest:
-      description: Change Password Request
-      properties:
-        currentPassword:
-          type: string
-          description: The old password
-          example: OldPassword
-        newPassword:
-          type: string
-          description: The new password
-          example: NewPassword
+          description: The new password to set
+          example: secret
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -134,73 +134,6 @@ paths:
           description: OK
 components:
   schemas:
-    AlarmCommentId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    PageDataAlarmCommentInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/AlarmCommentInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    AlarmComment:
-      properties:
-        alarmId:
-          $ref: '#/components/schemas/AlarmId'
-          description: JSON object with Alarm id.
-          readOnly: true
-        userId:
-          $ref: '#/components/schemas/UserId'
-          description: JSON object with User id.
-          readOnly: true
-        type:
-          type: string
-          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
-          enum:
-          - SYSTEM
-          - OTHER
-          example: SYSTEM/OTHER
-          readOnly: true
-        comment:
-          $ref: '#/components/schemas/JsonNode'
-          description: JSON object with text of comment.
-        id:
-          $ref: '#/components/schemas/AlarmCommentId'
-          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
-          readOnly: true
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm comment creation, in milliseconds
-          example: 1634058704567
-          readOnly: true
-        name:
-          type: string
-          description: representing comment text
-          example: Please take a look
-          readOnly: true
     UserId:
       properties:
         id:
@@ -281,10 +214,77 @@ components:
       required:
       - entityType
       - id
+    AlarmCommentId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
     JsonNode:
       description: A value representing the any type (object or primitive)
       examples:
       - {}
+    AlarmComment:
+      properties:
+        alarmId:
+          $ref: '#/components/schemas/AlarmId'
+          description: JSON object with Alarm id.
+          readOnly: true
+        userId:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with User id.
+          readOnly: true
+        type:
+          type: string
+          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
+          enum:
+          - SYSTEM
+          - OTHER
+          example: SYSTEM/OTHER
+          readOnly: true
+        comment:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with text of comment.
+        id:
+          $ref: '#/components/schemas/AlarmCommentId'
+          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm comment creation, in milliseconds
+          example: 1634058704567
+          readOnly: true
+        name:
+          type: string
+          description: representing comment text
+          example: Please take a look
+          readOnly: true
+    PageDataAlarmCommentInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AlarmCommentInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
   securitySchemes:
     HTTP_login_form:
       type: http
