@@ -176,6 +176,23 @@ components:
       - iosConfig
       - qrCodeConfig
       - useDefaultApp
+    IosConfig:
+      properties:
+        enabled:
+          type: boolean
+        appId:
+          type: string
+        storeLink:
+          type: string
+    MobileAppSettingsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
     JwtPair:
       description: JWT Pair
       properties:
@@ -195,33 +212,6 @@ components:
           - CUSTOMER_USER
           - REFRESH_TOKEN
           - PRE_VERIFICATION_TOKEN
-    IosConfig:
-      properties:
-        enabled:
-          type: boolean
-        appId:
-          type: string
-        storeLink:
-          type: string
-    MobileAppSettingsId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    AndroidConfig:
-      properties:
-        enabled:
-          type: boolean
-        appPackage:
-          type: string
-        sha256CertFingerprints:
-          type: string
-        storeLink:
-          type: string
     TenantId:
       properties:
         id:
@@ -238,6 +228,16 @@ components:
       required:
       - entityType
       - id
+    AndroidConfig:
+      properties:
+        enabled:
+          type: boolean
+        appPackage:
+          type: string
+        sha256CertFingerprints:
+          type: string
+        storeLink:
+          type: string
     QRCodeConfig:
       properties:
         showOnHomePage:

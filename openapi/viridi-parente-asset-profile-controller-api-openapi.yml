@@ -297,69 +297,6 @@ paths:
                   $ref: '#/components/schemas/EntityInfo'
 components:
   schemas:
-    AssetProfile:
-      description: A JSON value representing the asset profile.
-      properties:
-        id:
-          $ref: '#/components/schemas/AssetProfileId'
-          description: JSON object with the asset profile Id. Specify this field to update the asset profile. Referencing non-existing asset profile Id will cause error. Omit this field to create new asset profile.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the profile creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id that owns the profile.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Asset Profile Name in scope of Tenant.
-          example: Building
-        description:
-          type: string
-          description: 'Asset Profile description. '
-        image:
-          type: string
-          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
-        defaultRuleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: Reference to the rule chain. If present, the specified rule chain will be used to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the root rule chain will be used to process those messages.
-        defaultDashboardId:
-          $ref: '#/components/schemas/DashboardId'
-          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
-        defaultQueueName:
-          type: string
-          description: Rule engine queue name. If present, the specified queue will be used to store all unprocessed messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the 'Main' queue will be used to store those messages.
-        defaultEdgeRuleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: Reference to the edge rule chain. If present, the specified edge rule chain will be used on the edge to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the edge root rule chain will be used to process those messages.
-        default:
-          type: boolean
-          description: Used to mark the default profile. Default profile is used when the asset profile is not specified during asset creation.
-    PageDataAssetProfile:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/AssetProfile'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     TenantId:
       properties:
         id:
@@ -376,14 +313,6 @@ components:
       required:
       - entityType
       - id
-    EntityInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
-        name:
-          type: string
-          description: Entity Name
     AssetProfileInfo:
       properties:
         id:
@@ -401,76 +330,6 @@ components:
         defaultDashboardId:
           $ref: '#/components/schemas/DashboardId'
           description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
-    RuleChainId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
-      required:
-      - entityType
-      - id
-    DashboardId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DASHBOARD
-          example: DASHBOARD
-      required:
-      - entityType
-      - id
-    PageDataAssetProfileInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/AssetProfileInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    AssetProfileId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ASSET_PROFILE
-          example: ASSET_PROFILE
-      required:
-      - entityType
-      - id
     EntityId:
       properties:
         id:
@@ -513,6 +372,147 @@ components:
       required:
       - entityType
       - id
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    PageDataAssetProfileInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetProfileInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    AssetProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ASSET_PROFILE
+          example: ASSET_PROFILE
+      required:
+      - entityType
+      - id
+    PageDataAssetProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    AssetProfile:
+      description: A JSON value representing the asset profile.
+      properties:
+        id:
+          $ref: '#/components/schemas/AssetProfileId'
+          description: JSON object with the asset profile Id. Specify this field to update the asset profile. Referencing non-existing asset profile Id will cause error. Omit this field to create new asset profile.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the profile creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id that owns the profile.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Asset Profile Name in scope of Tenant.
+          example: Building
+        description:
+          type: string
+          description: 'Asset Profile description. '
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
+        defaultRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the rule chain. If present, the specified rule chain will be used to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the root rule chain will be used to process those messages.
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
+        defaultQueueName:
+          type: string
+          description: Rule engine queue name. If present, the specified queue will be used to store all unprocessed messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the 'Main' queue will be used to store those messages.
+        defaultEdgeRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Reference to the edge rule chain. If present, the specified edge rule chain will be used on the edge to process all messages related to asset, including asset updates, telemetry, attribute updates, etc. Otherwise, the edge root rule chain will be used to process those messages.
+        default:
+          type: boolean
+          description: Used to mark the default profile. Default profile is used when the asset profile is not specified during asset creation.
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
+    EntityInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
+          type: string
+          description: Entity Name
   securitySchemes:
     HTTP_login_form:
       type: http

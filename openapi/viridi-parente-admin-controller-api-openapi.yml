@@ -453,63 +453,6 @@ paths:
                 type: boolean
 components:
   schemas:
-    SystemInfoData:
-      properties:
-        serviceId:
-          type: string
-          description: Service Id.
-        serviceType:
-          type: string
-          description: Service type.
-        cpuUsage:
-          type: integer
-          format: int64
-          description: CPU usage, in percent.
-        cpuCount:
-          type: integer
-          format: int64
-          description: Total CPU usage.
-        memoryUsage:
-          type: integer
-          format: int64
-          description: Memory usage, in percent.
-        totalMemory:
-          type: integer
-          format: int64
-          description: Total memory in bytes.
-        discUsage:
-          type: integer
-          format: int64
-          description: Disk usage, in percent.
-        totalDiscSpace:
-          type: integer
-          format: int64
-          description: Total disc space in bytes.
-    RepositorySettingsInfo:
-      properties:
-        configured:
-          type: boolean
-        readOnly:
-          type: boolean
-    JwtPair:
-      description: JWT Pair
-      properties:
-        token:
-          type: string
-          description: The JWT Access Token. Used to perform API calls.
-          example: AAB254FF67D..
-        refreshToken:
-          type: string
-          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
-          example: AAB254FF67D..
-        scope:
-          type: string
-          enum:
-          - SYS_ADMIN
-          - TENANT_ADMIN
-          - CUSTOMER_USER
-          - REFRESH_TOKEN
-          - PRE_VERIFICATION_TOKEN
     TenantId:
       properties:
         id:
@@ -526,78 +469,6 @@ components:
       required:
       - entityType
       - id
-    AutoVersionCreateConfig:
-      properties:
-        saveRelations:
-          type: boolean
-        saveAttributes:
-          type: boolean
-        saveCredentials:
-          type: boolean
-        branch:
-          type: string
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    SystemInfo:
-      properties:
-        systemData:
-          type: array
-          description: System data.
-          items:
-            $ref: '#/components/schemas/SystemInfoData'
-        monolith:
-          type: boolean
-    TwilioSmsProviderConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/SmsProviderConfiguration'
-      - type: object
-        properties:
-          accountSid:
-            type: string
-            description: Twilio account Sid.
-          accountToken:
-            type: string
-            description: Twilio account Token.
-          numberFrom:
-            type: string
-            description: The number/id of a sender.
-    FeaturesInfo:
-      properties:
-        smsEnabled:
-          type: boolean
-        oauthEnabled:
-          type: boolean
-        notificationEnabled:
-          type: boolean
-        emailEnabled:
-          type: boolean
-        twoFaEnabled:
-          type: boolean
-    AdminSettings:
-      description: A JSON value representing the Mail Settings.
-      properties:
-        id:
-          $ref: '#/components/schemas/AdminSettingsId'
-          description: The Id of the Administration Settings, auto-generated, UUID
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the settings creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id.
-          readOnly: true
-        key:
-          type: string
-          description: The Administration Settings key, (e.g. 'general' or 'mail')
-          example: mail
-        jsonValue:
-          $ref: '#/components/schemas/JsonNode'
-          description: JSON representation of the Administration Settings value
     TestSmsRequest:
       description: A JSON value representing the Test SMS request.
       properties:
@@ -613,136 +484,27 @@ components:
         message:
           type: string
           description: The test message
-    AutoCommitSettings:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/AutoVersionCreateConfig'
-    RepositorySettings:
-      description: A JSON value representing the Repository Settings.
+    JwtSettings:
+      description: A JSON value representing the JWT Settings.
       properties:
-        repositoryUri:
-          type: string
-        authMethod:
-          type: string
-          enum:
-          - USERNAME_PASSWORD
-          - PRIVATE_KEY
-        username:
-          type: string
-        password:
-          type: string
-        privateKeyFileName:
-          type: string
-        privateKey:
-          type: string
-        privateKeyPassword:
-          type: string
-        defaultBranch:
-          type: string
-        readOnly:
-          type: boolean
-        showMergeCommits:
-          type: boolean
-    UpdateMessage:
-      properties:
-        updateAvailable:
-          type: boolean
-          description: '''True'' if new platform update is available.'
-        currentVersion:
-          type: string
-          description: Current ThingsBoard version.
-        latestVersion:
-          type: string
-          description: Latest ThingsBoard version.
-        upgradeInstructionsUrl:
-          type: string
-          description: Upgrade instructions URL.
-        currentVersionReleaseNotesUrl:
-          type: string
-          description: Current ThingsBoard version release notes URL.
-        latestVersionReleaseNotesUrl:
-          type: string
-          description: Latest ThingsBoard version release notes URL.
-    SecuritySettings:
-      description: A JSON value representing the Security Settings.
-      properties:
-        passwordPolicy:
-          $ref: '#/components/schemas/UserPasswordPolicy'
-          description: The user password policy object.
-        maxFailedLoginAttempts:
+        tokenExpirationTime:
           type: integer
           format: int32
-          description: Maximum number of failed login attempts allowed before user account is locked.
-        userLockoutNotificationEmail:
+          description: The JWT will expire after seconds.
+          example: 9000
+        refreshTokenExpTime:
+          type: integer
+          format: int32
+          description: The JWT can be refreshed during seconds.
+          example: 604800
+        tokenIssuer:
           type: string
-          description: Email to use for notifications about locked users.
-        mobileSecretKeyLength:
-          type: integer
-          format: int32
-          description: Mobile secret key length
-    AwsSnsSmsProviderConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/SmsProviderConfiguration'
-      - type: object
-        properties:
-          accessKeyId:
-            type: string
-            description: The AWS SNS Access Key ID.
-          secretAccessKey:
-            type: string
-            description: The AWS SNS Access Key.
-          region:
-            type: string
-            description: The AWS region.
-    UserPasswordPolicy:
-      properties:
-        minimumLength:
-          type: integer
-          format: int32
-          description: Minimum number of symbols in the password.
-        maximumLength:
-          type: integer
-          format: int32
-          description: Maximum number of symbols in the password.
-        minimumUppercaseLetters:
-          type: integer
-          format: int32
-          description: Minimum number of uppercase letters in the password.
-        minimumLowercaseLetters:
-          type: integer
-          format: int32
-          description: Minimum number of lowercase letters in the password.
-        minimumDigits:
-          type: integer
-          format: int32
-          description: Minimum number of digits in the password.
-        minimumSpecialCharacters:
-          type: integer
-          format: int32
-          description: Minimum number of special in the password.
-        allowWhitespaces:
-          type: boolean
-          description: Allow whitespaces
-        forceUserToResetPasswordIfNotValid:
-          type: boolean
-          description: Force user to update password if existing one does not pass validation
-        passwordExpirationPeriodDays:
-          type: integer
-          format: int32
-          description: Password expiration period (days). Force expiration of the password.
-        passwordReuseFrequencyDays:
-          type: integer
-          format: int32
-          description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
-    AdminSettingsId:
-      properties:
-        id:
+          description: The JWT issuer.
+          example: thingsboard.io
+        tokenSigningKey:
           type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
+          description: The JWT key is used to sing token. Base64 encoded.
+          example: dkVTUzU2M2VMWUNwVVltTUhQU2o5SUM0Tkc3M0k2Ykdwcm85QTl6R0RaQ252OFlmVDk2OEptZXBNcndGeExFZg==
     SmppSmsProviderConfiguration:
       allOf:
       - $ref: '#/components/schemas/SmsProviderConfiguration'
@@ -906,27 +668,64 @@ components:
       - port
       - protocolVersion
       - systemId
-    JwtSettings:
-      description: A JSON value representing the JWT Settings.
+    UserPasswordPolicy:
       properties:
-        tokenExpirationTime:
+        minimumLength:
           type: integer
           format: int32
-          description: The JWT will expire after seconds.
-          example: 9000
-        refreshTokenExpTime:
+          description: Minimum number of symbols in the password.
+        maximumLength:
           type: integer
           format: int32
-          description: The JWT can be refreshed during seconds.
-          example: 604800
-        tokenIssuer:
-          type: string
-          description: The JWT issuer.
-          example: thingsboard.io
-        tokenSigningKey:
-          type: string
-          description: The JWT key is used to sing token. Base64 encoded.
-          example: dkVTUzU2M2VMWUNwVVltTUhQU2o5SUM0Tkc3M0k2Ykdwcm85QTl6R0RaQ252OFlmVDk2OEptZXBNcndGeExFZg==
+          description: Maximum number of symbols in the password.
+        minimumUppercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of uppercase letters in the password.
+        minimumLowercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of lowercase letters in the password.
+        minimumDigits:
+          type: integer
+          format: int32
+          description: Minimum number of digits in the password.
+        minimumSpecialCharacters:
+          type: integer
+          format: int32
+          description: Minimum number of special in the password.
+        allowWhitespaces:
+          type: boolean
+          description: Allow whitespaces
+        forceUserToResetPasswordIfNotValid:
+          type: boolean
+          description: Force user to update password if existing one does not pass validation
+        passwordExpirationPeriodDays:
+          type: integer
+          format: int32
+          description: Password expiration period (days). Force expiration of the password.
+        passwordReuseFrequencyDays:
+          type: integer
+          format: int32
+          description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
+    AwsSnsSmsProviderConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/SmsProviderConfiguration'
+      - type: object
+        properties:
+          accessKeyId:
+            type: string
+            description: The AWS SNS Access Key ID.
+          secretAccessKey:
+            type: string
+            description: The AWS SNS Access Key.
+          region:
+            type: string
+            description: The AWS region.
+    AutoCommitSettings:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/AutoVersionCreateConfig'
     SmsProviderConfiguration:
       discriminator:
         propertyName: type
@@ -935,6 +734,207 @@ components:
           type: string
       required:
       - type
+    SystemInfoData:
+      properties:
+        serviceId:
+          type: string
+          description: Service Id.
+        serviceType:
+          type: string
+          description: Service type.
+        cpuUsage:
+          type: integer
+          format: int64
+          description: CPU usage, in percent.
+        cpuCount:
+          type: integer
+          format: int64
+          description: Total CPU usage.
+        memoryUsage:
+          type: integer
+          format: int64
+          description: Memory usage, in percent.
+        totalMemory:
+          type: integer
+          format: int64
+          description: Total memory in bytes.
+        discUsage:
+          type: integer
+          format: int64
+          description: Disk usage, in percent.
+        totalDiscSpace:
+          type: integer
+          format: int64
+          description: Total disc space in bytes.
+    FeaturesInfo:
+      properties:
+        smsEnabled:
+          type: boolean
+        oauthEnabled:
+          type: boolean
+        notificationEnabled:
+          type: boolean
+        emailEnabled:
+          type: boolean
+        twoFaEnabled:
+          type: boolean
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    RepositorySettings:
+      description: A JSON value representing the Repository Settings.
+      properties:
+        repositoryUri:
+          type: string
+        authMethod:
+          type: string
+          enum:
+          - USERNAME_PASSWORD
+          - PRIVATE_KEY
+        username:
+          type: string
+        password:
+          type: string
+        privateKeyFileName:
+          type: string
+        privateKey:
+          type: string
+        privateKeyPassword:
+          type: string
+        defaultBranch:
+          type: string
+        readOnly:
+          type: boolean
+        showMergeCommits:
+          type: boolean
+    AdminSettings:
+      description: A JSON value representing the Mail Settings.
+      properties:
+        id:
+          $ref: '#/components/schemas/AdminSettingsId'
+          description: The Id of the Administration Settings, auto-generated, UUID
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the settings creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        key:
+          type: string
+          description: The Administration Settings key, (e.g. 'general' or 'mail')
+          example: mail
+        jsonValue:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON representation of the Administration Settings value
+    SystemInfo:
+      properties:
+        systemData:
+          type: array
+          description: System data.
+          items:
+            $ref: '#/components/schemas/SystemInfoData'
+        monolith:
+          type: boolean
+    RepositorySettingsInfo:
+      properties:
+        configured:
+          type: boolean
+        readOnly:
+          type: boolean
+    AdminSettingsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    AutoVersionCreateConfig:
+      properties:
+        saveRelations:
+          type: boolean
+        saveAttributes:
+          type: boolean
+        saveCredentials:
+          type: boolean
+        branch:
+          type: string
+    TwilioSmsProviderConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/SmsProviderConfiguration'
+      - type: object
+        properties:
+          accountSid:
+            type: string
+            description: Twilio account Sid.
+          accountToken:
+            type: string
+            description: Twilio account Token.
+          numberFrom:
+            type: string
+            description: The number/id of a sender.
+    SecuritySettings:
+      description: A JSON value representing the Security Settings.
+      properties:
+        passwordPolicy:
+          $ref: '#/components/schemas/UserPasswordPolicy'
+          description: The user password policy object.
+        maxFailedLoginAttempts:
+          type: integer
+          format: int32
+          description: Maximum number of failed login attempts allowed before user account is locked.
+        userLockoutNotificationEmail:
+          type: string
+          description: Email to use for notifications about locked users.
+        mobileSecretKeyLength:
+          type: integer
+          format: int32
+          description: Mobile secret key length
+    UpdateMessage:
+      properties:
+        updateAvailable:
+          type: boolean
+          description: '''True'' if new platform update is available.'
+        currentVersion:
+          type: string
+          description: Current ThingsBoard version.
+        latestVersion:
+          type: string
+          description: Latest ThingsBoard version.
+        upgradeInstructionsUrl:
+          type: string
+          description: Upgrade instructions URL.
+        currentVersionReleaseNotesUrl:
+          type: string
+          description: Current ThingsBoard version release notes URL.
+        latestVersionReleaseNotesUrl:
+          type: string
+          description: Latest ThingsBoard version release notes URL.
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

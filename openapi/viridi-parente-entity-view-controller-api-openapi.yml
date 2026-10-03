@@ -609,129 +609,6 @@ paths:
                 $ref: '#/components/schemas/EntityView'
 components:
   schemas:
-    AttributesEntityView:
-      properties:
-        cs:
-          type: array
-          description: List of client-side attribute keys to expose
-          example: currentConfiguration
-          items:
-            type: string
-        ss:
-          type: array
-          description: List of server-side attribute keys to expose
-          example: model
-          items:
-            type: string
-        sh:
-          type: array
-          description: List of shared attribute keys to expose
-          example: targetConfiguration
-          items:
-            type: string
-      required:
-      - cs
-      - sh
-      - ss
-    PageDataEntityView:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EntityView'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    EntityView:
-      description: A JSON object representing the entity view.
-      properties:
-        entityId:
-          $ref: '#/components/schemas/EntityId'
-          description: JSON object with the referenced Entity Id (Device or Asset).
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignEntityViewToCustomer' to change the Customer Id.
-          readOnly: true
-        name:
-          type: string
-          description: Entity View name
-          example: A4B72CCDFF33
-        type:
-          type: string
-          description: Device Profile Name
-          example: Temperature Sensor
-        keys:
-          $ref: '#/components/schemas/TelemetryEntityView'
-          description: Set of telemetry and attribute keys to expose via Entity View.
-        startTimeMs:
-          type: integer
-          format: int64
-          description: Represents the start time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
-        endTimeMs:
-          type: integer
-          format: int64
-          description: Represents the end time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
-        id:
-          $ref: '#/components/schemas/EntityViewId'
-          description: JSON object with the Entity View Id. Specify this field to update the Entity View. Referencing non-existing Entity View Id will cause error. Omit this field to create new Entity View.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the Entity View creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-          description: Additional parameters of the device
-      required:
-      - entityId
-      - name
-      - type
-    EntityViewSearchQuery:
-      description: The entity view search query JSON
-      properties:
-        parameters:
-          $ref: '#/components/schemas/RelationsSearchParameters'
-          description: Main search parameters.
-        relationType:
-          type: string
-          description: Type of the relation between root entity and device (e.g. 'Contains' or 'Manages').
-        entityViewTypes:
-          type: array
-          description: Array of entity view types to filter the related entities (e.g. 'Temperature Sensor', 'Smoke Sensor').
-          items:
-            type: string
-    TelemetryEntityView:
-      properties:
-        timeseries:
-          type: array
-          description: List of time-series data keys to expose
-          example: temperature, humidity
-          items:
-            type: string
-        attributes:
-          $ref: '#/components/schemas/AttributesEntityView'
-          description: JSON object with attributes to expose
-      required:
-      - attributes
-      - timeseries
     TenantId:
       properties:
         id:
@@ -748,29 +625,7 @@ components:
       required:
       - entityType
       - id
-    PageDataEntityViewInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EntityViewInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    EntityViewId:
+    CustomerId:
       properties:
         id:
           type: string
@@ -781,52 +636,25 @@ components:
           type: string
           description: string
           enum:
-          - ENTITY_VIEW
-          example: ENTITY_VIEW
+          - CUSTOMER
+          example: CUSTOMER
       required:
       - entityType
       - id
-    EntitySubtype:
+    EntityViewSearchQuery:
+      description: The entity view search query JSON
       properties:
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        entityType:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
           type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        type:
-          type: string
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+          description: Type of the relation between root entity and device (e.g. 'Contains' or 'Manages').
+        entityViewTypes:
+          type: array
+          description: Array of entity view types to filter the related entities (e.g. 'Temperature Sensor', 'Smoke Sensor').
+          items:
+            type: string
     RelationsSearchParameters:
       properties:
         rootId:
@@ -889,6 +717,183 @@ components:
         fetchLastLevelOnly:
           type: boolean
           description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    TelemetryEntityView:
+      properties:
+        timeseries:
+          type: array
+          description: List of time-series data keys to expose
+          example: temperature, humidity
+          items:
+            type: string
+        attributes:
+          $ref: '#/components/schemas/AttributesEntityView'
+          description: JSON object with attributes to expose
+      required:
+      - attributes
+      - timeseries
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    PageDataEntityViewInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityViewInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    AttributesEntityView:
+      properties:
+        cs:
+          type: array
+          description: List of client-side attribute keys to expose
+          example: currentConfiguration
+          items:
+            type: string
+        ss:
+          type: array
+          description: List of server-side attribute keys to expose
+          example: model
+          items:
+            type: string
+        sh:
+          type: array
+          description: List of shared attribute keys to expose
+          example: targetConfiguration
+          items:
+            type: string
+      required:
+      - cs
+      - sh
+      - ss
+    PageDataEntityView:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityView'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    EntityView:
+      description: A JSON object representing the entity view.
+      properties:
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with the referenced Entity Id (Device or Asset).
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignEntityViewToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Entity View name
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        keys:
+          $ref: '#/components/schemas/TelemetryEntityView'
+          description: Set of telemetry and attribute keys to expose via Entity View.
+        startTimeMs:
+          type: integer
+          format: int64
+          description: Represents the start time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        endTimeMs:
+          type: integer
+          format: int64
+          description: Represents the end time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;
+        id:
+          $ref: '#/components/schemas/EntityViewId'
+          description: JSON object with the Entity View Id. Specify this field to update the Entity View. Referencing non-existing Entity View Id will cause error. Omit this field to create new Entity View.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Entity View creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+      required:
+      - entityId
+      - name
+      - type
     EntityViewInfo:
       properties:
         id:
@@ -945,7 +950,7 @@ components:
       - entityId
       - name
       - type
-    CustomerId:
+    EntityViewId:
       properties:
         id:
           type: string
@@ -956,18 +961,15 @@ components:
           type: string
           description: string
           enum:
-          - CUSTOMER
-          example: CUSTOMER
+          - ENTITY_VIEW
+          example: ENTITY_VIEW
       required:
       - entityType
       - id
-    EntityId:
+    EntitySubtype:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
         entityType:
           type: string
           enum:
@@ -999,10 +1001,8 @@ components:
           - NOTIFICATION
           - NOTIFICATION_RULE
           - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
+        type:
+          type: string
   securitySchemes:
     HTTP_login_form:
       type: http

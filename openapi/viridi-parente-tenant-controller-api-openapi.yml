@@ -235,7 +235,7 @@ paths:
                 $ref: '#/components/schemas/TenantInfo'
 components:
   schemas:
-    TenantProfileId:
+    TenantId:
       properties:
         id:
           type: string
@@ -246,8 +246,8 @@ components:
           type: string
           description: string
           enum:
-          - TENANT_PROFILE
-          example: TENANT_PROFILE
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
@@ -315,44 +315,6 @@ components:
           description: Additional parameters of the device
       required:
       - title
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    PageDataTenantInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/TenantInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     TenantInfo:
       properties:
         id:
@@ -420,6 +382,32 @@ components:
           description: Additional parameters of the device
       required:
       - title
+    PageDataTenantInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TenantInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     PageDataTenant:
       properties:
         data:
@@ -442,10 +430,22 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    TenantProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT_PROFILE
+          example: TENANT_PROFILE
+      required:
+      - entityType
+      - id
   securitySchemes:
     HTTP_login_form:
       type: http

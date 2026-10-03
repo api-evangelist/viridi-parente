@@ -358,6 +358,756 @@ paths:
                   type: string
 components:
   schemas:
+    CoapDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          coapDeviceTypeConfiguration:
+            $ref: '#/components/schemas/CoapDeviceTypeConfiguration'
+          clientSettings:
+            $ref: '#/components/schemas/PowerSavingConfiguration'
+    FilterPredicateValueInteger:
+      properties:
+        defaultValue:
+          type: integer
+          format: int32
+        userValue:
+          type: integer
+          format: int32
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueInteger'
+    DynamicValueDouble:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    DurationAlarmConditionSpec:
+      allOf:
+      - $ref: '#/components/schemas/AlarmConditionSpec'
+      - type: object
+        properties:
+          unit:
+            type: string
+            enum:
+            - NANOSECONDS
+            - MICROSECONDS
+            - MILLISECONDS
+            - SECONDS
+            - MINUTES
+            - HOURS
+            - DAYS
+          predicate:
+            $ref: '#/components/schemas/FilterPredicateValueLong'
+    AlarmConditionFilter:
+      properties:
+        key:
+          $ref: '#/components/schemas/AlarmConditionFilterKey'
+          description: JSON object for specifying alarm condition by specific key
+        valueType:
+          type: string
+          description: String representation of the type of the value
+          enum:
+          - STRING
+          - NUMERIC
+          - BOOLEAN
+          - DATE_TIME
+          example: NUMERIC
+        value:
+          description: Value used in Constant comparison. For other types, such as TIME_SERIES or ATTRIBUTE, the predicate condition is used
+        predicate:
+          description: JSON object representing filter condition
+          oneOf:
+          - $ref: '#/components/schemas/BooleanFilterPredicate'
+          - $ref: '#/components/schemas/ComplexFilterPredicate'
+          - $ref: '#/components/schemas/NumericFilterPredicate'
+          - $ref: '#/components/schemas/StringFilterPredicate'
+    ObjectAttributes:
+      properties:
+        dim:
+          type: integer
+          format: int64
+        ssid:
+          type: integer
+          format: int64
+        uri:
+          type: string
+        ver: {}
+        lwm2m:
+          $ref: '#/components/schemas/LwM2mVersion'
+        pmin:
+          type: integer
+          format: int64
+        pmax:
+          type: integer
+          format: int64
+        gt:
+          type: number
+          format: double
+        lt:
+          type: number
+          format: double
+        st:
+          type: number
+          format: double
+        epmin:
+          type: integer
+          format: int64
+        epmax:
+          type: integer
+          format: int64
+    FilterPredicateValueLong:
+      properties:
+        defaultValue:
+          type: integer
+          format: int64
+        userValue:
+          type: integer
+          format: int64
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueLong'
+    AlarmSchedule:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+          - ANY_TIME
+          - SPECIFIC_TIME
+          - CUSTOM
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueString'
+    DeviceProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
+      required:
+      - entityType
+      - id
+    ComplexFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - AND
+            - OR
+          predicates:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyFilterPredicate'
+    X509CertificateChainProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+      - type: object
+        properties:
+          certificateRegExPattern:
+            type: string
+          allowCreateNewDevicesByX509Certificate:
+            type: boolean
+    DeviceProfileAlarm:
+      properties:
+        id:
+          type: string
+          description: String value representing the alarm rule id
+          example: highTemperatureAlarmID
+        alarmType:
+          type: string
+          description: String value representing type of the alarm
+          example: High Temperature Alarm
+        createRules:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AlarmRule'
+          description: Complex JSON object representing create alarm rules. The unique create alarm rule can be created for each alarm severity type. There can be 5 create alarm rules configured per a single alarm type. See method implementation notes and AlarmRule model for more details
+        clearRule:
+          $ref: '#/components/schemas/AlarmRule'
+          description: JSON object representing clear alarm rule
+        propagate:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to parent entities of alarm originator
+          example: true
+        propagateToOwner:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator
+          example: true
+        propagateToTenant:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the tenant entity
+          example: true
+        propagateRelationTypes:
+          type: array
+          description: JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.
+          items:
+            type: string
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
+    AlarmConditionSpec:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    DynamicValueBoolean:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    DynamicValueString:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    SnmpCommunicationConfig:
+      discriminator:
+        propertyName: spec
+      properties:
+        spec:
+          type: string
+          enum:
+          - TELEMETRY_QUERYING
+          - CLIENT_ATTRIBUTES_QUERYING
+          - SHARED_ATTRIBUTES_SETTING
+          - TO_DEVICE_RPC_REQUEST
+          - TO_SERVER_RPC_REQUEST
+    MqttDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          deviceTelemetryTopic:
+            type: string
+          deviceAttributesTopic:
+            type: string
+          deviceAttributesSubscribeTopic:
+            type: string
+          transportPayloadTypeConfiguration:
+            $ref: '#/components/schemas/TransportPayloadTypeConfiguration'
+          sparkplug:
+            type: boolean
+          sparkplugAttributesMetricNames:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+          sendAckOnValidationException:
+            type: boolean
+    TelemetryMappingConfiguration:
+      properties:
+        keyName:
+          type: object
+          additionalProperties:
+            type: string
+        observe:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        attribute:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        telemetry:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        attributeLwm2m:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectAttributes'
+    EntityInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
+          type: string
+          description: Entity Name
+    SnmpDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          timeoutMs:
+            type: integer
+            format: int32
+          retries:
+            type: integer
+            format: int32
+          communicationConfigs:
+            type: array
+            items:
+              $ref: '#/components/schemas/SnmpCommunicationConfig'
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    PowerSavingConfiguration:
+      properties:
+        powerMode:
+          type: string
+          enum:
+          - PSM
+          - DRX
+          - E_DRX
+        psmActivityTimer:
+          type: integer
+          format: int64
+        edrxCycle:
+          type: integer
+          format: int64
+        pagingTransmissionWindow:
+          type: integer
+          format: int64
+    DynamicValueInteger:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    DynamicValueLong:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    BooleanFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueBoolean'
+    DeviceProfileConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    LwM2MBootstrapServerCredential:
+      discriminator:
+        propertyName: securityMode
+      properties:
+        securityMode:
+          type: string
+      required:
+      - securityMode
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
+    PageDataDeviceProfileInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DeviceProfileInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    DeviceProfileData:
+      properties:
+        configuration:
+          description: JSON object of device profile configuration
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceProfileConfiguration'
+        transportConfiguration:
+          description: JSON object of device profile transport configuration
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceProfileTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceProfileTransportConfiguration'
+        provisionConfiguration:
+          description: JSON object of provisioning strategy type per device profile
+          oneOf:
+          - $ref: '#/components/schemas/AllowCreateNewDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/CreateOrCheckDevicesDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/DisabledDeviceProfileProvisionConfiguration'
+          - $ref: '#/components/schemas/X509CertificateChainProvisionConfiguration'
+        alarms:
+          type: array
+          description: JSON array of alarm rules configuration per device profile
+          items:
+            $ref: '#/components/schemas/DeviceProfileAlarm'
+    DefaultDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+    PageDataDeviceProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DeviceProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    DeviceProfileTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    AlarmRule:
+      properties:
+        condition:
+          $ref: '#/components/schemas/AlarmCondition'
+          description: JSON object representing the alarm rule condition
+        schedule:
+          description: JSON object representing time interval during which the rule is active
+          oneOf:
+          - $ref: '#/components/schemas/AnyTimeSchedule'
+          - $ref: '#/components/schemas/CustomTimeSchedule'
+          - $ref: '#/components/schemas/SpecificTimeSchedule'
+        alarmDetails:
+          type: string
+          description: String value representing the additional details for an alarm rule
+        dashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id representing the reference to alarm details dashboard used by mobile application
+    FilterPredicateValueBoolean:
+      properties:
+        defaultValue:
+          type: boolean
+        userValue:
+          type: boolean
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueBoolean'
+    Lwm2mDeviceProfileTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
+      - type: object
+        properties:
+          observeAttr:
+            $ref: '#/components/schemas/TelemetryMappingConfiguration'
+          bootstrapServerUpdateEnable:
+            type: boolean
+          bootstrap:
+            type: array
+            items:
+              $ref: '#/components/schemas/LwM2MBootstrapServerCredential'
+          clientLwM2mSettings:
+            $ref: '#/components/schemas/OtherConfiguration'
+    StringFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - STARTS_WITH
+            - ENDS_WITH
+            - CONTAINS
+            - NOT_CONTAINS
+            - IN
+            - NOT_IN
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueString'
+          ignoreCase:
+            type: boolean
+    RepeatingAlarmConditionSpec:
+      allOf:
+      - $ref: '#/components/schemas/AlarmConditionSpec'
+      - type: object
+        properties:
+          predicate:
+            $ref: '#/components/schemas/FilterPredicateValueInteger'
+    KeyFilterPredicate:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    CreateOrCheckDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    NumericFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - GREATER
+            - LESS
+            - GREATER_OR_EQUAL
+            - LESS_OR_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueDouble'
+    OtherConfiguration:
+      properties:
+        fwUpdateStrategy:
+          type: integer
+          format: int32
+        swUpdateStrategy:
+          type: integer
+          format: int32
+        clientOnlyObserveAfterConnect:
+          type: integer
+          format: int32
+        powerMode:
+          type: string
+          enum:
+          - PSM
+          - DRX
+          - E_DRX
+        psmActivityTimer:
+          type: integer
+          format: int64
+        edrxCycle:
+          type: integer
+          format: int64
+        pagingTransmissionWindow:
+          type: integer
+          format: int64
+        fwUpdateResource:
+          type: string
+        swUpdateResource:
+          type: string
+        defaultObjectIDVer:
+          type: string
+    FilterPredicateValueString:
+      properties:
+        defaultValue:
+          type: string
+        userValue:
+          type: string
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueString'
+    DeviceProfileInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: Tenant id.
+        name:
+          type: string
+          description: Entity Name
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. '
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details.
+        type:
+          type: string
+          description: Type of the profile. Always 'DEFAULT' for now. Reserved for future use.
+          enum:
+          - DEFAULT
+        transportType:
+          type: string
+          description: Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.
+          enum:
+          - DEFAULT
+          - MQTT
+          - COAP
+          - LWM2M
+          - SNMP
+    DeviceProfileProvisionConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        provisionDeviceSecret:
+          type: string
+        type:
+          type: string
+      required:
+      - type
+    AllowCreateNewDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    CustomTimeSchedule:
+      allOf:
+      - $ref: '#/components/schemas/AlarmSchedule'
+      - type: object
+        properties:
+          timezone:
+            type: string
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/CustomTimeScheduleItem'
     DeviceProfile:
       description: A JSON value representing the device profile.
       properties:
@@ -434,105 +1184,6 @@ components:
         profileData:
           $ref: '#/components/schemas/DeviceProfileData'
           description: Complex JSON object that includes addition device profile configuration (transport, alarm rules, etc).
-    DisabledDeviceProfileProvisionConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
-    X509CertificateChainProvisionConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
-      - type: object
-        properties:
-          certificateRegExPattern:
-            type: string
-          allowCreateNewDevicesByX509Certificate:
-            type: boolean
-    OtherConfiguration:
-      properties:
-        fwUpdateStrategy:
-          type: integer
-          format: int32
-        swUpdateStrategy:
-          type: integer
-          format: int32
-        clientOnlyObserveAfterConnect:
-          type: integer
-          format: int32
-        powerMode:
-          type: string
-          enum:
-          - PSM
-          - DRX
-          - E_DRX
-        psmActivityTimer:
-          type: integer
-          format: int64
-        edrxCycle:
-          type: integer
-          format: int64
-        pagingTransmissionWindow:
-          type: integer
-          format: int64
-        fwUpdateResource:
-          type: string
-        swUpdateResource:
-          type: string
-        defaultObjectIDVer:
-          type: string
-    DynamicValueLong:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    DeviceProfileProvisionConfiguration:
-      discriminator:
-        propertyName: type
-      properties:
-        provisionDeviceSecret:
-          type: string
-        type:
-          type: string
-      required:
-      - type
-    DeviceProfileId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE_PROFILE
-          example: DEVICE_PROFILE
-      required:
-      - entityType
-      - id
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
     FilterPredicateValueDouble:
       properties:
         defaultValue:
@@ -543,567 +1194,9 @@ components:
           format: double
         dynamicValue:
           $ref: '#/components/schemas/DynamicValueDouble'
-    PageDataDeviceProfile:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/DeviceProfile'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    DefaultDeviceProfileConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileConfiguration'
-    AlarmSchedule:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-          enum:
-          - ANY_TIME
-          - SPECIFIC_TIME
-          - CUSTOM
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueString'
     SimpleAlarmConditionSpec:
       allOf:
       - $ref: '#/components/schemas/AlarmConditionSpec'
-    RepeatingAlarmConditionSpec:
-      allOf:
-      - $ref: '#/components/schemas/AlarmConditionSpec'
-      - type: object
-        properties:
-          predicate:
-            $ref: '#/components/schemas/FilterPredicateValueInteger'
-    RuleChainId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
-      required:
-      - entityType
-      - id
-    DashboardId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DASHBOARD
-          example: DASHBOARD
-      required:
-      - entityType
-      - id
-    EntityInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
-        name:
-          type: string
-          description: Entity Name
-    AlarmConditionFilter:
-      properties:
-        key:
-          $ref: '#/components/schemas/AlarmConditionFilterKey'
-          description: JSON object for specifying alarm condition by specific key
-        valueType:
-          type: string
-          description: String representation of the type of the value
-          enum:
-          - STRING
-          - NUMERIC
-          - BOOLEAN
-          - DATE_TIME
-          example: NUMERIC
-        value:
-          description: Value used in Constant comparison. For other types, such as TIME_SERIES or ATTRIBUTE, the predicate condition is used
-        predicate:
-          description: JSON object representing filter condition
-          oneOf:
-          - $ref: '#/components/schemas/BooleanFilterPredicate'
-          - $ref: '#/components/schemas/ComplexFilterPredicate'
-          - $ref: '#/components/schemas/NumericFilterPredicate'
-          - $ref: '#/components/schemas/StringFilterPredicate'
-    DynamicValueDouble:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    CustomTimeSchedule:
-      allOf:
-      - $ref: '#/components/schemas/AlarmSchedule'
-      - type: object
-        properties:
-          timezone:
-            type: string
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/CustomTimeScheduleItem'
-    CoapDeviceProfileTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
-      - type: object
-        properties:
-          coapDeviceTypeConfiguration:
-            $ref: '#/components/schemas/CoapDeviceTypeConfiguration'
-          clientSettings:
-            $ref: '#/components/schemas/PowerSavingConfiguration'
-    AlarmRule:
-      properties:
-        condition:
-          $ref: '#/components/schemas/AlarmCondition'
-          description: JSON object representing the alarm rule condition
-        schedule:
-          description: JSON object representing time interval during which the rule is active
-          oneOf:
-          - $ref: '#/components/schemas/AnyTimeSchedule'
-          - $ref: '#/components/schemas/CustomTimeSchedule'
-          - $ref: '#/components/schemas/SpecificTimeSchedule'
-        alarmDetails:
-          type: string
-          description: String value representing the additional details for an alarm rule
-        dashboardId:
-          $ref: '#/components/schemas/DashboardId'
-          description: JSON object with the dashboard Id representing the reference to alarm details dashboard used by mobile application
-    FilterPredicateValueInteger:
-      properties:
-        defaultValue:
-          type: integer
-          format: int32
-        userValue:
-          type: integer
-          format: int32
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueInteger'
-    AllowCreateNewDevicesDeviceProfileProvisionConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
-    LwM2mVersion:
-      properties:
-        supported:
-          type: boolean
-    AlarmCondition:
-      properties:
-        condition:
-          type: array
-          description: JSON array of alarm condition filters
-          items:
-            $ref: '#/components/schemas/AlarmConditionFilter'
-        spec:
-          description: JSON object representing alarm condition type
-          oneOf:
-          - $ref: '#/components/schemas/DurationAlarmConditionSpec'
-          - $ref: '#/components/schemas/RepeatingAlarmConditionSpec'
-          - $ref: '#/components/schemas/SimpleAlarmConditionSpec'
-    CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
-    CustomTimeScheduleItem:
-      properties:
-        enabled:
-          type: boolean
-        dayOfWeek:
-          type: integer
-          format: int32
-        startsOn:
-          type: integer
-          format: int64
-        endsOn:
-          type: integer
-          format: int64
-    DefaultDeviceProfileTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
-    AlarmConditionSpec:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    TelemetryMappingConfiguration:
-      properties:
-        keyName:
-          type: object
-          additionalProperties:
-            type: string
-        observe:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-        attribute:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-        telemetry:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-        attributeLwm2m:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ObjectAttributes'
-    OtaPackageId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - OTA_PACKAGE
-          example: OTA_PACKAGE
-      required:
-      - entityType
-      - id
-    PowerSavingConfiguration:
-      properties:
-        powerMode:
-          type: string
-          enum:
-          - PSM
-          - DRX
-          - E_DRX
-        psmActivityTimer:
-          type: integer
-          format: int64
-        edrxCycle:
-          type: integer
-          format: int64
-        pagingTransmissionWindow:
-          type: integer
-          format: int64
-    LwM2MBootstrapServerCredential:
-      discriminator:
-        propertyName: securityMode
-      properties:
-        securityMode:
-          type: string
-      required:
-      - securityMode
-    DeviceProfileAlarm:
-      properties:
-        id:
-          type: string
-          description: String value representing the alarm rule id
-          example: highTemperatureAlarmID
-        alarmType:
-          type: string
-          description: String value representing type of the alarm
-          example: High Temperature Alarm
-        createRules:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/AlarmRule'
-          description: Complex JSON object representing create alarm rules. The unique create alarm rule can be created for each alarm severity type. There can be 5 create alarm rules configured per a single alarm type. See method implementation notes and AlarmRule model for more details
-        clearRule:
-          $ref: '#/components/schemas/AlarmRule'
-          description: JSON object representing clear alarm rule
-        propagate:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to parent entities of alarm originator
-          example: true
-        propagateToOwner:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator
-          example: true
-        propagateToTenant:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to the tenant entity
-          example: true
-        propagateRelationTypes:
-          type: array
-          description: JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.
-          items:
-            type: string
-    SnmpDeviceProfileTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
-      - type: object
-        properties:
-          timeoutMs:
-            type: integer
-            format: int32
-          retries:
-            type: integer
-            format: int32
-          communicationConfigs:
-            type: array
-            items:
-              $ref: '#/components/schemas/SnmpCommunicationConfig'
-    DurationAlarmConditionSpec:
-      allOf:
-      - $ref: '#/components/schemas/AlarmConditionSpec'
-      - type: object
-        properties:
-          unit:
-            type: string
-            enum:
-            - NANOSECONDS
-            - MICROSECONDS
-            - MILLISECONDS
-            - SECONDS
-            - MINUTES
-            - HOURS
-            - DAYS
-          predicate:
-            $ref: '#/components/schemas/FilterPredicateValueLong'
-    StringFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-            - STARTS_WITH
-            - ENDS_WITH
-            - CONTAINS
-            - NOT_CONTAINS
-            - IN
-            - NOT_IN
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueString'
-          ignoreCase:
-            type: boolean
-    BooleanFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueBoolean'
-    TransportPayloadTypeConfiguration:
-      discriminator:
-        propertyName: transportPayloadType
-      properties:
-        transportPayloadType:
-          type: string
-      required:
-      - transportPayloadType
-    MqttDeviceProfileTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
-      - type: object
-        properties:
-          deviceTelemetryTopic:
-            type: string
-          deviceAttributesTopic:
-            type: string
-          deviceAttributesSubscribeTopic:
-            type: string
-          transportPayloadTypeConfiguration:
-            $ref: '#/components/schemas/TransportPayloadTypeConfiguration'
-          sparkplug:
-            type: boolean
-          sparkplugAttributesMetricNames:
-            type: array
-            items:
-              type: string
-            uniqueItems: true
-          sendAckOnValidationException:
-            type: boolean
-    ObjectAttributes:
-      properties:
-        dim:
-          type: integer
-          format: int64
-        ssid:
-          type: integer
-          format: int64
-        uri:
-          type: string
-        ver: {}
-        lwm2m:
-          $ref: '#/components/schemas/LwM2mVersion'
-        pmin:
-          type: integer
-          format: int64
-        pmax:
-          type: integer
-          format: int64
-        gt:
-          type: number
-          format: double
-        lt:
-          type: number
-          format: double
-        st:
-          type: number
-          format: double
-        epmin:
-          type: integer
-          format: int64
-        epmax:
-          type: integer
-          format: int64
-    DynamicValueString:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    KeyFilterPredicate:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    DeviceProfileInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: Tenant id.
-        name:
-          type: string
-          description: Entity Name
-        image:
-          type: string
-          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. '
-        defaultDashboardId:
-          $ref: '#/components/schemas/DashboardId'
-          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details.
-        type:
-          type: string
-          description: Type of the profile. Always 'DEFAULT' for now. Reserved for future use.
-          enum:
-          - DEFAULT
-        transportType:
-          type: string
-          description: Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.
-          enum:
-          - DEFAULT
-          - MQTT
-          - COAP
-          - LWM2M
-          - SNMP
-    ComplexFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - AND
-            - OR
-          predicates:
-            type: array
-            items:
-              $ref: '#/components/schemas/KeyFilterPredicate'
-    PageDataDeviceProfileInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/DeviceProfileInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    DeviceProfileData:
-      properties:
-        configuration:
-          description: JSON object of device profile configuration
-          oneOf:
-          - $ref: '#/components/schemas/DefaultDeviceProfileConfiguration'
-        transportConfiguration:
-          description: JSON object of device profile transport configuration
-          oneOf:
-          - $ref: '#/components/schemas/CoapDeviceProfileTransportConfiguration'
-          - $ref: '#/components/schemas/DefaultDeviceProfileTransportConfiguration'
-          - $ref: '#/components/schemas/Lwm2mDeviceProfileTransportConfiguration'
-          - $ref: '#/components/schemas/MqttDeviceProfileTransportConfiguration'
-          - $ref: '#/components/schemas/SnmpDeviceProfileTransportConfiguration'
-        provisionConfiguration:
-          description: JSON object of provisioning strategy type per device profile
-          oneOf:
-          - $ref: '#/components/schemas/AllowCreateNewDevicesDeviceProfileProvisionConfiguration'
-          - $ref: '#/components/schemas/CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration'
-          - $ref: '#/components/schemas/CreateOrCheckDevicesDeviceProfileProvisionConfiguration'
-          - $ref: '#/components/schemas/DisabledDeviceProfileProvisionConfiguration'
-          - $ref: '#/components/schemas/X509CertificateChainProvisionConfiguration'
-        alarms:
-          type: array
-          description: JSON array of alarm rules configuration per device profile
-          items:
-            $ref: '#/components/schemas/DeviceProfileAlarm'
     CoapDeviceTypeConfiguration:
       discriminator:
         propertyName: coapDeviceType
@@ -1112,95 +1205,6 @@ components:
           type: string
       required:
       - coapDeviceType
-    DeviceProfileTransportConfiguration:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    AlarmConditionFilterKey:
-      properties:
-        type:
-          type: string
-          description: The key type
-          enum:
-          - ATTRIBUTE
-          - TIME_SERIES
-          - ENTITY_FIELD
-          - CONSTANT
-          example: TIME_SERIES
-        key:
-          type: string
-          description: String value representing the key
-          example: temp
-    NumericFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-            - GREATER
-            - LESS
-            - GREATER_OR_EQUAL
-            - LESS_OR_EQUAL
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueDouble'
-    AnyTimeSchedule:
-      allOf:
-      - $ref: '#/components/schemas/AlarmSchedule'
-    CreateOrCheckDevicesDeviceProfileProvisionConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
-    Lwm2mDeviceProfileTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceProfileTransportConfiguration'
-      - type: object
-        properties:
-          observeAttr:
-            $ref: '#/components/schemas/TelemetryMappingConfiguration'
-          bootstrapServerUpdateEnable:
-            type: boolean
-          bootstrap:
-            type: array
-            items:
-              $ref: '#/components/schemas/LwM2MBootstrapServerCredential'
-          clientLwM2mSettings:
-            $ref: '#/components/schemas/OtherConfiguration'
-    DynamicValueInteger:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    FilterPredicateValueString:
-      properties:
-        defaultValue:
-          type: string
-        userValue:
-          type: string
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueString'
-    FilterPredicateValueBoolean:
-      properties:
-        defaultValue:
-          type: boolean
-        userValue:
-          type: boolean
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueBoolean'
     SpecificTimeSchedule:
       allOf:
       - $ref: '#/components/schemas/AlarmSchedule'
@@ -1220,50 +1224,28 @@ components:
           endsOn:
             type: integer
             format: int64
-    DeviceProfileConfiguration:
-      discriminator:
-        propertyName: type
+    CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    AnyTimeSchedule:
+      allOf:
+      - $ref: '#/components/schemas/AlarmSchedule'
+    AlarmConditionFilterKey:
       properties:
         type:
           type: string
-      required:
-      - type
-    SnmpCommunicationConfig:
-      discriminator:
-        propertyName: spec
-      properties:
-        spec:
-          type: string
+          description: The key type
           enum:
-          - TELEMETRY_QUERYING
-          - CLIENT_ATTRIBUTES_QUERYING
-          - SHARED_ATTRIBUTES_SETTING
-          - TO_DEVICE_RPC_REQUEST
-          - TO_SERVER_RPC_REQUEST
-    FilterPredicateValueLong:
-      properties:
-        defaultValue:
-          type: integer
-          format: int64
-        userValue:
-          type: integer
-          format: int64
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueLong'
-    DynamicValueBoolean:
-      properties:
-        sourceType:
+          - ATTRIBUTE
+          - TIME_SERIES
+          - ENTITY_FIELD
+          - CONSTANT
+          example: TIME_SERIES
+        key:
           type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    EntityId:
+          description: String value representing the key
+          example: temp
+    OtaPackageId:
       properties:
         id:
           type: string
@@ -1272,39 +1254,57 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
+          description: string
           enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
           - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
+          example: OTA_PACKAGE
       required:
       - entityType
       - id
+    CustomTimeScheduleItem:
+      properties:
+        enabled:
+          type: boolean
+        dayOfWeek:
+          type: integer
+          format: int32
+        startsOn:
+          type: integer
+          format: int64
+        endsOn:
+          type: integer
+          format: int64
+    DisabledDeviceProfileProvisionConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileProvisionConfiguration'
+    LwM2mVersion:
+      properties:
+        supported:
+          type: boolean
+    AlarmCondition:
+      properties:
+        condition:
+          type: array
+          description: JSON array of alarm condition filters
+          items:
+            $ref: '#/components/schemas/AlarmConditionFilter'
+        spec:
+          description: JSON object representing alarm condition type
+          oneOf:
+          - $ref: '#/components/schemas/DurationAlarmConditionSpec'
+          - $ref: '#/components/schemas/RepeatingAlarmConditionSpec'
+          - $ref: '#/components/schemas/SimpleAlarmConditionSpec'
+    DefaultDeviceProfileConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceProfileConfiguration'
+    TransportPayloadTypeConfiguration:
+      discriminator:
+        propertyName: transportPayloadType
+      properties:
+        transportPayloadType:
+          type: string
+      required:
+      - transportPayloadType
   securitySchemes:
     HTTP_login_form:
       type: http

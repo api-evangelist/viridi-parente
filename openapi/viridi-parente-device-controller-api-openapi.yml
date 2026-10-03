@@ -921,45 +921,18 @@ paths:
                 $ref: '#/components/schemas/Device'
 components:
   schemas:
-    Lwm2mDeviceTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceTransportConfiguration'
-      - type: object
-        properties:
-          powerMode:
-            type: string
-            enum:
-            - PSM
-            - DRX
-            - E_DRX
-          psmActivityTimer:
-            type: integer
-            format: int64
-          edrxCycle:
-            type: integer
-            format: int64
-          pagingTransmissionWindow:
-            type: integer
-            format: int64
-    DeviceProfileId:
+    Mapping:
       properties:
-        id:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapping'
+        delimiter:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE_PROFILE
-          example: DEVICE_PROFILE
-      required:
-      - entityType
-      - id
-    DefaultDeviceConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceConfiguration'
+        update:
+          type: boolean
+        header:
+          type: boolean
     TenantId:
       properties:
         id:
@@ -976,21 +949,113 @@ components:
       required:
       - entityType
       - id
-    DefaultDeviceTransportConfiguration:
+    MqttDeviceTransportConfiguration:
       allOf:
       - $ref: '#/components/schemas/DeviceTransportConfiguration'
-    SaveDeviceWithCredentialsRequest:
-      description: The JSON object with device and credentials. See method description above for example.
+    DeviceProfileId:
       properties:
-        device:
-          $ref: '#/components/schemas/Device'
-          description: The JSON with device entity.
-        credentials:
-          $ref: '#/components/schemas/DeviceCredentials'
-          description: The JSON with credentials entity.
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
       required:
-      - credentials
-      - device
+      - entityType
+      - id
+    PageDataDevice:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Device'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    ClaimRequest:
+      description: Claiming request which can optionally contain secret key
+      properties:
+        secretKey:
+          type: string
+    Device:
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the device creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Device Name in scope of Tenant
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Room 234 Sensor
+        deviceProfileId:
+          $ref: '#/components/schemas/DeviceProfileId'
+          description: JSON object with Device Profile Id.
+        firmwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        softwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+        deviceData:
+          $ref: '#/components/schemas/DeviceData'
+          description: JSON object with content specific to type of transport in the device profile.
+      required:
+      - deviceProfileId
+      - name
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    DeviceConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
     DeviceInfo:
       properties:
         id:
@@ -1056,194 +1121,6 @@ components:
       required:
       - deviceProfileId
       - name
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    RelationsSearchParameters:
-      properties:
-        rootId:
-          type: string
-          format: uuid
-          description: Root entity id to start search from.
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        rootType:
-          type: string
-          description: Type of the root entity.
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        direction:
-          type: string
-          description: Type of the root entity.
-          enum:
-          - FROM
-          - TO
-        relationTypeGroup:
-          type: string
-          description: Type of the relation.
-          enum:
-          - COMMON
-          - DASHBOARD
-          - RULE_CHAIN
-          - RULE_NODE
-          - EDGE
-          - EDGE_AUTO_ASSIGN_RULE_CHAIN
-        maxLevel:
-          type: integer
-          format: int32
-          description: Maximum level of the search depth.
-        fetchLastLevelOnly:
-          type: boolean
-          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    DeviceConfiguration:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    DeviceSearchQuery:
-      description: The device search query JSON
-      properties:
-        parameters:
-          $ref: '#/components/schemas/RelationsSearchParameters'
-          description: Main search parameters.
-        relationType:
-          type: string
-          description: Type of the relation between root entity and device (e.g. 'Contains' or 'Manages').
-        deviceTypes:
-          type: array
-          description: Array of device types to filter the related entities (e.g. 'Temperature Sensor', 'Smoke Sensor').
-          items:
-            type: string
-    DeviceData:
-      properties:
-        configuration:
-          description: Device configuration for device profile type. DEFAULT is only supported value for now
-          oneOf:
-          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
-        transportConfiguration:
-          description: Device transport configuration used to connect the device
-          oneOf:
-          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
-    CoapDeviceTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceTransportConfiguration'
-      - type: object
-        properties:
-          powerMode:
-            type: string
-            enum:
-            - PSM
-            - DRX
-            - E_DRX
-          psmActivityTimer:
-            type: integer
-            format: int64
-          edrxCycle:
-            type: integer
-            format: int64
-          pagingTransmissionWindow:
-            type: integer
-            format: int64
-    Mapping:
-      properties:
-        columns:
-          type: array
-          items:
-            $ref: '#/components/schemas/ColumnMapping'
-        delimiter:
-          type: string
-        update:
-          type: boolean
-        header:
-          type: boolean
-    OtaPackageId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - OTA_PACKAGE
-          example: OTA_PACKAGE
-      required:
-      - entityType
-      - id
-    PageDataDeviceInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/DeviceInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     DeviceCredentials:
       description: A JSON value representing the device credentials.
       properties:
@@ -1280,9 +1157,145 @@ components:
       - credentialsId
       - deviceId
       - id
-    MqttDeviceTransportConfiguration:
+    BulkImportRequest:
+      properties:
+        file:
+          type: string
+        mapping:
+          $ref: '#/components/schemas/Mapping'
+    DefaultDeviceConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceConfiguration'
+    SnmpDeviceTransportConfiguration:
       allOf:
       - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: integer
+            format: int32
+          protocolVersion:
+            type: string
+            enum:
+            - V1
+            - V2C
+            - V3
+          community:
+            type: string
+          username:
+            type: string
+          securityName:
+            type: string
+          contextName:
+            type: string
+          authenticationProtocol:
+            type: string
+            enum:
+            - SHA_1
+            - SHA_224
+            - SHA_256
+            - SHA_384
+            - SHA_512
+            - MD5
+          authenticationPassphrase:
+            type: string
+          privacyProtocol:
+            type: string
+            enum:
+            - DES
+            - AES_128
+            - AES_192
+            - AES_256
+          privacyPassphrase:
+            type: string
+          engineId:
+            type: string
+    DefaultDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    DeviceCredentialsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    PageDataDeviceInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/DeviceInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    DeviceData:
+      properties:
+        configuration:
+          description: Device configuration for device profile type. DEFAULT is only supported value for now
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
+        transportConfiguration:
+          description: Device transport configuration used to connect the device
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
+    DeviceTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    SaveDeviceWithCredentialsRequest:
+      description: The JSON object with device and credentials. See method description above for example.
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+          description: The JSON with device entity.
+        credentials:
+          $ref: '#/components/schemas/DeviceCredentials'
+          description: The JSON with credentials entity.
+      required:
+      - credentials
+      - device
     EntitySubtype:
       properties:
         tenantId:
@@ -1320,88 +1333,6 @@ components:
           - QUEUE_STATS
         type:
           type: string
-    Device:
-      properties:
-        id:
-          $ref: '#/components/schemas/DeviceId'
-          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the device creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Device Name in scope of Tenant
-          example: A4B72CCDFF33
-        type:
-          type: string
-          description: Device Profile Name
-          example: Temperature Sensor
-        label:
-          type: string
-          description: Label that may be used in widgets
-          example: Room 234 Sensor
-        deviceProfileId:
-          $ref: '#/components/schemas/DeviceProfileId'
-          description: JSON object with Device Profile Id.
-        firmwareId:
-          $ref: '#/components/schemas/OtaPackageId'
-          description: JSON object with Ota Package Id.
-        softwareId:
-          $ref: '#/components/schemas/OtaPackageId'
-          description: JSON object with Ota Package Id.
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-          description: Additional parameters of the device
-        deviceData:
-          $ref: '#/components/schemas/DeviceData'
-          description: JSON object with content specific to type of transport in the device profile.
-      required:
-      - deviceProfileId
-      - name
-    DeviceCredentialsId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    DeviceId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    DeviceTransportConfiguration:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
     BulkImportResultDevice:
       properties:
         created:
@@ -1471,34 +1402,138 @@ components:
           type: array
           items:
             type: string
-    PageDataDevice:
+    Lwm2mDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    RelationsSearchParameters:
       properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/Device'
-          readOnly: true
-        totalPages:
+        rootId:
+          type: string
+          format: uuid
+          description: Root entity id to start search from.
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        rootType:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        direction:
+          type: string
+          description: Type of the root entity.
+          enum:
+          - FROM
+          - TO
+        relationTypeGroup:
+          type: string
+          description: Type of the relation.
+          enum:
+          - COMMON
+          - DASHBOARD
+          - RULE_CHAIN
+          - RULE_NODE
+          - EDGE
+          - EDGE_AUTO_ASSIGN_RULE_CHAIN
+        maxLevel:
           type: integer
           format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
+          description: Maximum level of the search depth.
+        fetchLastLevelOnly:
           type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    BulkImportRequest:
+          description: Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity.
+    DeviceSearchQuery:
+      description: The device search query JSON
       properties:
-        file:
+        parameters:
+          $ref: '#/components/schemas/RelationsSearchParameters'
+          description: Main search parameters.
+        relationType:
           type: string
-        mapping:
-          $ref: '#/components/schemas/Mapping'
+          description: Type of the relation between root entity and device (e.g. 'Contains' or 'Manages').
+        deviceTypes:
+          type: array
+          description: Array of device types to filter the related entities (e.g. 'Temperature Sensor', 'Smoke Sensor').
+          items:
+            type: string
+    CoapDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    OtaPackageId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - OTA_PACKAGE
+          example: OTA_PACKAGE
+      required:
+      - entityType
+      - id
     ColumnMapping:
       properties:
         type:
@@ -1536,57 +1571,22 @@ components:
           - SECRET
         key:
           type: string
-    SnmpDeviceTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceTransportConfiguration'
-      - type: object
-        properties:
-          host:
-            type: string
-          port:
-            type: integer
-            format: int32
-          protocolVersion:
-            type: string
-            enum:
-            - V1
-            - V2C
-            - V3
-          community:
-            type: string
-          username:
-            type: string
-          securityName:
-            type: string
-          contextName:
-            type: string
-          authenticationProtocol:
-            type: string
-            enum:
-            - SHA_1
-            - SHA_224
-            - SHA_256
-            - SHA_384
-            - SHA_512
-            - MD5
-          authenticationPassphrase:
-            type: string
-          privacyProtocol:
-            type: string
-            enum:
-            - DES
-            - AES_128
-            - AES_192
-            - AES_256
-          privacyPassphrase:
-            type: string
-          engineId:
-            type: string
-    ClaimRequest:
-      description: Claiming request which can optionally contain secret key
+    CustomerId:
       properties:
-        secretKey:
+        id:
           type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
   securitySchemes:
     HTTP_login_form:
       type: http

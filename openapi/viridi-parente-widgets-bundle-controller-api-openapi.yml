@@ -222,6 +222,22 @@ paths:
           description: OK
 components:
   schemas:
+    WidgetsBundleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGETS_BUNDLE
+          example: WIDGETS_BUNDLE
+      required:
+      - entityType
+      - id
     PageDataWidgetsBundle:
       properties:
         data:
@@ -301,22 +317,6 @@ components:
           type: string
           description: Same as title of the Widget Bundle. Read-only field. Update the 'title' to change the 'name' of the Widget Bundle.
           readOnly: true
-    WidgetsBundleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - WIDGETS_BUNDLE
-          example: WIDGETS_BUNDLE
-      required:
-      - entityType
-      - id
   securitySchemes:
     HTTP_login_form:
       type: http

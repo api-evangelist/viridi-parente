@@ -508,82 +508,7 @@ paths:
                 $ref: '#/components/schemas/PageDataEventInfo'
 components:
   schemas:
-    LifeCycleEventFilter:
-      allOf:
-      - $ref: '#/components/schemas/EventFilter'
-      - type: object
-        properties:
-          server:
-            type: string
-            description: String value representing the server name, identifier or ip address where the platform is running
-            example: ip-172-31-24-152
-          event:
-            type: string
-            description: String value representing the lifecycle event type
-            example: STARTED
-          status:
-            type: string
-            description: String value representing status of the lifecycle event
-            enum:
-            - Success
-            - Failure
-          errorStr:
-            type: string
-            description: The case insensitive 'contains' filter based on error message
-            example: not present in the DB
-      required:
-      - eventType
-    PageDataEventInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EventInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    ErrorEventFilter:
-      allOf:
-      - $ref: '#/components/schemas/EventFilter'
-      - type: object
-        properties:
-          server:
-            type: string
-            description: String value representing the server name, identifier or ip address where the platform is running
-            example: ip-172-31-24-152
-          method:
-            type: string
-            description: String value representing the method name when the error happened
-            example: onClusterEventMsg
-          errorStr:
-            type: string
-            description: The case insensitive 'contains' filter based on error message
-            example: not present in the DB
-      required:
-      - eventType
-    EventId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    EntityId:
+    TenantId:
       properties:
         id:
           type: string
@@ -592,38 +517,21 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
+          description: string
           enum:
           - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
+          example: TENANT
       required:
       - entityType
+      - id
+    EventId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
       - id
     StatisticsEventFilter:
       allOf:
@@ -707,7 +615,7 @@ components:
           readOnly: true
         body:
           $ref: '#/components/schemas/JsonNode'
-    TenantId:
+    EntityId:
       properties:
         id:
           type: string
@@ -716,13 +624,58 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
-          description: string
           enum:
           - TENANT
-          example: TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
       required:
       - entityType
       - id
+    ErrorEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          method:
+            type: string
+            description: String value representing the method name when the error happened
+            example: onClusterEventMsg
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
+      required:
+      - eventType
     EventFilter:
       discriminator:
         propertyName: eventType
@@ -741,6 +694,28 @@ components:
           type: boolean
       required:
       - eventType
+    PageDataEventInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EventInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     JsonNode:
       description: A value representing the any type (object or primitive)
       examples:
@@ -798,6 +773,31 @@ components:
             example: deviceName
           error:
             type: boolean
+      required:
+      - eventType
+    LifeCycleEventFilter:
+      allOf:
+      - $ref: '#/components/schemas/EventFilter'
+      - type: object
+        properties:
+          server:
+            type: string
+            description: String value representing the server name, identifier or ip address where the platform is running
+            example: ip-172-31-24-152
+          event:
+            type: string
+            description: String value representing the lifecycle event type
+            example: STARTED
+          status:
+            type: string
+            description: String value representing status of the lifecycle event
+            enum:
+            - Success
+            - Failure
+          errorStr:
+            type: string
+            description: The case insensitive 'contains' filter based on error message
+            example: not present in the DB
       required:
       - eventType
   securitySchemes:

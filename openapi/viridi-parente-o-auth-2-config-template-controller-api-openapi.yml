@@ -80,6 +80,30 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
       required:
       - id
+    OAuth2MapperConfig:
+      properties:
+        allowUserCreation:
+          type: boolean
+          description: Whether user should be created if not yet present on the platform after successful authentication
+        activateUser:
+          type: boolean
+          description: Whether user credentials should be activated when user is created after successful authentication
+        type:
+          type: string
+          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
+          enum:
+          - BASIC
+          - CUSTOM
+          - GITHUB
+          - APPLE
+        basic:
+          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
+          description: Mapper config for BASIC and GITHUB mapper types
+        custom:
+          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
+          description: Mapper config for CUSTOM mapper type
+      required:
+      - type
     OAuth2CustomMapperConfig:
       properties:
         url:
@@ -144,10 +168,6 @@ components:
           $ref: '#/components/schemas/JsonNode'
       required:
       - providerId
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     OAuth2BasicMapperConfig:
       properties:
         emailAttributeKey:
@@ -181,30 +201,10 @@ components:
           description: Whether default dashboard should be open in full screen
       required:
       - tenantNameStrategy
-    OAuth2MapperConfig:
-      properties:
-        allowUserCreation:
-          type: boolean
-          description: Whether user should be created if not yet present on the platform after successful authentication
-        activateUser:
-          type: boolean
-          description: Whether user credentials should be activated when user is created after successful authentication
-        type:
-          type: string
-          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
-          enum:
-          - BASIC
-          - CUSTOM
-          - GITHUB
-          - APPLE
-        basic:
-          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
-          description: Mapper config for BASIC and GITHUB mapper types
-        custom:
-          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
-          description: Mapper config for CUSTOM mapper type
-      required:
-      - type
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

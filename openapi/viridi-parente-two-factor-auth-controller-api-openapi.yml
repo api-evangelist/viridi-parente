@@ -135,25 +135,6 @@ paths:
                   $ref: '#/components/schemas/TwoFaProviderInfo'
 components:
   schemas:
-    TwoFaProviderInfo:
-      properties:
-        type:
-          type: string
-          enum:
-          - TOTP
-          - SMS
-          - EMAIL
-          - BACKUP_CODE
-        isDefault:
-          type: boolean
-          writeOnly: true
-        contact:
-          type: string
-        minVerificationCodeSendPeriod:
-          type: integer
-          format: int32
-        default:
-          type: boolean
     JwtPair:
       description: JWT Pair
       properties:
@@ -173,6 +154,25 @@ components:
           - CUSTOMER_USER
           - REFRESH_TOKEN
           - PRE_VERIFICATION_TOKEN
+    TwoFaProviderInfo:
+      properties:
+        type:
+          type: string
+          enum:
+          - TOTP
+          - SMS
+          - EMAIL
+          - BACKUP_CODE
+        isDefault:
+          type: boolean
+          writeOnly: true
+        contact:
+          type: string
+        minVerificationCodeSendPeriod:
+          type: integer
+          format: int32
+        default:
+          type: boolean
   securitySchemes:
     HTTP_login_form:
       type: http
