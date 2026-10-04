@@ -1,0 +1,89 @@
+slug: viridi-parente
+provider: Viridi
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 7
+edges:
+- tag: auth-controller
+  spec_file: viridi-parente-auth-controller-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /api/auth/changePassword changePassword Change password for current User; POST /api/noauth/activate
+    activateUser Activate User; GET /api/noauth/userPasswordPolicy getUserPasswordPolicy
+  reason: Credential and session operations — user activation, password reset/change, password policy
+    retrieval, logout, JwtPair issuance. These realise identity and access management; the capability
+    is genuinely performed rather than being mere auth boilerplate on another business surface.
+- tag: two-factor-auth-config-controller
+  spec_file: viridi-parente-two-factor-auth-config-controller-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: PUT /api/2fa/account/config 'Update 2FA account config'; 'Save platform 2FA settings'; schemas
+    TotpTwoFaAccountConfig, BackupCodeTwoFaProviderConfig
+  reason: Configuration of multi-factor authentication providers and per-account 2FA settings is authentication
+    strengthening, i.e. identity and access management.
+- tag: two-factor-auth-controller
+  spec_file: viridi-parente-two-factor-auth-controller-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: POST /api/auth/2fa/verification/check 'Check 2FA verification code'; schema JwtPair
+  reason: Runtime two-factor verification issuing JWT credentials is authentication/identity and access
+    management.
+- tag: role-controller
+  spec_file: viridi-parente-role-controller-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /api/role/{roleId}/user/{userId} assignRoleToUser 'Assign role to user'; GET /api/role
+    getRolePolicy 'Get Role Policy'; GET /api/role/{roleId}/users 'Get Role Users'
+  reason: Operations define roles and their policies and assign them to users, including default roles
+    and assignable users — role-based access control administration, which is Identity & Access Management.
+    Some residual doubt because this is also generic platform admin tooling.
+- tag: tenant-controller
+  spec_file: viridi-parente-tenant-controller-api-openapi.yml
+  capability_id: BC-4230.10
+  capability_id_l1: BC-4230
+  capability_name: Tenant Provisioning & Lifecycle
+  confidence: 0.8
+  evidence: POST /api/tenant saveTenant 'Create Or update Tenant'; DELETE /api/tenant/{tenantId} 'Delete
+    Tenant'; schemas Tenant, TenantInfo, TenantProfileId
+  reason: ThingsBoard is a multi-tenant IoT platform and this controller performs creation, retrieval
+    and deletion of tenants in the fleet — tenant provisioning and lifecycle. Not an industry capability;
+    it is platform tenancy administration.
+- tag: tenant-profile-controller
+  spec_file: viridi-parente-tenant-profile-controller-api-openapi.yml
+  capability_id: BC-4230.20
+  capability_id_l1: BC-4230
+  capability_name: Tenant Configuration Management
+  confidence: 0.72
+  evidence: POST /api/tenantProfile 'Create Or update Tenant Profile'; 'Make tenant profile default';
+    schemas DefaultTenantProfileConfiguration, TenantProfileConfiguration, TenantProfileQueueConfiguration
+  reason: Tenant profiles in ThingsBoard carry per-tenant configuration, rate/queue limits and quotas
+    applied above the shared baseline, matching tenant configuration management. Slight ambiguity with
+    tenant lifecycle, hence moderate confidence.
+- tag: user-controller
+  spec_file: viridi-parente-user-controller-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: POST /api/user saveUser 'Save Or update User'; POST /api/user/{userId}/userCredentialsEnabled
+    'Enable/Disable User credentials'; 'Send or re-send the activation email'
+  reason: Platform user account administration — creation, credential enablement, activation — is identity
+    and access management, not HR employee records. Some endpoints are user UI preferences, hence not
+    full confidence.

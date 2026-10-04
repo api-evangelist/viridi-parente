@@ -838,6 +838,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/viridi-parente-capability-edges.yml
+  name: Viridi Business Capability Map
 - type: DomainSecurity
   url: security/viridi-parente-domain-security.yml
 - type: Authentication
