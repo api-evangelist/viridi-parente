@@ -779,6 +779,204 @@ paths:
                 $ref: '#/components/schemas/Alarm'
 components:
   schemas:
+    AlarmInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/AlarmId'
+          description: JSON object with the alarm Id. Specify this field to update the alarm. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm creation, in milliseconds
+          example: 1634058704567
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id
+          readOnly: true
+        type:
+          type: string
+          description: representing type of the Alarm
+          example: High Temperature Alarm
+        originator:
+          $ref: '#/components/schemas/EntityId'
+          description: JSON object with alarm originator id
+        severity:
+          type: string
+          description: Alarm severity
+          enum:
+          - CRITICAL
+          - MAJOR
+          - MINOR
+          - WARNING
+          - INDETERMINATE
+          example: CRITICAL
+        acknowledged:
+          type: boolean
+          description: Acknowledged
+          example: true
+        cleared:
+          type: boolean
+          description: Cleared
+          example: false
+        assigneeId:
+          $ref: '#/components/schemas/UserId'
+          description: Alarm assignee user id
+        startTs:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm start time, in milliseconds
+          example: 1634058704565
+        endTs:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm end time(last time update), in milliseconds
+          example: 1634111163522
+        ackTs:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm acknowledgement, in milliseconds
+          example: 1634115221948
+        clearTs:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm clearing, in milliseconds
+          example: 1634114528465
+        assignTs:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm assignment, in milliseconds
+          example: 1634115928465
+        propagate:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to parent entities of alarm originator
+          example: true
+        propagateToOwner:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator
+          example: true
+        propagateToTenant:
+          type: boolean
+          description: Propagation flag to specify if alarm should be propagated to the tenant entity
+          example: true
+        propagateRelationTypes:
+          type: array
+          description: JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.
+          items:
+            type: string
+        originatorName:
+          type: string
+          description: Alarm originator name
+          example: Thermostat
+        originatorLabel:
+          type: string
+          description: Alarm originator label
+          example: Thermostat label
+        assignee:
+          $ref: '#/components/schemas/AlarmAssignee'
+          description: Alarm assignee
+        name:
+          type: string
+          description: representing type of the Alarm
+          example: High Temperature Alarm
+          readOnly: true
+        status:
+          type: string
+          description: status of the Alarm
+          enum:
+          - ACTIVE_UNACK
+          - ACTIVE_ACK
+          - CLEARED_UNACK
+          - CLEARED_ACK
+          example: ACTIVE_UNACK
+          readOnly: true
+        details:
+          $ref: '#/components/schemas/JsonNode'
+      required:
+      - acknowledged
+      - cleared
+      - name
+      - originator
+      - severity
+      - status
+      - type
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
+    AlarmId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ALARM
+          example: ALARM
+      required:
+      - entityType
+      - id
+    EntitySubtype:
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+        type:
+          type: string
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     PageDataEntitySubtype:
       properties:
         data:
@@ -786,6 +984,80 @@ components:
           description: Array of the entities
           items:
             $ref: '#/components/schemas/EntitySubtype'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    AlarmAssignee:
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    PageDataAlarmInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AlarmInfo'
           readOnly: true
         totalPages:
           type: integer
@@ -915,44 +1187,6 @@ components:
       - severity
       - status
       - type
-    PageDataAlarmInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/AlarmInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
     TenantId:
       properties:
         id:
@@ -969,184 +1203,7 @@ components:
       required:
       - entityType
       - id
-    AlarmInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/AlarmId'
-          description: JSON object with the alarm Id. Specify this field to update the alarm. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm creation, in milliseconds
-          example: 1634058704567
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id
-          readOnly: true
-        type:
-          type: string
-          description: representing type of the Alarm
-          example: High Temperature Alarm
-        originator:
-          $ref: '#/components/schemas/EntityId'
-          description: JSON object with alarm originator id
-        severity:
-          type: string
-          description: Alarm severity
-          enum:
-          - CRITICAL
-          - MAJOR
-          - MINOR
-          - WARNING
-          - INDETERMINATE
-          example: CRITICAL
-        acknowledged:
-          type: boolean
-          description: Acknowledged
-          example: true
-        cleared:
-          type: boolean
-          description: Cleared
-          example: false
-        assigneeId:
-          $ref: '#/components/schemas/UserId'
-          description: Alarm assignee user id
-        startTs:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm start time, in milliseconds
-          example: 1634058704565
-        endTs:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm end time(last time update), in milliseconds
-          example: 1634111163522
-        ackTs:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm acknowledgement, in milliseconds
-          example: 1634115221948
-        clearTs:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm clearing, in milliseconds
-          example: 1634114528465
-        assignTs:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm assignment, in milliseconds
-          example: 1634115928465
-        propagate:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to parent entities of alarm originator
-          example: true
-        propagateToOwner:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator
-          example: true
-        propagateToTenant:
-          type: boolean
-          description: Propagation flag to specify if alarm should be propagated to the tenant entity
-          example: true
-        propagateRelationTypes:
-          type: array
-          description: JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.
-          items:
-            type: string
-        originatorName:
-          type: string
-          description: Alarm originator name
-          example: Thermostat
-        originatorLabel:
-          type: string
-          description: Alarm originator label
-          example: Thermostat label
-        assignee:
-          $ref: '#/components/schemas/AlarmAssignee'
-          description: Alarm assignee
-        name:
-          type: string
-          description: representing type of the Alarm
-          example: High Temperature Alarm
-          readOnly: true
-        status:
-          type: string
-          description: status of the Alarm
-          enum:
-          - ACTIVE_UNACK
-          - ACTIVE_ACK
-          - CLEARED_UNACK
-          - CLEARED_ACK
-          example: ACTIVE_UNACK
-          readOnly: true
-        details:
-          $ref: '#/components/schemas/JsonNode'
-      required:
-      - acknowledged
-      - cleared
-      - name
-      - originator
-      - severity
-      - status
-      - type
-    EntityId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    AlarmAssignee:
-      properties:
-        id:
-          $ref: '#/components/schemas/UserId'
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-    UserId:
+    CustomerId:
       properties:
         id:
           type: string
@@ -1157,68 +1214,11 @@ components:
           type: string
           description: string
           enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
-    EntitySubtype:
-      properties:
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        entityType:
-          type: string
-          enum:
-          - TENANT
           - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-        type:
-          type: string
-    AlarmId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ALARM
-          example: ALARM
+          example: CUSTOMER
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

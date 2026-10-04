@@ -179,26 +179,7 @@ paths:
                 $ref: '#/components/schemas/User'
 components:
   schemas:
-    JwtPair:
-      description: JWT Pair
-      properties:
-        token:
-          type: string
-          description: The JWT Access Token. Used to perform API calls.
-          example: AAB254FF67D..
-        refreshToken:
-          type: string
-          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
-          example: AAB254FF67D..
-        scope:
-          type: string
-          enum:
-          - SYS_ADMIN
-          - TENANT_ADMIN
-          - CUSTOMER_USER
-          - REFRESH_TOKEN
-          - PRE_VERIFICATION_TOKEN
-    TenantId:
+    UserId:
       properties:
         id:
           type: string
@@ -209,11 +190,51 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - USER
+          example: USER
       required:
       - entityType
       - id
+    UserPasswordPolicy:
+      properties:
+        minimumLength:
+          type: integer
+          format: int32
+          description: Minimum number of symbols in the password.
+        maximumLength:
+          type: integer
+          format: int32
+          description: Maximum number of symbols in the password.
+        minimumUppercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of uppercase letters in the password.
+        minimumLowercaseLetters:
+          type: integer
+          format: int32
+          description: Minimum number of lowercase letters in the password.
+        minimumDigits:
+          type: integer
+          format: int32
+          description: Minimum number of digits in the password.
+        minimumSpecialCharacters:
+          type: integer
+          format: int32
+          description: Minimum number of special in the password.
+        allowWhitespaces:
+          type: boolean
+          description: Allow whitespaces
+        forceUserToResetPasswordIfNotValid:
+          type: boolean
+          description: Force user to update password if existing one does not pass validation
+        passwordExpirationPeriodDays:
+          type: integer
+          format: int32
+          description: Password expiration period (days). Force expiration of the password.
+        passwordReuseFrequencyDays:
+          type: integer
+          format: int32
+          description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
     CustomerId:
       properties:
         id:
@@ -237,6 +258,82 @@ components:
           type: string
           description: The email of the user
           example: user@example.com
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    RoleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    ActivateUserRequest:
+      description: Activate user request.
+      properties:
+        activateToken:
+          type: string
+          description: The activate token to verify
+          example: AAB254FF67D..
+        password:
+          type: string
+          description: The new password to set
+          example: secret
     ChangePasswordRequest:
       description: Change Password Request
       properties:
@@ -248,17 +345,6 @@ components:
           type: string
           description: The new password
           example: NewPassword
-    ResetPasswordRequest:
-      description: Reset password request.
-      properties:
-        resetToken:
-          type: string
-          description: The reset token to verify
-          example: AAB254FF67D..
-        password:
-          type: string
-          description: The new password to set
-          example: secret
     User:
       description: A JSON value representing the User.
       properties:
@@ -318,49 +404,7 @@ components:
       required:
       - authority
       - email
-    RoleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    UserId:
+    TenantId:
       properties:
         id:
           type: string
@@ -371,66 +415,22 @@ components:
           type: string
           description: string
           enum:
-          - USER
-          example: USER
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
-    ActivateUserRequest:
-      description: Activate user request.
+    ResetPasswordRequest:
+      description: Reset password request.
       properties:
-        activateToken:
+        resetToken:
           type: string
-          description: The activate token to verify
+          description: The reset token to verify
           example: AAB254FF67D..
         password:
           type: string
           description: The new password to set
           example: secret
-    UserPasswordPolicy:
-      properties:
-        minimumLength:
-          type: integer
-          format: int32
-          description: Minimum number of symbols in the password.
-        maximumLength:
-          type: integer
-          format: int32
-          description: Maximum number of symbols in the password.
-        minimumUppercaseLetters:
-          type: integer
-          format: int32
-          description: Minimum number of uppercase letters in the password.
-        minimumLowercaseLetters:
-          type: integer
-          format: int32
-          description: Minimum number of lowercase letters in the password.
-        minimumDigits:
-          type: integer
-          format: int32
-          description: Minimum number of digits in the password.
-        minimumSpecialCharacters:
-          type: integer
-          format: int32
-          description: Minimum number of special in the password.
-        allowWhitespaces:
-          type: boolean
-          description: Allow whitespaces
-        forceUserToResetPasswordIfNotValid:
-          type: boolean
-          description: Force user to update password if existing one does not pass validation
-        passwordExpirationPeriodDays:
-          type: integer
-          format: int32
-          description: Password expiration period (days). Force expiration of the password.
-        passwordReuseFrequencyDays:
-          type: integer
-          format: int32
-          description: Password reuse frequency (days). Disallow to use the same password for the defined number of days
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

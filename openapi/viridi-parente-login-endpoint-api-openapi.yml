@@ -102,6 +102,32 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    LoginResponse:
+      properties:
+        token:
+          type: string
+          description: JWT token
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIi...
+        refreshToken:
+          type: string
+          description: Refresh token
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIi...
+      required:
+      - refreshToken
+      - token
+    LoginRequest:
+      properties:
+        username:
+          type: string
+          description: User email
+          example: tenant@thingsboard.org
+        password:
+          type: string
+          description: User password
+          example: tenant
+      required:
+      - password
+      - username
     ThingsboardCredentialsExpiredResponse:
       properties:
         status:
@@ -218,32 +244,6 @@ components:
           format: int64
           description: Timestamp
           readOnly: true
-    LoginResponse:
-      properties:
-        token:
-          type: string
-          description: JWT token
-          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIi...
-        refreshToken:
-          type: string
-          description: Refresh token
-          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIi...
-      required:
-      - refreshToken
-      - token
-    LoginRequest:
-      properties:
-        username:
-          type: string
-          description: User email
-          example: tenant@thingsboard.org
-        password:
-          type: string
-          description: User password
-          example: tenant
-      required:
-      - password
-      - username
   securitySchemes:
     HTTP_login_form:
       type: http

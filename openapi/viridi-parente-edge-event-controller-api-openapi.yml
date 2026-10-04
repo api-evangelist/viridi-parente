@@ -92,69 +92,6 @@ paths:
                 $ref: '#/components/schemas/PageDataEdgeEvent'
 components:
   schemas:
-    PageDataEdgeEvent:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EdgeEvent'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    EdgeEventId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    EdgeId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - EDGE
-          example: EDGE
-      required:
-      - entityType
-      - id
     EdgeEvent:
       properties:
         id:
@@ -237,6 +174,69 @@ components:
       description: A value representing the any type (object or primitive)
       examples:
       - {}
+    EdgeEventId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
+    EdgeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - EDGE
+          example: EDGE
+      required:
+      - entityType
+      - id
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    PageDataEdgeEvent:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EdgeEvent'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -62,6 +62,28 @@ paths:
                 $ref: '#/components/schemas/LwM2MServerSecurityConfigDefault'
 components:
   schemas:
+    DeviceProfileId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE_PROFILE
+          example: DEVICE_PROFILE
+      required:
+      - entityType
+      - id
+    MqttDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
+    DefaultDeviceTransportConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceTransportConfiguration'
     DeviceConfiguration:
       discriminator:
         propertyName: type
@@ -70,9 +92,136 @@ components:
           type: string
       required:
       - type
-    DefaultDeviceTransportConfiguration:
+    CoapDeviceTransportConfiguration:
       allOf:
       - $ref: '#/components/schemas/DeviceTransportConfiguration'
+      - type: object
+        properties:
+          powerMode:
+            type: string
+            enum:
+            - PSM
+            - DRX
+            - E_DRX
+          psmActivityTimer:
+            type: integer
+            format: int64
+          edrxCycle:
+            type: integer
+            format: int64
+          pagingTransmissionWindow:
+            type: integer
+            format: int64
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    DeviceData:
+      properties:
+        configuration:
+          description: Device configuration for device profile type. DEFAULT is only supported value for now
+          oneOf:
+          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
+        transportConfiguration:
+          description: Device transport configuration used to connect the device
+          oneOf:
+          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
+          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
+    DeviceTransportConfiguration:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    DefaultDeviceConfiguration:
+      allOf:
+      - $ref: '#/components/schemas/DeviceConfiguration'
+    OtaPackageId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - OTA_PACKAGE
+          example: OTA_PACKAGE
+      required:
+      - entityType
+      - id
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    Device:
+      properties:
+        id:
+          $ref: '#/components/schemas/DeviceId'
+          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the device creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
+          readOnly: true
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
+          readOnly: true
+        name:
+          type: string
+          description: Unique Device Name in scope of Tenant
+          example: A4B72CCDFF33
+        type:
+          type: string
+          description: Device Profile Name
+          example: Temperature Sensor
+        label:
+          type: string
+          description: Label that may be used in widgets
+          example: Room 234 Sensor
+        deviceProfileId:
+          $ref: '#/components/schemas/DeviceProfileId'
+          description: JSON object with Device Profile Id.
+        firmwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        softwareId:
+          $ref: '#/components/schemas/OtaPackageId'
+          description: JSON object with Ota Package Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: Additional parameters of the device
+        deviceData:
+          $ref: '#/components/schemas/DeviceData'
+          description: JSON object with content specific to type of transport in the device profile.
+      required:
+      - deviceProfileId
+      - name
     Lwm2mDeviceTransportConfiguration:
       allOf:
       - $ref: '#/components/schemas/DeviceTransportConfiguration'
@@ -93,25 +242,52 @@ components:
           pagingTransmissionWindow:
             type: integer
             format: int64
-    MqttDeviceTransportConfiguration:
+    SnmpDeviceTransportConfiguration:
       allOf:
       - $ref: '#/components/schemas/DeviceTransportConfiguration'
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
+      - type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: integer
+            format: int32
+          protocolVersion:
+            type: string
+            enum:
+            - V1
+            - V2C
+            - V3
+          community:
+            type: string
+          username:
+            type: string
+          securityName:
+            type: string
+          contextName:
+            type: string
+          authenticationProtocol:
+            type: string
+            enum:
+            - SHA_1
+            - SHA_224
+            - SHA_256
+            - SHA_384
+            - SHA_512
+            - MD5
+          authenticationPassphrase:
+            type: string
+          privacyProtocol:
+            type: string
+            enum:
+            - DES
+            - AES_128
+            - AES_192
+            - AES_256
+          privacyPassphrase:
+            type: string
+          engineId:
+            type: string
     TenantId:
       properties:
         id:
@@ -128,9 +304,22 @@ components:
       required:
       - entityType
       - id
-    DefaultDeviceConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceConfiguration'
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
     LwM2MServerSecurityConfigDefault:
       properties:
         shortServerId:
@@ -220,195 +409,6 @@ components:
           description: 'Port for ''Security'' mode (DTLS): Lwm2m Server or Bootstrap Server'
           example: 5686
           readOnly: true
-    CoapDeviceTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceTransportConfiguration'
-      - type: object
-        properties:
-          powerMode:
-            type: string
-            enum:
-            - PSM
-            - DRX
-            - E_DRX
-          psmActivityTimer:
-            type: integer
-            format: int64
-          edrxCycle:
-            type: integer
-            format: int64
-          pagingTransmissionWindow:
-            type: integer
-            format: int64
-    DeviceData:
-      properties:
-        configuration:
-          description: Device configuration for device profile type. DEFAULT is only supported value for now
-          oneOf:
-          - $ref: '#/components/schemas/DefaultDeviceConfiguration'
-        transportConfiguration:
-          description: Device transport configuration used to connect the device
-          oneOf:
-          - $ref: '#/components/schemas/CoapDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/DefaultDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/Lwm2mDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/MqttDeviceTransportConfiguration'
-          - $ref: '#/components/schemas/SnmpDeviceTransportConfiguration'
-    OtaPackageId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - OTA_PACKAGE
-          example: OTA_PACKAGE
-      required:
-      - entityType
-      - id
-    DeviceProfileId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE_PROFILE
-          example: DEVICE_PROFILE
-      required:
-      - entityType
-      - id
-    Device:
-      properties:
-        id:
-          $ref: '#/components/schemas/DeviceId'
-          description: JSON object with the Device Id. Specify this field to update the Device. Referencing non-existing Device Id will cause error. Omit this field to create new Device.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the device creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.
-          readOnly: true
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with Customer Id. Use 'assignDeviceToCustomer' to change the Customer Id.
-          readOnly: true
-        name:
-          type: string
-          description: Unique Device Name in scope of Tenant
-          example: A4B72CCDFF33
-        type:
-          type: string
-          description: Device Profile Name
-          example: Temperature Sensor
-        label:
-          type: string
-          description: Label that may be used in widgets
-          example: Room 234 Sensor
-        deviceProfileId:
-          $ref: '#/components/schemas/DeviceProfileId'
-          description: JSON object with Device Profile Id.
-        firmwareId:
-          $ref: '#/components/schemas/OtaPackageId'
-          description: JSON object with Ota Package Id.
-        softwareId:
-          $ref: '#/components/schemas/OtaPackageId'
-          description: JSON object with Ota Package Id.
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-          description: Additional parameters of the device
-        deviceData:
-          $ref: '#/components/schemas/DeviceData'
-          description: JSON object with content specific to type of transport in the device profile.
-      required:
-      - deviceProfileId
-      - name
-    DeviceTransportConfiguration:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    SnmpDeviceTransportConfiguration:
-      allOf:
-      - $ref: '#/components/schemas/DeviceTransportConfiguration'
-      - type: object
-        properties:
-          host:
-            type: string
-          port:
-            type: integer
-            format: int32
-          protocolVersion:
-            type: string
-            enum:
-            - V1
-            - V2C
-            - V3
-          community:
-            type: string
-          username:
-            type: string
-          securityName:
-            type: string
-          contextName:
-            type: string
-          authenticationProtocol:
-            type: string
-            enum:
-            - SHA_1
-            - SHA_224
-            - SHA_256
-            - SHA_384
-            - SHA_512
-            - MD5
-          authenticationPassphrase:
-            type: string
-          privacyProtocol:
-            type: string
-            enum:
-            - DES
-            - AES_128
-            - AES_192
-            - AES_256
-          privacyPassphrase:
-            type: string
-          engineId:
-            type: string
-    DeviceId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

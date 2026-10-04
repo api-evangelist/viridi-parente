@@ -677,6 +677,38 @@ paths:
                 $ref: '#/components/schemas/PageDataRuleChain'
 components:
   schemas:
+    RuleNodeId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_NODE
+          example: RULE_NODE
+      required:
+      - entityType
+      - id
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
     RuleChain:
       description: A JSON value representing the rule chain.
       properties:
@@ -738,75 +770,6 @@ components:
       required:
       - metadata
       - ruleChains
-    NodeConnectionInfo:
-      properties:
-        fromIndex:
-          type: integer
-          format: int32
-          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
-        toIndex:
-          type: integer
-          format: int32
-          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
-        type:
-          type: string
-          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
-      required:
-      - fromIndex
-      - toIndex
-      - type
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    RuleChainConnectionInfo:
-      properties:
-        fromIndex:
-          type: integer
-          format: int32
-          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
-        targetRuleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: JSON object with the Rule Chain Id.
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-          description: JSON object with the additional information about the connection.
-        type:
-          type: string
-          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
-      required:
-      - additionalInfo
-      - fromIndex
-      - targetRuleChainId
-      - type
-    RuleChainId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
-      required:
-      - entityType
-      - id
     PageDataRuleChain:
       properties:
         data:
@@ -829,16 +792,10 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    RuleChainImportResult:
-      properties:
-        ruleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-        ruleChainName:
-          type: string
-        updated:
-          type: boolean
-        error:
-          type: string
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     DefaultRuleChainCreateRequest:
       description: A JSON value representing the request.
       properties:
@@ -848,22 +805,54 @@ components:
           example: Root Rule Chain
       required:
       - name
-    RuleNodeId:
+    RuleChainOutputLabelsUsage:
       properties:
-        id:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Rule Chain Id
+          readOnly: true
+        ruleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: Rule Node Id
+          readOnly: true
+        ruleChainName:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
+          description: Rule Chain Name
+          readOnly: true
+        ruleNodeName:
           type: string
-          description: string
-          enum:
-          - RULE_NODE
-          example: RULE_NODE
+          description: Rule Node Name
+          readOnly: true
+        labels:
+          type: array
+          description: Output labels
+          items:
+            type: string
+          readOnly: true
+          uniqueItems: true
       required:
-      - entityType
-      - id
+      - labels
+      - ruleChainId
+      - ruleChainName
+      - ruleNodeId
+      - ruleNodeName
+    NodeConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        toIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - fromIndex
+      - toIndex
+      - type
     RuleNode:
       properties:
         id:
@@ -911,41 +900,16 @@ components:
         additionalInfo:
           $ref: '#/components/schemas/JsonNode'
           description: Additional parameters of the rule node. Contains 'layoutX' and 'layoutY' properties for visualization.
-    RuleChainOutputLabelsUsage:
+    RuleChainImportResult:
       properties:
         ruleChainId:
           $ref: '#/components/schemas/RuleChainId'
-          description: Rule Chain Id
-          readOnly: true
-        ruleNodeId:
-          $ref: '#/components/schemas/RuleNodeId'
-          description: Rule Node Id
-          readOnly: true
         ruleChainName:
           type: string
-          description: Rule Chain Name
-          readOnly: true
-        ruleNodeName:
+        updated:
+          type: boolean
+        error:
           type: string
-          description: Rule Node Name
-          readOnly: true
-        labels:
-          type: array
-          description: Output labels
-          items:
-            type: string
-          readOnly: true
-          uniqueItems: true
-      required:
-      - labels
-      - ruleChainId
-      - ruleChainName
-      - ruleNodeId
-      - ruleNodeName
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     RuleChainMetaData:
       description: A JSON value representing the rule chain metadata.
       properties:
@@ -978,6 +942,42 @@ components:
       - nodes
       - ruleChainConnections
       - ruleChainId
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    RuleChainConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        targetRuleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id.
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with the additional information about the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - additionalInfo
+      - fromIndex
+      - targetRuleChainId
+      - type
   securitySchemes:
     HTTP_login_form:
       type: http

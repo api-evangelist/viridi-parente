@@ -318,295 +318,6 @@ paths:
                 format: int64
 components:
   schemas:
-    DynamicValueDouble:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    EdgeTypeFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          edgeType:
-            type: string
-            deprecated: true
-            writeOnly: true
-          edgeTypes:
-            type: array
-            items:
-              type: string
-          edgeNameFilter:
-            type: string
-    DeviceSearchQueryFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          rootEntity:
-            $ref: '#/components/schemas/EntityId'
-          relationType:
-            type: string
-          direction:
-            type: string
-            enum:
-            - FROM
-            - TO
-          maxLevel:
-            type: integer
-            format: int32
-          fetchLastLevelOnly:
-            type: boolean
-          deviceTypes:
-            type: array
-            items:
-              type: string
-    AlarmAssignee:
-      properties:
-        id:
-          $ref: '#/components/schemas/UserId'
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-    ComplexFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - AND
-            - OR
-          predicates:
-            type: array
-            items:
-              $ref: '#/components/schemas/KeyFilterPredicate'
-    EntityViewTypeFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          entityViewType:
-            type: string
-            deprecated: true
-            writeOnly: true
-          entityViewTypes:
-            type: array
-            items:
-              type: string
-          entityViewNameFilter:
-            type: string
-    EntityKey:
-      properties:
-        type:
-          type: string
-          enum:
-          - ATTRIBUTE
-          - CLIENT_ATTRIBUTE
-          - SHARED_ATTRIBUTE
-          - SERVER_ATTRIBUTE
-          - TIME_SERIES
-          - ENTITY_FIELD
-          - ALARM_FIELD
-        key:
-          type: string
-    EntityDataQuery:
-      description: A JSON value representing the entity data query. See API call notes above for more details.
-      properties:
-        entityFilter:
-          oneOf:
-          - $ref: '#/components/schemas/ApiUsageStateFilter'
-          - $ref: '#/components/schemas/AssetSearchQueryFilter'
-          - $ref: '#/components/schemas/AssetTypeFilter'
-          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
-          - $ref: '#/components/schemas/DeviceTypeFilter'
-          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
-          - $ref: '#/components/schemas/EdgeTypeFilter'
-          - $ref: '#/components/schemas/EntityListFilter'
-          - $ref: '#/components/schemas/EntityNameFilter'
-          - $ref: '#/components/schemas/EntityTypeFilter'
-          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
-          - $ref: '#/components/schemas/EntityViewTypeFilter'
-          - $ref: '#/components/schemas/RelationsQueryFilter'
-          - $ref: '#/components/schemas/SingleEntityFilter'
-        keyFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyFilter'
-        pageLink:
-          $ref: '#/components/schemas/EntityDataPageLink'
-        entityFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntityKey'
-        latestValues:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntityKey'
-    EntityData:
-      properties:
-        entityId:
-          $ref: '#/components/schemas/EntityId'
-        latest:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/TsValue'
-        timeseries:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/TsValue'
-        aggLatest:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ComparisonTsValue'
-    ApiUsageStateFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          customerId:
-            $ref: '#/components/schemas/CustomerId'
-    DynamicValueBoolean:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    EntityListFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          entityType:
-            type: string
-            enum:
-            - TENANT
-            - CUSTOMER
-            - USER
-            - DASHBOARD
-            - ASSET
-            - DEVICE
-            - ALARM
-            - RULE_CHAIN
-            - RULE_NODE
-            - ROLE
-            - ENTITY_VIEW
-            - WIDGETS_BUNDLE
-            - WIDGET_TYPE
-            - TENANT_PROFILE
-            - DEVICE_PROFILE
-            - ASSET_PROFILE
-            - API_USAGE_STATE
-            - TB_RESOURCE
-            - OTA_PACKAGE
-            - EDGE
-            - RPC
-            - QUEUE
-            - NOTIFICATION_TARGET
-            - NOTIFICATION_TEMPLATE
-            - NOTIFICATION_REQUEST
-            - NOTIFICATION
-            - NOTIFICATION_RULE
-            - QUEUE_STATS
-          entityList:
-            type: array
-            items:
-              type: string
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    DynamicValueString:
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - CURRENT_TENANT
-          - CURRENT_CUSTOMER
-          - CURRENT_USER
-          - CURRENT_DEVICE
-        sourceAttribute:
-          type: string
-        inherit:
-          type: boolean
-    AlarmId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ALARM
-          example: ALARM
-      required:
-      - entityType
-      - id
-    EntityViewSearchQueryFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          rootEntity:
-            $ref: '#/components/schemas/EntityId'
-          relationType:
-            type: string
-          direction:
-            type: string
-            enum:
-            - FROM
-            - TO
-          maxLevel:
-            type: integer
-            format: int32
-          fetchLastLevelOnly:
-            type: boolean
-          entityViewTypes:
-            type: array
-            items:
-              type: string
     RelationEntityTypeFilter:
       properties:
         relationType:
@@ -650,13 +361,100 @@ components:
         negate:
           type: boolean
           description: Negate relation type between root entity and other entity.
-    PageDataAlarmData:
+    EntityDataQuery:
+      description: A JSON value representing the entity data query. See API call notes above for more details.
+      properties:
+        entityFilter:
+          oneOf:
+          - $ref: '#/components/schemas/ApiUsageStateFilter'
+          - $ref: '#/components/schemas/AssetSearchQueryFilter'
+          - $ref: '#/components/schemas/AssetTypeFilter'
+          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
+          - $ref: '#/components/schemas/DeviceTypeFilter'
+          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
+          - $ref: '#/components/schemas/EdgeTypeFilter'
+          - $ref: '#/components/schemas/EntityListFilter'
+          - $ref: '#/components/schemas/EntityNameFilter'
+          - $ref: '#/components/schemas/EntityTypeFilter'
+          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
+          - $ref: '#/components/schemas/EntityViewTypeFilter'
+          - $ref: '#/components/schemas/RelationsQueryFilter'
+          - $ref: '#/components/schemas/SingleEntityFilter'
+        keyFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyFilter'
+        pageLink:
+          $ref: '#/components/schemas/EntityDataPageLink'
+        entityFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityKey'
+        latestValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityKey'
+    EntityKey:
+      properties:
+        type:
+          type: string
+          enum:
+          - ATTRIBUTE
+          - CLIENT_ATTRIBUTE
+          - SHARED_ATTRIBUTE
+          - SERVER_ATTRIBUTE
+          - TIME_SERIES
+          - ENTITY_FIELD
+          - ALARM_FIELD
+        key:
+          type: string
+    FilterPredicateValueDouble:
+      properties:
+        defaultValue:
+          type: number
+          format: double
+        userValue:
+          type: number
+          format: double
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueDouble'
+    ApiUsageStateFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          customerId:
+            $ref: '#/components/schemas/CustomerId'
+    EntityCountQuery:
+      description: A JSON value representing the entity count query. See API call notes above for more details.
+      properties:
+        entityFilter:
+          oneOf:
+          - $ref: '#/components/schemas/ApiUsageStateFilter'
+          - $ref: '#/components/schemas/AssetSearchQueryFilter'
+          - $ref: '#/components/schemas/AssetTypeFilter'
+          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
+          - $ref: '#/components/schemas/DeviceTypeFilter'
+          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
+          - $ref: '#/components/schemas/EdgeTypeFilter'
+          - $ref: '#/components/schemas/EntityListFilter'
+          - $ref: '#/components/schemas/EntityNameFilter'
+          - $ref: '#/components/schemas/EntityTypeFilter'
+          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
+          - $ref: '#/components/schemas/EntityViewTypeFilter'
+          - $ref: '#/components/schemas/RelationsQueryFilter'
+          - $ref: '#/components/schemas/SingleEntityFilter'
+        keyFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyFilter'
+    PageDataEntityData:
       properties:
         data:
           type: array
           description: Array of the entities
           items:
-            $ref: '#/components/schemas/AlarmData'
+            $ref: '#/components/schemas/EntityData'
           readOnly: true
         totalPages:
           type: integer
@@ -672,7 +470,58 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    EntityFilter:
+    EntityNameFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          entityType:
+            type: string
+            enum:
+            - TENANT
+            - CUSTOMER
+            - USER
+            - DASHBOARD
+            - ASSET
+            - DEVICE
+            - ALARM
+            - RULE_CHAIN
+            - RULE_NODE
+            - ROLE
+            - ENTITY_VIEW
+            - WIDGETS_BUNDLE
+            - WIDGET_TYPE
+            - TENANT_PROFILE
+            - DEVICE_PROFILE
+            - ASSET_PROFILE
+            - API_USAGE_STATE
+            - TB_RESOURCE
+            - OTA_PACKAGE
+            - EDGE
+            - RPC
+            - QUEUE
+            - NOTIFICATION_TARGET
+            - NOTIFICATION_TEMPLATE
+            - NOTIFICATION_REQUEST
+            - NOTIFICATION
+            - NOTIFICATION_RULE
+            - QUEUE_STATS
+          entityNameFilter:
+            type: string
+    DynamicValueString:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    KeyFilterPredicate:
       discriminator:
         propertyName: type
       properties:
@@ -680,7 +529,150 @@ components:
           type: string
       required:
       - type
-    EntityId:
+    EntityViewTypeFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          entityViewType:
+            type: string
+            deprecated: true
+            writeOnly: true
+          entityViewTypes:
+            type: array
+            items:
+              type: string
+          entityViewNameFilter:
+            type: string
+    FilterPredicateValueBoolean:
+      properties:
+        defaultValue:
+          type: boolean
+        userValue:
+          type: boolean
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueBoolean'
+    EntityListFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          entityType:
+            type: string
+            enum:
+            - TENANT
+            - CUSTOMER
+            - USER
+            - DASHBOARD
+            - ASSET
+            - DEVICE
+            - ALARM
+            - RULE_CHAIN
+            - RULE_NODE
+            - ROLE
+            - ENTITY_VIEW
+            - WIDGETS_BUNDLE
+            - WIDGET_TYPE
+            - TENANT_PROFILE
+            - DEVICE_PROFILE
+            - ASSET_PROFILE
+            - API_USAGE_STATE
+            - TB_RESOURCE
+            - OTA_PACKAGE
+            - EDGE
+            - RPC
+            - QUEUE
+            - NOTIFICATION_TARGET
+            - NOTIFICATION_TEMPLATE
+            - NOTIFICATION_REQUEST
+            - NOTIFICATION
+            - NOTIFICATION_RULE
+            - QUEUE_STATS
+          entityList:
+            type: array
+            items:
+              type: string
+    EntityData:
+      properties:
+        entityId:
+          $ref: '#/components/schemas/EntityId'
+        latest:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/TsValue'
+        timeseries:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/TsValue'
+        aggLatest:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ComparisonTsValue'
+    AlarmCountQuery:
+      description: A JSON value representing the alarm count query.
+      properties:
+        startTs:
+          type: integer
+          format: int64
+        endTs:
+          type: integer
+          format: int64
+        timeWindow:
+          type: integer
+          format: int64
+        typeList:
+          type: array
+          items:
+            type: string
+        statusList:
+          type: array
+          items:
+            type: string
+            enum:
+            - ANY
+            - ACTIVE
+            - CLEARED
+            - ACK
+            - UNACK
+        severityList:
+          type: array
+          items:
+            type: string
+            enum:
+            - CRITICAL
+            - MAJOR
+            - MINOR
+            - WARNING
+            - INDETERMINATE
+        searchPropagatedAlarms:
+          type: boolean
+        assigneeId:
+          $ref: '#/components/schemas/UserId'
+        entityFilter:
+          oneOf:
+          - $ref: '#/components/schemas/ApiUsageStateFilter'
+          - $ref: '#/components/schemas/AssetSearchQueryFilter'
+          - $ref: '#/components/schemas/AssetTypeFilter'
+          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
+          - $ref: '#/components/schemas/DeviceTypeFilter'
+          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
+          - $ref: '#/components/schemas/EdgeTypeFilter'
+          - $ref: '#/components/schemas/EntityListFilter'
+          - $ref: '#/components/schemas/EntityNameFilter'
+          - $ref: '#/components/schemas/EntityTypeFilter'
+          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
+          - $ref: '#/components/schemas/EntityViewTypeFilter'
+          - $ref: '#/components/schemas/RelationsQueryFilter'
+          - $ref: '#/components/schemas/SingleEntityFilter'
+        keyFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyFilter'
+    UserId:
       properties:
         id:
           type: string
@@ -689,68 +681,37 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
+          description: string
           enum:
-          - TENANT
-          - CUSTOMER
           - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
+          example: USER
       required:
       - entityType
       - id
-    SingleEntityFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          singleEntity:
-            $ref: '#/components/schemas/EntityId'
-    EntityDataSortOrder:
+    DynamicValueBoolean:
       properties:
-        key:
-          $ref: '#/components/schemas/EntityKey'
-        direction:
+        sourceType:
           type: string
           enum:
-          - ASC
-          - DESC
-    BooleanFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueBoolean'
-    AssetSearchQueryFilter:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    TsValue:
+      properties:
+        ts:
+          type: integer
+          format: int64
+        value:
+          type: string
+        count:
+          type: integer
+          format: int64
+    EntityViewSearchQueryFilter:
       allOf:
       - $ref: '#/components/schemas/EntityFilter'
       - type: object
@@ -769,10 +730,48 @@ components:
             format: int32
           fetchLastLevelOnly:
             type: boolean
-          assetTypes:
+          entityViewTypes:
             type: array
             items:
               type: string
+    DeviceSearchQueryFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          rootEntity:
+            $ref: '#/components/schemas/EntityId'
+          relationType:
+            type: string
+          direction:
+            type: string
+            enum:
+            - FROM
+            - TO
+          maxLevel:
+            type: integer
+            format: int32
+          fetchLastLevelOnly:
+            type: boolean
+          deviceTypes:
+            type: array
+            items:
+              type: string
+    DeviceTypeFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          deviceType:
+            type: string
+            deprecated: true
+            writeOnly: true
+          deviceTypes:
+            type: array
+            items:
+              type: string
+          deviceNameFilter:
+            type: string
     KeyFilter:
       properties:
         key:
@@ -790,7 +789,7 @@ components:
           - $ref: '#/components/schemas/ComplexFilterPredicate'
           - $ref: '#/components/schemas/NumericFilterPredicate'
           - $ref: '#/components/schemas/StringFilterPredicate'
-    UserId:
+    TenantId:
       properties:
         id:
           type: string
@@ -801,11 +800,48 @@ components:
           type: string
           description: string
           enum:
-          - USER
-          example: USER
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    DynamicValueDouble:
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - CURRENT_TENANT
+          - CURRENT_CUSTOMER
+          - CURRENT_USER
+          - CURRENT_DEVICE
+        sourceAttribute:
+          type: string
+        inherit:
+          type: boolean
+    FilterPredicateValueString:
+      properties:
+        defaultValue:
+          type: string
+        userValue:
+          type: string
+        dynamicValue:
+          $ref: '#/components/schemas/DynamicValueString'
     EntityDataPageLink:
       properties:
         pageSize:
@@ -820,6 +856,49 @@ components:
           $ref: '#/components/schemas/EntityDataSortOrder'
         dynamic:
           type: boolean
+    EntityTypeFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          entityType:
+            type: string
+            enum:
+            - TENANT
+            - CUSTOMER
+            - USER
+            - DASHBOARD
+            - ASSET
+            - DEVICE
+            - ALARM
+            - RULE_CHAIN
+            - RULE_NODE
+            - ROLE
+            - ENTITY_VIEW
+            - WIDGETS_BUNDLE
+            - WIDGET_TYPE
+            - TENANT_PROFILE
+            - DEVICE_PROFILE
+            - ASSET_PROFILE
+            - API_USAGE_STATE
+            - TB_RESOURCE
+            - OTA_PACKAGE
+            - EDGE
+            - RPC
+            - QUEUE
+            - NOTIFICATION_TARGET
+            - NOTIFICATION_TEMPLATE
+            - NOTIFICATION_REQUEST
+            - NOTIFICATION
+            - NOTIFICATION_RULE
+            - QUEUE_STATS
+    SingleEntityFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          singleEntity:
+            $ref: '#/components/schemas/EntityId'
     RelationsQueryFilter:
       allOf:
       - $ref: '#/components/schemas/EntityFilter'
@@ -881,50 +960,104 @@ components:
             type: boolean
           multiRoot:
             type: boolean
-    EntityTypeFilter:
+    AlarmDataQuery:
+      description: A JSON value representing the alarm data query. See API call notes above for more details.
+      properties:
+        entityFilter:
+          oneOf:
+          - $ref: '#/components/schemas/ApiUsageStateFilter'
+          - $ref: '#/components/schemas/AssetSearchQueryFilter'
+          - $ref: '#/components/schemas/AssetTypeFilter'
+          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
+          - $ref: '#/components/schemas/DeviceTypeFilter'
+          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
+          - $ref: '#/components/schemas/EdgeTypeFilter'
+          - $ref: '#/components/schemas/EntityListFilter'
+          - $ref: '#/components/schemas/EntityNameFilter'
+          - $ref: '#/components/schemas/EntityTypeFilter'
+          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
+          - $ref: '#/components/schemas/EntityViewTypeFilter'
+          - $ref: '#/components/schemas/RelationsQueryFilter'
+          - $ref: '#/components/schemas/SingleEntityFilter'
+        keyFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyFilter'
+        pageLink:
+          $ref: '#/components/schemas/AlarmDataPageLink'
+        entityFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityKey'
+        latestValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityKey'
+        alarmFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityKey'
+    AlarmAssignee:
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+    BooleanFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueBoolean'
+    NumericFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - GREATER
+            - LESS
+            - GREATER_OR_EQUAL
+            - LESS_OR_EQUAL
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueDouble'
+    AssetSearchQueryFilter:
       allOf:
       - $ref: '#/components/schemas/EntityFilter'
       - type: object
         properties:
-          entityType:
+          rootEntity:
+            $ref: '#/components/schemas/EntityId'
+          relationType:
+            type: string
+          direction:
             type: string
             enum:
-            - TENANT
-            - CUSTOMER
-            - USER
-            - DASHBOARD
-            - ASSET
-            - DEVICE
-            - ALARM
-            - RULE_CHAIN
-            - RULE_NODE
-            - ROLE
-            - ENTITY_VIEW
-            - WIDGETS_BUNDLE
-            - WIDGET_TYPE
-            - TENANT_PROFILE
-            - DEVICE_PROFILE
-            - ASSET_PROFILE
-            - API_USAGE_STATE
-            - TB_RESOURCE
-            - OTA_PACKAGE
-            - EDGE
-            - RPC
-            - QUEUE
-            - NOTIFICATION_TARGET
-            - NOTIFICATION_TEMPLATE
-            - NOTIFICATION_REQUEST
-            - NOTIFICATION
-            - NOTIFICATION_RULE
-            - QUEUE_STATS
-    FilterPredicateValueBoolean:
-      properties:
-        defaultValue:
-          type: boolean
-        userValue:
-          type: boolean
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueBoolean'
+            - FROM
+            - TO
+          maxLevel:
+            type: integer
+            format: int32
+          fetchLastLevelOnly:
+            type: boolean
+          assetTypes:
+            type: array
+            items:
+              type: string
     AlarmData:
       properties:
         id:
@@ -1058,233 +1191,28 @@ components:
       - severity
       - status
       - type
-    StringFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-            - STARTS_WITH
-            - ENDS_WITH
-            - CONTAINS
-            - NOT_CONTAINS
-            - IN
-            - NOT_IN
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueString'
-          ignoreCase:
-            type: boolean
-    KeyFilterPredicate:
-      discriminator:
-        propertyName: type
+    EntityDataSortOrder:
       properties:
-        type:
+        key:
+          $ref: '#/components/schemas/EntityKey'
+        direction:
           type: string
-      required:
-      - type
-    TsValue:
-      properties:
-        ts:
-          type: integer
-          format: int64
-        value:
-          type: string
-        count:
-          type: integer
-          format: int64
-    NumericFilterPredicate:
-      allOf:
-      - $ref: '#/components/schemas/KeyFilterPredicate'
-      - type: object
-        properties:
-          operation:
-            type: string
-            enum:
-            - EQUAL
-            - NOT_EQUAL
-            - GREATER
-            - LESS
-            - GREATER_OR_EQUAL
-            - LESS_OR_EQUAL
-          value:
-            $ref: '#/components/schemas/FilterPredicateValueDouble'
-    DeviceTypeFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          deviceType:
-            type: string
-            deprecated: true
-            writeOnly: true
-          deviceTypes:
-            type: array
-            items:
-              type: string
-          deviceNameFilter:
-            type: string
-    AlarmDataQuery:
-      description: A JSON value representing the alarm data query. See API call notes above for more details.
-      properties:
-        entityFilter:
-          oneOf:
-          - $ref: '#/components/schemas/ApiUsageStateFilter'
-          - $ref: '#/components/schemas/AssetSearchQueryFilter'
-          - $ref: '#/components/schemas/AssetTypeFilter'
-          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
-          - $ref: '#/components/schemas/DeviceTypeFilter'
-          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
-          - $ref: '#/components/schemas/EdgeTypeFilter'
-          - $ref: '#/components/schemas/EntityListFilter'
-          - $ref: '#/components/schemas/EntityNameFilter'
-          - $ref: '#/components/schemas/EntityTypeFilter'
-          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
-          - $ref: '#/components/schemas/EntityViewTypeFilter'
-          - $ref: '#/components/schemas/RelationsQueryFilter'
-          - $ref: '#/components/schemas/SingleEntityFilter'
-        keyFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyFilter'
-        pageLink:
-          $ref: '#/components/schemas/AlarmDataPageLink'
-        entityFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntityKey'
-        latestValues:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntityKey'
-        alarmFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/EntityKey'
-    EntityNameFilter:
-      allOf:
-      - $ref: '#/components/schemas/EntityFilter'
-      - type: object
-        properties:
-          entityType:
-            type: string
-            enum:
-            - TENANT
-            - CUSTOMER
-            - USER
-            - DASHBOARD
-            - ASSET
-            - DEVICE
-            - ALARM
-            - RULE_CHAIN
-            - RULE_NODE
-            - ROLE
-            - ENTITY_VIEW
-            - WIDGETS_BUNDLE
-            - WIDGET_TYPE
-            - TENANT_PROFILE
-            - DEVICE_PROFILE
-            - ASSET_PROFILE
-            - API_USAGE_STATE
-            - TB_RESOURCE
-            - OTA_PACKAGE
-            - EDGE
-            - RPC
-            - QUEUE
-            - NOTIFICATION_TARGET
-            - NOTIFICATION_TEMPLATE
-            - NOTIFICATION_REQUEST
-            - NOTIFICATION
-            - NOTIFICATION_RULE
-            - QUEUE_STATS
-          entityNameFilter:
-            type: string
+          enum:
+          - ASC
+          - DESC
     ComparisonTsValue:
       properties:
         current:
           $ref: '#/components/schemas/TsValue'
         previous:
           $ref: '#/components/schemas/TsValue'
-    FilterPredicateValueDouble:
-      properties:
-        defaultValue:
-          type: number
-          format: double
-        userValue:
-          type: number
-          format: double
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueDouble'
-    AlarmCountQuery:
-      description: A JSON value representing the alarm count query.
-      properties:
-        startTs:
-          type: integer
-          format: int64
-        endTs:
-          type: integer
-          format: int64
-        timeWindow:
-          type: integer
-          format: int64
-        typeList:
-          type: array
-          items:
-            type: string
-        statusList:
-          type: array
-          items:
-            type: string
-            enum:
-            - ANY
-            - ACTIVE
-            - CLEARED
-            - ACK
-            - UNACK
-        severityList:
-          type: array
-          items:
-            type: string
-            enum:
-            - CRITICAL
-            - MAJOR
-            - MINOR
-            - WARNING
-            - INDETERMINATE
-        searchPropagatedAlarms:
-          type: boolean
-        assigneeId:
-          $ref: '#/components/schemas/UserId'
-        entityFilter:
-          oneOf:
-          - $ref: '#/components/schemas/ApiUsageStateFilter'
-          - $ref: '#/components/schemas/AssetSearchQueryFilter'
-          - $ref: '#/components/schemas/AssetTypeFilter'
-          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
-          - $ref: '#/components/schemas/DeviceTypeFilter'
-          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
-          - $ref: '#/components/schemas/EdgeTypeFilter'
-          - $ref: '#/components/schemas/EntityListFilter'
-          - $ref: '#/components/schemas/EntityNameFilter'
-          - $ref: '#/components/schemas/EntityTypeFilter'
-          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
-          - $ref: '#/components/schemas/EntityViewTypeFilter'
-          - $ref: '#/components/schemas/RelationsQueryFilter'
-          - $ref: '#/components/schemas/SingleEntityFilter'
-        keyFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyFilter'
-    PageDataEntityData:
+    PageDataAlarmData:
       properties:
         data:
           type: array
           description: Array of the entities
           items:
-            $ref: '#/components/schemas/EntityData'
+            $ref: '#/components/schemas/AlarmData'
           readOnly: true
         totalPages:
           type: integer
@@ -1300,6 +1228,22 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
+    AlarmId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ALARM
+          example: ALARM
+      required:
+      - entityType
+      - id
     AlarmDataPageLink:
       properties:
         startTs:
@@ -1351,29 +1295,10 @@ components:
           $ref: '#/components/schemas/EntityDataSortOrder'
         dynamic:
           type: boolean
-    EntityCountQuery:
-      description: A JSON value representing the entity count query. See API call notes above for more details.
-      properties:
-        entityFilter:
-          oneOf:
-          - $ref: '#/components/schemas/ApiUsageStateFilter'
-          - $ref: '#/components/schemas/AssetSearchQueryFilter'
-          - $ref: '#/components/schemas/AssetTypeFilter'
-          - $ref: '#/components/schemas/DeviceSearchQueryFilter'
-          - $ref: '#/components/schemas/DeviceTypeFilter'
-          - $ref: '#/components/schemas/EdgeSearchQueryFilter'
-          - $ref: '#/components/schemas/EdgeTypeFilter'
-          - $ref: '#/components/schemas/EntityListFilter'
-          - $ref: '#/components/schemas/EntityNameFilter'
-          - $ref: '#/components/schemas/EntityTypeFilter'
-          - $ref: '#/components/schemas/EntityViewSearchQueryFilter'
-          - $ref: '#/components/schemas/EntityViewTypeFilter'
-          - $ref: '#/components/schemas/RelationsQueryFilter'
-          - $ref: '#/components/schemas/SingleEntityFilter'
-        keyFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyFilter'
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     EdgeSearchQueryFilter:
       allOf:
       - $ref: '#/components/schemas/EntityFilter'
@@ -1397,15 +1322,41 @@ components:
             type: array
             items:
               type: string
-    FilterPredicateValueString:
-      properties:
-        defaultValue:
-          type: string
-        userValue:
-          type: string
-        dynamicValue:
-          $ref: '#/components/schemas/DynamicValueString'
-    CustomerId:
+    StringFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - EQUAL
+            - NOT_EQUAL
+            - STARTS_WITH
+            - ENDS_WITH
+            - CONTAINS
+            - NOT_CONTAINS
+            - IN
+            - NOT_IN
+          value:
+            $ref: '#/components/schemas/FilterPredicateValueString'
+          ignoreCase:
+            type: boolean
+    ComplexFilterPredicate:
+      allOf:
+      - $ref: '#/components/schemas/KeyFilterPredicate'
+      - type: object
+        properties:
+          operation:
+            type: string
+            enum:
+            - AND
+            - OR
+          predicates:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyFilterPredicate'
+    EntityId:
       properties:
         id:
           type: string
@@ -1414,13 +1365,47 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
-          description: string
           enum:
+          - TENANT
           - CUSTOMER
-          example: CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
       required:
       - entityType
       - id
+    EntityFilter:
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+      required:
+      - type
     AssetTypeFilter:
       allOf:
       - $ref: '#/components/schemas/EntityFilter'
@@ -1435,6 +1420,21 @@ components:
             items:
               type: string
           assetNameFilter:
+            type: string
+    EdgeTypeFilter:
+      allOf:
+      - $ref: '#/components/schemas/EntityFilter'
+      - type: object
+        properties:
+          edgeType:
+            type: string
+            deprecated: true
+            writeOnly: true
+          edgeTypes:
+            type: array
+            items:
+              type: string
+          edgeNameFilter:
             type: string
   securitySchemes:
     HTTP_login_form:

@@ -297,7 +297,7 @@ paths:
                   $ref: '#/components/schemas/EntityInfo'
 components:
   schemas:
-    TenantId:
+    RuleChainId:
       properties:
         id:
           type: string
@@ -308,28 +308,49 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - RULE_CHAIN
+          example: RULE_CHAIN
       required:
       - entityType
       - id
-    AssetProfileInfo:
+    AssetProfileId:
       properties:
         id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: Tenant id.
-        name:
           type: string
-          description: Entity Name
-        image:
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
           type: string
-          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
-        defaultDashboardId:
-          $ref: '#/components/schemas/DashboardId'
-          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
+          description: string
+          enum:
+          - ASSET_PROFILE
+          example: ASSET_PROFILE
+      required:
+      - entityType
+      - id
+    PageDataAssetProfile:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/AssetProfile'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     EntityId:
       properties:
         id:
@@ -372,7 +393,24 @@ components:
       required:
       - entityType
       - id
-    RuleChainId:
+    AssetProfileInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: Tenant id.
+        name:
+          type: string
+          description: Entity Name
+        image:
+          type: string
+          description: 'Either URL or Base64 data of the icon. Used in the mobile application to visualize set of asset profiles in the grid view. '
+        defaultDashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to asset details.
+    DashboardId:
       properties:
         id:
           type: string
@@ -383,8 +421,8 @@ components:
           type: string
           description: string
           enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
+          - DASHBOARD
+          example: DASHBOARD
       required:
       - entityType
       - id
@@ -410,7 +448,7 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    AssetProfileId:
+    TenantId:
       properties:
         id:
           type: string
@@ -421,33 +459,11 @@ components:
           type: string
           description: string
           enum:
-          - ASSET_PROFILE
-          example: ASSET_PROFILE
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
-    PageDataAssetProfile:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/AssetProfile'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     AssetProfile:
       description: A JSON value representing the asset profile.
       properties:
@@ -489,22 +505,6 @@ components:
         default:
           type: boolean
           description: Used to mark the default profile. Default profile is used when the asset profile is not specified during asset creation.
-    DashboardId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DASHBOARD
-          example: DASHBOARD
-      required:
-      - entityType
-      - id
     EntityInfo:
       properties:
         id:

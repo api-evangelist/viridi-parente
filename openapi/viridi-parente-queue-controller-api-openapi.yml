@@ -186,67 +186,6 @@ paths:
                 $ref: '#/components/schemas/Queue'
 components:
   schemas:
-    ProcessingStrategy:
-      properties:
-        type:
-          type: string
-          enum:
-          - SKIP_ALL_FAILURES
-          - SKIP_ALL_FAILURES_AND_TIMED_OUT
-          - RETRY_ALL
-          - RETRY_FAILED
-          - RETRY_TIMED_OUT
-          - RETRY_FAILED_AND_TIMED_OUT
-        retries:
-          type: integer
-          format: int32
-        failurePercentage:
-          type: number
-          format: double
-        pauseBetweenRetries:
-          type: integer
-          format: int64
-        maxPauseBetweenRetries:
-          type: integer
-          format: int64
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    PageDataQueue:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/Queue'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     Queue:
       description: A JSON value representing the queue.
       properties:
@@ -278,6 +217,10 @@ components:
           $ref: '#/components/schemas/ProcessingStrategy'
         additionalInfo:
           $ref: '#/components/schemas/JsonNode'
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     SubmitStrategy:
       properties:
         type:
@@ -291,6 +234,22 @@ components:
         batchSize:
           type: integer
           format: int32
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     QueueId:
       properties:
         id:
@@ -307,10 +266,51 @@ components:
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    ProcessingStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
+          type: integer
+          format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
+    PageDataQueue:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/Queue'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
   securitySchemes:
     HTTP_login_form:
       type: http

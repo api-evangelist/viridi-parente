@@ -732,6 +732,36 @@ paths:
           description: OK
 components:
   schemas:
+    StarredDashboardInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: JSON object with Dashboard id.
+          readOnly: true
+        title:
+          type: string
+          description: Title of the dashboard.
+        starredAt:
+          type: integer
+          format: int64
+          description: Starred timestamp
+    UserId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
+      required:
+      - entityType
+      - id
     JwtPair:
       description: JWT Pair
       properties:
@@ -751,7 +781,28 @@ components:
           - CUSTOMER_USER
           - REFRESH_TOKEN
           - PRE_VERIFICATION_TOKEN
-    TenantId:
+    UserEmailInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+          description: User id
+        email:
+          type: string
+          description: User email
+          example: john@gmail.com
+        firstName:
+          type: string
+          description: User first name
+          example: John
+        lastName:
+          type: string
+          description: User last name
+          example: Brown
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    RoleId:
       properties:
         id:
           type: string
@@ -760,51 +811,58 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
         entityType:
           type: string
-          description: string
           enum:
           - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
           - CUSTOMER
-          example: CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
       required:
       - entityType
       - id
-    PageDataUser:
+    UserDashboardsInfo:
       properties:
-        data:
+        last:
           type: array
-          description: Array of the entities
+          description: List of last visited dashboards.
           items:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/LastVisitedDashboardInfo'
           readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+        starred:
+          type: array
+          description: List of starred dashboards.
+          items:
+            $ref: '#/components/schemas/StarredDashboardInfo'
           readOnly: true
-        totalElements:
+    MobileSessionInfo:
+      properties:
+        fcmTokenTimestamp:
           type: integer
           format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     LastVisitedDashboardInfo:
       properties:
         id:
@@ -881,6 +939,60 @@ components:
       required:
       - authority
       - email
+    PageDataUser:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
     PageDataUserEmailInfo:
       properties:
         data:
@@ -903,118 +1015,6 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    UserEmailInfo:
-      properties:
-        id:
-          $ref: '#/components/schemas/UserId'
-          description: User id
-        email:
-          type: string
-          description: User email
-          example: john@gmail.com
-        firstName:
-          type: string
-          description: User first name
-          example: John
-        lastName:
-          type: string
-          description: User last name
-          example: Brown
-    MobileSessionInfo:
-      properties:
-        fcmTokenTimestamp:
-          type: integer
-          format: int64
-    RoleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    UserId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
-    StarredDashboardInfo:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: JSON object with Dashboard id.
-          readOnly: true
-        title:
-          type: string
-          description: Title of the dashboard.
-        starredAt:
-          type: integer
-          format: int64
-          description: Starred timestamp
-    UserDashboardsInfo:
-      properties:
-        last:
-          type: array
-          description: List of last visited dashboards.
-          items:
-            $ref: '#/components/schemas/LastVisitedDashboardInfo'
-          readOnly: true
-        starred:
-          type: array
-          description: List of starred dashboards.
-          items:
-            $ref: '#/components/schemas/StarredDashboardInfo'
-          readOnly: true
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

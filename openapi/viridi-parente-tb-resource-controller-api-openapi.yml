@@ -476,35 +476,7 @@ paths:
                 $ref: '#/components/schemas/TbResourceInfo'
 components:
   schemas:
-    LwM2mObject:
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: LwM2M Object id.
-          example: 19
-        keyId:
-          type: string
-          description: LwM2M Object key id.
-          example: '19_1.0'
-        name:
-          type: string
-          description: LwM2M Object name.
-          example: BinaryAppDataContainer
-        multiple:
-          type: boolean
-          description: LwM2M Object multiple.
-          example: true
-        mandatory:
-          type: boolean
-          description: LwM2M Object mandatory.
-          example: false
-        instances:
-          type: array
-          description: LwM2M Object instances.
-          items:
-            $ref: '#/components/schemas/LwM2mInstance'
-    TenantId:
+    TbResourceId:
       properties:
         id:
           type: string
@@ -515,11 +487,15 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - TB_RESOURCE
+          example: TB_RESOURCE
       required:
       - entityType
       - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     TbResourceInfo:
       properties:
         id:
@@ -580,71 +556,6 @@ components:
         publicLink:
           type: string
           readOnly: true
-    PageDataTbResourceInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/TbResourceInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    LwM2mResourceObserve:
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: LwM2M Resource Observe id.
-          example: 0
-        name:
-          type: string
-          description: LwM2M Resource Observe name.
-          example: Data
-        observe:
-          type: boolean
-          description: LwM2M Resource Observe observe.
-          example: false
-        attribute:
-          type: boolean
-          description: LwM2M Resource Observe attribute.
-          example: false
-        telemetry:
-          type: boolean
-          description: LwM2M Resource Observe telemetry.
-          example: false
-        keyName:
-          type: string
-          description: LwM2M Resource Observe key name.
-          example: data
-    TbResourceId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TB_RESOURCE
-          example: TB_RESOURCE
-      required:
-      - entityType
-      - id
     LwM2mInstance:
       properties:
         id:
@@ -724,10 +635,99 @@ components:
         publicLink:
           type: string
           readOnly: true
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    LwM2mObject:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: LwM2M Object id.
+          example: 19
+        keyId:
+          type: string
+          description: LwM2M Object key id.
+          example: '19_1.0'
+        name:
+          type: string
+          description: LwM2M Object name.
+          example: BinaryAppDataContainer
+        multiple:
+          type: boolean
+          description: LwM2M Object multiple.
+          example: true
+        mandatory:
+          type: boolean
+          description: LwM2M Object mandatory.
+          example: false
+        instances:
+          type: array
+          description: LwM2M Object instances.
+          items:
+            $ref: '#/components/schemas/LwM2mInstance'
+    LwM2mResourceObserve:
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: LwM2M Resource Observe id.
+          example: 0
+        name:
+          type: string
+          description: LwM2M Resource Observe name.
+          example: Data
+        observe:
+          type: boolean
+          description: LwM2M Resource Observe observe.
+          example: false
+        attribute:
+          type: boolean
+          description: LwM2M Resource Observe attribute.
+          example: false
+        telemetry:
+          type: boolean
+          description: LwM2M Resource Observe telemetry.
+          example: false
+        keyName:
+          type: string
+          description: LwM2M Resource Observe key name.
+          example: data
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    PageDataTbResourceInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/TbResourceInfo'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
   securitySchemes:
     HTTP_login_form:
       type: http

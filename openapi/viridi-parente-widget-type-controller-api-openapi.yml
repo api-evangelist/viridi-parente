@@ -454,22 +454,6 @@ paths:
           description: OK
 components:
   schemas:
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
     WidgetTypeId:
       properties:
         id:
@@ -486,6 +470,55 @@ components:
       required:
       - entityType
       - id
+    WidgetTypeInfo:
+      properties:
+        id:
+          $ref: '#/components/schemas/WidgetTypeId'
+          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the Widget Type creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
+          readOnly: true
+        fqn:
+          type: string
+          description: Unique FQN that is used in dashboards as a reference widget type
+          readOnly: true
+        name:
+          type: string
+          description: Widget name used in search and UI
+          readOnly: true
+        deprecated:
+          type: boolean
+          description: Whether widget type is deprecated.
+          example: true
+        image:
+          type: string
+          description: Base64 encoded widget thumbnail
+          readOnly: true
+        description:
+          type: string
+          description: Description of the widget type
+          readOnly: true
+        tags:
+          type: array
+          description: Tags of the widget type
+          items:
+            type: string
+          readOnly: true
+        widgetType:
+          type: string
+          description: Type of the widget (timeseries, latest, control, alarm or static)
+          readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     WidgetType:
       properties:
         id:
@@ -537,55 +570,22 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    WidgetTypeInfo:
+    TenantId:
       properties:
         id:
-          $ref: '#/components/schemas/WidgetTypeId'
-          description: JSON object with the Widget Type Id. Specify this field to update the Widget Type. Referencing non-existing Widget Type Id will cause error. Omit this field to create new Widget Type.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the Widget Type creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id.
-          readOnly: true
-        fqn:
           type: string
-          description: Unique FQN that is used in dashboards as a reference widget type
-          readOnly: true
-        name:
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
           type: string
-          description: Widget name used in search and UI
-          readOnly: true
-        deprecated:
-          type: boolean
-          description: Whether widget type is deprecated.
-          example: true
-        image:
-          type: string
-          description: Base64 encoded widget thumbnail
-          readOnly: true
-        description:
-          type: string
-          description: Description of the widget type
-          readOnly: true
-        tags:
-          type: array
-          description: Tags of the widget type
-          items:
-            type: string
-          readOnly: true
-        widgetType:
-          type: string
-          description: Type of the widget (timeseries, latest, control, alarm or static)
-          readOnly: true
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     WidgetTypeDetails:
       description: A JSON value representing the Widget Type Details.
       properties:

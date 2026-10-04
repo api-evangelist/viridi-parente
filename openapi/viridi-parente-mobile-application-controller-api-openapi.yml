@@ -140,6 +140,63 @@ paths:
                 $ref: '#/components/schemas/JsonNode'
 components:
   schemas:
+    AndroidConfig:
+      properties:
+        enabled:
+          type: boolean
+        appPackage:
+          type: string
+        sha256CertFingerprints:
+          type: string
+        storeLink:
+          type: string
+    JwtPair:
+      description: JWT Pair
+      properties:
+        token:
+          type: string
+          description: The JWT Access Token. Used to perform API calls.
+          example: AAB254FF67D..
+        refreshToken:
+          type: string
+          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
+          example: AAB254FF67D..
+        scope:
+          type: string
+          enum:
+          - SYS_ADMIN
+          - TENANT_ADMIN
+          - CUSTOMER_USER
+          - REFRESH_TOKEN
+          - PRE_VERIFICATION_TOKEN
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    QRCodeConfig:
+      properties:
+        showOnHomePage:
+          type: boolean
+        badgeEnabled:
+          type: boolean
+        qrCodeLabelEnabled:
+          type: boolean
+        badgePosition:
+          type: string
+          enum:
+          - RIGHT
+          - LEFT
+        qrCodeLabel:
+          type: string
+    MobileAppSettingsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: string
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+      required:
+      - id
     MobileAppSettings:
       description: A JSON value representing the mobile apps configuration
       properties:
@@ -176,42 +233,6 @@ components:
       - iosConfig
       - qrCodeConfig
       - useDefaultApp
-    IosConfig:
-      properties:
-        enabled:
-          type: boolean
-        appId:
-          type: string
-        storeLink:
-          type: string
-    MobileAppSettingsId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: string
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-      required:
-      - id
-    JwtPair:
-      description: JWT Pair
-      properties:
-        token:
-          type: string
-          description: The JWT Access Token. Used to perform API calls.
-          example: AAB254FF67D..
-        refreshToken:
-          type: string
-          description: The JWT Refresh Token. Used to get new JWT Access Token if old one has expired.
-          example: AAB254FF67D..
-        scope:
-          type: string
-          enum:
-          - SYS_ADMIN
-          - TENANT_ADMIN
-          - CUSTOMER_USER
-          - REFRESH_TOKEN
-          - PRE_VERIFICATION_TOKEN
     TenantId:
       properties:
         id:
@@ -228,35 +249,14 @@ components:
       required:
       - entityType
       - id
-    AndroidConfig:
+    IosConfig:
       properties:
         enabled:
           type: boolean
-        appPackage:
-          type: string
-        sha256CertFingerprints:
+        appId:
           type: string
         storeLink:
           type: string
-    QRCodeConfig:
-      properties:
-        showOnHomePage:
-          type: boolean
-        badgeEnabled:
-          type: boolean
-        qrCodeLabelEnabled:
-          type: boolean
-        badgePosition:
-          type: string
-          enum:
-          - RIGHT
-          - LEFT
-        qrCodeLabel:
-          type: string
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

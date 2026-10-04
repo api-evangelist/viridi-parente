@@ -100,20 +100,21 @@ paths:
                 type: string
 components:
   schemas:
-    OAuth2ClientInfo:
+    OAuth2DomainInfo:
       properties:
+        scheme:
+          type: string
+          description: Domain scheme. Mixed scheme means than both HTTP and HTTPS are going to be used
+          enum:
+          - HTTP
+          - HTTPS
+          - MIXED
         name:
           type: string
-          description: OAuth2 client name
-          example: GitHub
-        icon:
-          type: string
-          description: Name of the icon, displayed on OAuth2 log in button
-          example: github-logo
-        url:
-          type: string
-          description: URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page
-          example: /oauth2/authorization/8352f191-2b4d-11ec-9ed1-cbf57c026ecc
+          description: Domain name. Cannot be empty
+      required:
+      - name
+      - scheme
     OAuth2ParamsInfo:
       properties:
         domainInfos:
@@ -135,6 +136,57 @@ components:
       - clientRegistrations
       - domainInfos
       - mobileInfos
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    OAuth2BasicMapperConfig:
+      properties:
+        emailAttributeKey:
+          type: string
+          description: Email attribute key of OAuth2 principal attributes. Must be specified for BASIC mapper type and cannot be specified for GITHUB type
+        firstNameAttributeKey:
+          type: string
+          description: First name attribute key
+        lastNameAttributeKey:
+          type: string
+          description: Last name attribute key
+        tenantNameStrategy:
+          type: string
+          description: Tenant naming strategy. For DOMAIN type, domain for tenant name will be taken from the email (substring before '@')
+          enum:
+          - DOMAIN
+          - EMAIL
+          - CUSTOM
+        tenantNamePattern:
+          type: string
+          description: Tenant name pattern for CUSTOM naming strategy. OAuth2 attributes in the pattern can be used by enclosing attribute key in '%{' and '}'
+          example: '%{email}'
+        customerNamePattern:
+          type: string
+          description: Customer name pattern. When creating a user on the first OAuth2 log in, if specified, customer name will be used to create or find existing customer in the platform and assign customerId to the user
+        defaultDashboardName:
+          type: string
+          description: Name of the tenant's dashboard to set as default dashboard for newly created user
+        alwaysFullScreen:
+          type: boolean
+          description: Whether default dashboard should be open in full screen
+      required:
+      - tenantNameStrategy
+    OAuth2ClientInfo:
+      properties:
+        name:
+          type: string
+          description: OAuth2 client name
+          example: GitHub
+        icon:
+          type: string
+          description: Name of the icon, displayed on OAuth2 log in button
+          example: github-logo
+        url:
+          type: string
+          description: URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page
+          example: /oauth2/authorization/8352f191-2b4d-11ec-9ed1-cbf57c026ecc
     OAuth2MobileInfo:
       properties:
         pkgName:
@@ -146,30 +198,6 @@ components:
       required:
       - appSecret
       - pkgName
-    OAuth2MapperConfig:
-      properties:
-        allowUserCreation:
-          type: boolean
-          description: Whether user should be created if not yet present on the platform after successful authentication
-        activateUser:
-          type: boolean
-          description: Whether user credentials should be activated when user is created after successful authentication
-        type:
-          type: string
-          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
-          enum:
-          - BASIC
-          - CUSTOM
-          - GITHUB
-          - APPLE
-        basic:
-          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
-          description: Mapper config for BASIC and GITHUB mapper types
-        custom:
-          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
-          description: Mapper config for CUSTOM mapper type
-      required:
-      - type
     OAuth2RegistrationInfo:
       properties:
         mapperConfig:
@@ -232,6 +260,30 @@ components:
       - loginButtonLabel
       - mapperConfig
       - scope
+    OAuth2MapperConfig:
+      properties:
+        allowUserCreation:
+          type: boolean
+          description: Whether user should be created if not yet present on the platform after successful authentication
+        activateUser:
+          type: boolean
+          description: Whether user credentials should be activated when user is created after successful authentication
+        type:
+          type: string
+          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
+          enum:
+          - BASIC
+          - CUSTOM
+          - GITHUB
+          - APPLE
+        basic:
+          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
+          description: Mapper config for BASIC and GITHUB mapper types
+        custom:
+          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
+          description: Mapper config for CUSTOM mapper type
+      required:
+      - type
     OAuth2CustomMapperConfig:
       properties:
         url:
@@ -257,58 +309,6 @@ components:
             $ref: '#/components/schemas/OAuth2ParamsInfo'
       required:
       - oauth2ParamsInfos
-    OAuth2BasicMapperConfig:
-      properties:
-        emailAttributeKey:
-          type: string
-          description: Email attribute key of OAuth2 principal attributes. Must be specified for BASIC mapper type and cannot be specified for GITHUB type
-        firstNameAttributeKey:
-          type: string
-          description: First name attribute key
-        lastNameAttributeKey:
-          type: string
-          description: Last name attribute key
-        tenantNameStrategy:
-          type: string
-          description: Tenant naming strategy. For DOMAIN type, domain for tenant name will be taken from the email (substring before '@')
-          enum:
-          - DOMAIN
-          - EMAIL
-          - CUSTOM
-        tenantNamePattern:
-          type: string
-          description: Tenant name pattern for CUSTOM naming strategy. OAuth2 attributes in the pattern can be used by enclosing attribute key in '%{' and '}'
-          example: '%{email}'
-        customerNamePattern:
-          type: string
-          description: Customer name pattern. When creating a user on the first OAuth2 log in, if specified, customer name will be used to create or find existing customer in the platform and assign customerId to the user
-        defaultDashboardName:
-          type: string
-          description: Name of the tenant's dashboard to set as default dashboard for newly created user
-        alwaysFullScreen:
-          type: boolean
-          description: Whether default dashboard should be open in full screen
-      required:
-      - tenantNameStrategy
-    OAuth2DomainInfo:
-      properties:
-        scheme:
-          type: string
-          description: Domain scheme. Mixed scheme means than both HTTP and HTTPS are going to be used
-          enum:
-          - HTTP
-          - HTTPS
-          - MIXED
-        name:
-          type: string
-          description: Domain name. Cannot be empty
-      required:
-      - name
-      - scheme
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

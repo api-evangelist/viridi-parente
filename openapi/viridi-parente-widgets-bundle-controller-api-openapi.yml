@@ -222,44 +222,6 @@ paths:
           description: OK
 components:
   schemas:
-    WidgetsBundleId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - WIDGETS_BUNDLE
-          example: WIDGETS_BUNDLE
-      required:
-      - entityType
-      - id
-    PageDataWidgetsBundle:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/WidgetsBundle'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
     TenantId:
       properties:
         id:
@@ -316,6 +278,44 @@ components:
         name:
           type: string
           description: Same as title of the Widget Bundle. Read-only field. Update the 'title' to change the 'name' of the Widget Bundle.
+          readOnly: true
+    WidgetsBundleId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - WIDGETS_BUNDLE
+          example: WIDGETS_BUNDLE
+      required:
+      - entityType
+      - id
+    PageDataWidgetsBundle:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/WidgetsBundle'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
           readOnly: true
   securitySchemes:
     HTTP_login_form:

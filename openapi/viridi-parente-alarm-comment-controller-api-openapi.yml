@@ -156,42 +156,6 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    AlarmComment:
-      properties:
-        alarmId:
-          $ref: '#/components/schemas/AlarmId'
-          description: JSON object with Alarm id.
-          readOnly: true
-        userId:
-          $ref: '#/components/schemas/UserId'
-          description: JSON object with User id.
-          readOnly: true
-        type:
-          type: string
-          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
-          enum:
-          - SYSTEM
-          - OTHER
-          example: SYSTEM/OTHER
-          readOnly: true
-        comment:
-          $ref: '#/components/schemas/JsonNode'
-          description: JSON object with text of comment.
-        id:
-          $ref: '#/components/schemas/AlarmCommentId'
-          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
-          readOnly: true
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the alarm comment creation, in milliseconds
-          example: 1634058704567
-          readOnly: true
-        name:
-          type: string
-          description: representing comment text
-          example: Please take a look
-          readOnly: true
     UserId:
       properties:
         id:
@@ -205,6 +169,22 @@ components:
           enum:
           - USER
           example: USER
+      required:
+      - entityType
+      - id
+    AlarmId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - ALARM
+          example: ALARM
       required:
       - entityType
       - id
@@ -256,6 +236,46 @@ components:
           description: representing comment text
           example: Please take a look
           readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    AlarmComment:
+      properties:
+        alarmId:
+          $ref: '#/components/schemas/AlarmId'
+          description: JSON object with Alarm id.
+          readOnly: true
+        userId:
+          $ref: '#/components/schemas/UserId'
+          description: JSON object with User id.
+          readOnly: true
+        type:
+          type: string
+          description: Defines origination of comment. System type means comment was created by TB. OTHER type means comment was created by user.
+          enum:
+          - SYSTEM
+          - OTHER
+          example: SYSTEM/OTHER
+          readOnly: true
+        comment:
+          $ref: '#/components/schemas/JsonNode'
+          description: JSON object with text of comment.
+        id:
+          $ref: '#/components/schemas/AlarmCommentId'
+          description: JSON object with the alarm comment Id. Specify this field to update the alarm comment. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm.
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the alarm comment creation, in milliseconds
+          example: 1634058704567
+          readOnly: true
+        name:
+          type: string
+          description: representing comment text
+          example: Please take a look
+          readOnly: true
     AlarmCommentId:
       properties:
         id:
@@ -265,26 +285,6 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
       required:
       - id
-    AlarmId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - ALARM
-          example: ALARM
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http
