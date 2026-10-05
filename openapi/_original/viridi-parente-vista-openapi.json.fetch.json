@@ -1,0 +1,12 @@
+{
+ "url": "https://vista.viridiparente.com/v3/api-docs",
+ "requested_url": "https://vista.viridiparente.com/v3/api-docs",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 802865,
+ "sha256": "32b8b8a00592022e691b3cd8d1bc366bf4ed9607ef112f26973c1f174c6b856d",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
