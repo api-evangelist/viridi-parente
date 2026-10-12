@@ -1,0 +1,33 @@
+edges:
+- partner_name: OpenADR
+  partner: null
+  type: contract
+  channel: network-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://products.openadr.org/
+  contract_reference:
+    register: OpenADR Alliance certified product database
+    spec_file: null
+    role: certified-product
+    registered_name: Viridi Parente, Inc.
+    matched_domain: viridiparente.com
+    certified_products:
+    - product: Viridi Energy Management System
+      type: VTN
+      lapsed: false
+      profile: 2.0b
+      page: https://products.openadr.org/product/viridi-parente-inc-viridi-energy-management-system-2/
+    - product: Viridi Energy Management System
+      type: VEN
+      lapsed: false
+      profile: 2.0b
+      page: https://products.openadr.org/product/viridi-parente-inc-viridi-energy-management-system/
+    profiles:
+    - 2.0b
+    detected_by: sweep-energy.py
+    detected: '2026-10-13'
+generated: '2026-10-13'
+method: searched
+checked:
+- https://products.openadr.org/
