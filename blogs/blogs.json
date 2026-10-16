@@ -9,11 +9,11 @@
       "method": "discovered"
     },
     {
-      "source": "https://viridiparente.com/create-a-vista-account/",
+      "source": "https://viridiparente.com/feed/",
       "feed_url": "https://viridiparente.com/feed/",
       "title": "",
       "saved": 0,
-      "method": "discovered"
+      "method": "feed"
     },
     {
       "source": "https://viridiparente.com/blog/feed/",
@@ -21,15 +21,8 @@
       "title": "",
       "saved": 0,
       "method": "feed"
-    },
-    {
-      "source": "https://viridiparente.com/feed/",
-      "feed_url": "https://viridiparente.com/feed/",
-      "title": "",
-      "saved": 0,
-      "method": "feed"
     }
   ],
   "post_count": 11,
-  "fetched": "2026-10-03T12:30:02Z"
+  "fetched": "2026-10-10T13:15:00Z"
 }
