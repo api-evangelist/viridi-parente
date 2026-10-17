@@ -242,45 +242,6 @@ paths:
           description: OK
 components:
   schemas:
-    UserId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - USER
-          example: USER
-      required:
-      - entityType
-      - id
-    NotificationTarget:
-      properties:
-        id:
-          $ref: '#/components/schemas/NotificationTargetId'
-        createdTime:
-          type: integer
-          format: int64
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          type: string
-        configuration:
-          oneOf:
-          - $ref: '#/components/schemas/MicrosoftTeamsNotificationTargetConfig'
-          - $ref: '#/components/schemas/PlatformUsersNotificationTargetConfig'
-          - $ref: '#/components/schemas/SlackNotificationTargetConfig'
-      required:
-      - configuration
-      - name
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     RoleId:
       properties:
         id:
@@ -323,37 +284,6 @@ components:
       required:
       - entityType
       - id
-    PlatformUsersNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          usersFilter:
-            $ref: '#/components/schemas/UsersFilter'
-      required:
-      - usersFilter
-    SlackConversation:
-      properties:
-        type:
-          type: string
-          enum:
-          - DIRECT
-          - PUBLIC_CHANNEL
-          - PRIVATE_CHANNEL
-        id:
-          type: string
-        name:
-          type: string
-        wholeName:
-          type: string
-        email:
-          type: string
-        title:
-          type: string
-      required:
-      - id
-      - name
-      - type
     NotificationTargetId:
       properties:
         id:
@@ -370,27 +300,41 @@ components:
       required:
       - entityType
       - id
-    MicrosoftTeamsNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          webhookUrl:
-            type: string
-          channelName:
-            type: string
-          title:
-            type: string
-          id: {}
-          email:
-            type: string
-          firstName:
-            type: string
-          lastName:
-            type: string
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
       required:
-      - channelName
-      - webhookUrl
+      - entityType
+      - id
+    NotificationTarget:
+      properties:
+        id:
+          $ref: '#/components/schemas/NotificationTargetId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/MicrosoftTeamsNotificationTargetConfig'
+          - $ref: '#/components/schemas/PlatformUsersNotificationTargetConfig'
+          - $ref: '#/components/schemas/SlackNotificationTargetConfig'
+      required:
+      - configuration
+      - name
     User:
       description: A JSON value representing the User.
       properties:
@@ -450,24 +394,26 @@ components:
       required:
       - authority
       - email
-    NotificationTargetConfig:
-      discriminator:
-        propertyName: type
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    UserId:
       properties:
-        description:
+        id:
           type: string
-        type:
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
           type: string
+          description: string
+          enum:
+          - USER
+          example: USER
       required:
-      - type
-    UsersFilter:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
+      - entityType
+      - id
     PageDataUser:
       properties:
         data:
@@ -490,22 +436,16 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    TenantId:
+    NotificationTargetConfig:
+      discriminator:
+        propertyName: type
       properties:
-        id:
+        description:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
+        type:
           type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
       required:
-      - entityType
-      - id
+      - type
     PageDataNotificationTarget:
       properties:
         data:
@@ -528,22 +468,35 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    CustomerId:
+    UsersFilter:
+      discriminator:
+        propertyName: type
       properties:
-        id:
+        type:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
       required:
-      - entityType
-      - id
+      - type
+    MicrosoftTeamsNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          webhookUrl:
+            type: string
+          channelName:
+            type: string
+          title:
+            type: string
+          id: {}
+          email:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+      required:
+      - channelName
+      - webhookUrl
     SlackNotificationTargetConfig:
       allOf:
       - $ref: '#/components/schemas/NotificationTargetConfig'
@@ -559,6 +512,53 @@ components:
             $ref: '#/components/schemas/SlackConversation'
       required:
       - conversation
+    SlackConversation:
+      properties:
+        type:
+          type: string
+          enum:
+          - DIRECT
+          - PUBLIC_CHANNEL
+          - PRIVATE_CHANNEL
+        id:
+          type: string
+        name:
+          type: string
+        wholeName:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    PlatformUsersNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          usersFilter:
+            $ref: '#/components/schemas/UsersFilter'
+      required:
+      - usersFilter
   securitySchemes:
     HTTP_login_form:
       type: http

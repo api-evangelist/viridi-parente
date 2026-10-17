@@ -179,6 +179,10 @@ components:
           readOnly: true
         configurationDescriptor:
           $ref: '#/components/schemas/JsonNode'
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     ComponentDescriptorId:
       properties:
         id:
@@ -188,10 +192,6 @@ components:
           example: 784f394c-42b6-435a-983c-b7beff2784f9
       required:
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

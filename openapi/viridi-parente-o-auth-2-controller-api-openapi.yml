@@ -100,46 +100,40 @@ paths:
                 type: string
 components:
   schemas:
-    OAuth2DomainInfo:
+    OAuth2MapperConfig:
       properties:
-        scheme:
+        allowUserCreation:
+          type: boolean
+          description: Whether user should be created if not yet present on the platform after successful authentication
+        activateUser:
+          type: boolean
+          description: Whether user credentials should be activated when user is created after successful authentication
+        type:
           type: string
-          description: Domain scheme. Mixed scheme means than both HTTP and HTTPS are going to be used
+          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
           enum:
-          - HTTP
-          - HTTPS
-          - MIXED
-        name:
-          type: string
-          description: Domain name. Cannot be empty
+          - BASIC
+          - CUSTOM
+          - GITHUB
+          - APPLE
+        basic:
+          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
+          description: Mapper config for BASIC and GITHUB mapper types
+        custom:
+          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
+          description: Mapper config for CUSTOM mapper type
       required:
-      - name
-      - scheme
-    OAuth2ParamsInfo:
+      - type
+    OAuth2CustomMapperConfig:
       properties:
-        domainInfos:
-          type: array
-          description: List of configured domains where OAuth2 platform will redirect a user after successful authentication. Cannot be empty. There have to be only one domain with specific name with scheme type 'MIXED'. Configured domains with the same name must have different scheme types
-          items:
-            $ref: '#/components/schemas/OAuth2DomainInfo'
-        mobileInfos:
-          type: array
-          description: Mobile applications settings. Application package name must be unique within the list
-          items:
-            $ref: '#/components/schemas/OAuth2MobileInfo'
-        clientRegistrations:
-          type: array
-          description: List of OAuth2 provider settings. Cannot be empty
-          items:
-            $ref: '#/components/schemas/OAuth2RegistrationInfo'
-      required:
-      - clientRegistrations
-      - domainInfos
-      - mobileInfos
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+        url:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        sendToken:
+          type: boolean
     OAuth2BasicMapperConfig:
       properties:
         emailAttributeKey:
@@ -173,31 +167,46 @@ components:
           description: Whether default dashboard should be open in full screen
       required:
       - tenantNameStrategy
-    OAuth2ClientInfo:
+    OAuth2DomainInfo:
       properties:
+        scheme:
+          type: string
+          description: Domain scheme. Mixed scheme means than both HTTP and HTTPS are going to be used
+          enum:
+          - HTTP
+          - HTTPS
+          - MIXED
         name:
           type: string
-          description: OAuth2 client name
-          example: GitHub
-        icon:
-          type: string
-          description: Name of the icon, displayed on OAuth2 log in button
-          example: github-logo
-        url:
-          type: string
-          description: URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page
-          example: /oauth2/authorization/8352f191-2b4d-11ec-9ed1-cbf57c026ecc
-    OAuth2MobileInfo:
-      properties:
-        pkgName:
-          type: string
-          description: Application package name. Cannot be empty
-        appSecret:
-          type: string
-          description: Application secret. The length must be at least 16 characters
+          description: Domain name. Cannot be empty
       required:
-      - appSecret
-      - pkgName
+      - name
+      - scheme
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    OAuth2ParamsInfo:
+      properties:
+        domainInfos:
+          type: array
+          description: List of configured domains where OAuth2 platform will redirect a user after successful authentication. Cannot be empty. There have to be only one domain with specific name with scheme type 'MIXED'. Configured domains with the same name must have different scheme types
+          items:
+            $ref: '#/components/schemas/OAuth2DomainInfo'
+        mobileInfos:
+          type: array
+          description: Mobile applications settings. Application package name must be unique within the list
+          items:
+            $ref: '#/components/schemas/OAuth2MobileInfo'
+        clientRegistrations:
+          type: array
+          description: List of OAuth2 provider settings. Cannot be empty
+          items:
+            $ref: '#/components/schemas/OAuth2RegistrationInfo'
+      required:
+      - clientRegistrations
+      - domainInfos
+      - mobileInfos
     OAuth2RegistrationInfo:
       properties:
         mapperConfig:
@@ -260,40 +269,20 @@ components:
       - loginButtonLabel
       - mapperConfig
       - scope
-    OAuth2MapperConfig:
+    OAuth2ClientInfo:
       properties:
-        allowUserCreation:
-          type: boolean
-          description: Whether user should be created if not yet present on the platform after successful authentication
-        activateUser:
-          type: boolean
-          description: Whether user credentials should be activated when user is created after successful authentication
-        type:
+        name:
           type: string
-          description: Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified
-          enum:
-          - BASIC
-          - CUSTOM
-          - GITHUB
-          - APPLE
-        basic:
-          $ref: '#/components/schemas/OAuth2BasicMapperConfig'
-          description: Mapper config for BASIC and GITHUB mapper types
-        custom:
-          $ref: '#/components/schemas/OAuth2CustomMapperConfig'
-          description: Mapper config for CUSTOM mapper type
-      required:
-      - type
-    OAuth2CustomMapperConfig:
-      properties:
+          description: OAuth2 client name
+          example: GitHub
+        icon:
+          type: string
+          description: Name of the icon, displayed on OAuth2 log in button
+          example: github-logo
         url:
           type: string
-        username:
-          type: string
-        password:
-          type: string
-        sendToken:
-          type: boolean
+          description: URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page
+          example: /oauth2/authorization/8352f191-2b4d-11ec-9ed1-cbf57c026ecc
     OAuth2Info:
       properties:
         enabled:
@@ -309,6 +298,17 @@ components:
             $ref: '#/components/schemas/OAuth2ParamsInfo'
       required:
       - oauth2ParamsInfos
+    OAuth2MobileInfo:
+      properties:
+        pkgName:
+          type: string
+          description: Application package name. Cannot be empty
+        appSecret:
+          type: string
+          description: Application secret. The length must be at least 16 characters
+      required:
+      - appSecret
+      - pkgName
   securitySchemes:
     HTTP_login_form:
       type: http

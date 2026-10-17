@@ -327,26 +327,6 @@ paths:
               schema: {}
 components:
   schemas:
-    DeviceId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DEVICE
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     RpcId:
       properties:
         id:
@@ -363,6 +343,10 @@ components:
       required:
       - entityType
       - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     Rpc:
       properties:
         id:
@@ -412,6 +396,22 @@ components:
           $ref: '#/components/schemas/JsonNode'
           description: Additional info used in the rule engine to process the updates to the RPC state.
           readOnly: true
+    DeviceId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DEVICE
+          example: DEVICE
+      required:
+      - entityType
+      - id
     TenantId:
       properties:
         id:
