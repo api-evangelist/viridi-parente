@@ -31,3 +31,5 @@ generated: '2026-10-13'
 method: searched
 checked:
 - https://products.openadr.org/
+source:
+- https://products.openadr.org/
