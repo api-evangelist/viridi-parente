@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-jwt-settings-schema.json",
+  "title": "JwtSettings",
+  "description": "A JSON value representing the JWT Settings.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/JwtSettings",
+  "properties": {
+    "tokenExpirationTime": {
+      "type": "integer",
+      "format": "int32",
+      "description": "The JWT will expire after seconds."
+    },
+    "refreshTokenExpTime": {
+      "type": "integer",
+      "format": "int32",
+      "description": "The JWT can be refreshed during seconds."
+    },
+    "tokenIssuer": {
+      "type": "string",
+      "description": "The JWT issuer."
+    },
+    "tokenSigningKey": {
+      "type": "string",
+      "description": "The JWT key is used to sing token. Base64 encoded."
+    }
+  }
+}

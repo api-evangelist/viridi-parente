@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-oauth2-client-registration-template-schema.json",
+  "title": "OAuth2ClientRegistrationTemplate",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-o-auth-2-config-template-controller-api-openapi.yml#/components/schemas/OAuth2ClientRegistrationTemplate",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/OAuth2ClientRegistrationTemplateId"
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "providerId": {
+      "type": "string",
+      "description": "OAuth2 provider identifier (e.g. its name)"
+    },
+    "mapperConfig": {
+      "$ref": "#/$defs/OAuth2MapperConfig",
+      "description": "Default config for mapping OAuth2 log in response to platform entities"
+    },
+    "authorizationUri": {
+      "type": "string",
+      "description": "Default authorization URI of the OAuth2 provider"
+    },
+    "accessTokenUri": {
+      "type": "string",
+      "description": "Default access token URI of the OAuth2 provider"
+    },
+    "scope": {
+      "type": "array",
+      "description": "Default OAuth scopes that will be requested from OAuth2 platform",
+      "items": {
+        "type": "string"
+      }
+    },
+    "userInfoUri": {
+      "type": "string",
+      "description": "Default user info URI of the OAuth2 provider"
+    },
+    "userNameAttributeName": {
+      "type": "string",
+      "description": "Default name of the username attribute in OAuth2 provider log in response"
+    },
+    "jwkSetUri": {
+      "type": "string",
+      "description": "Default JSON Web Key URI of the OAuth2 provider"
+    },
+    "clientAuthenticationMethod": {
+      "type": "string",
+      "description": "Default client authentication method to use: 'BASIC' or 'POST'"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Comment for OAuth2 provider"
+    },
+    "loginButtonIcon": {
+      "type": "string",
+      "description": "Default log in button icon for OAuth2 provider"
+    },
+    "loginButtonLabel": {
+      "type": "string",
+      "description": "Default OAuth2 provider label"
+    },
+    "helpLink": {
+      "type": "string",
+      "description": "Help link for OAuth2 provider"
+    },
+    "name": {
+      "type": "string"
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode"
+    }
+  },
+  "required": [
+    "providerId"
+  ],
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "OAuth2BasicMapperConfig": {
+      "properties": {
+        "emailAttributeKey": {
+          "type": "string",
+          "description": "Email attribute key of OAuth2 principal attributes. Must be specified for BASIC mapper type and cannot be specified for GITHUB type"
+        },
+        "firstNameAttributeKey": {
+          "type": "string",
+          "description": "First name attribute key"
+        },
+        "lastNameAttributeKey": {
+          "type": "string",
+          "description": "Last name attribute key"
+        },
+        "tenantNameStrategy": {
+          "type": "string",
+          "description": "Tenant naming strategy. For DOMAIN type, domain for tenant name will be taken from the email (substring before '@')",
+          "enum": [
+            "DOMAIN",
+            "EMAIL",
+            "CUSTOM"
+          ]
+        },
+        "tenantNamePattern": {
+          "type": "string",
+          "description": "Tenant name pattern for CUSTOM naming strategy. OAuth2 attributes in the pattern can be used by enclosing attribute key in '%{' and '}'"
+        },
+        "customerNamePattern": {
+          "type": "string",
+          "description": "Customer name pattern. When creating a user on the first OAuth2 log in, if specified, customer name will be used to create or find existing customer in the platform and assign customerId to the user"
+        },
+        "defaultDashboardName": {
+          "type": "string",
+          "description": "Name of the tenant's dashboard to set as default dashboard for newly created user"
+        },
+        "alwaysFullScreen": {
+          "type": "boolean",
+          "description": "Whether default dashboard should be open in full screen"
+        }
+      },
+      "required": [
+        "tenantNameStrategy"
+      ]
+    },
+    "OAuth2ClientRegistrationTemplateId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "OAuth2CustomMapperConfig": {
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "sendToken": {
+          "type": "boolean"
+        }
+      }
+    },
+    "OAuth2MapperConfig": {
+      "properties": {
+        "allowUserCreation": {
+          "type": "boolean",
+          "description": "Whether user should be created if not yet present on the platform after successful authentication"
+        },
+        "activateUser": {
+          "type": "boolean",
+          "description": "Whether user credentials should be activated when user is created after successful authentication"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of OAuth2 mapper. Depending on this param, different mapper config fields must be specified",
+          "enum": [
+            "BASIC",
+            "CUSTOM",
+            "GITHUB",
+            "APPLE"
+          ]
+        },
+        "basic": {
+          "$ref": "#/$defs/OAuth2BasicMapperConfig",
+          "description": "Mapper config for BASIC and GITHUB mapper types"
+        },
+        "custom": {
+          "$ref": "#/$defs/OAuth2CustomMapperConfig",
+          "description": "Mapper config for CUSTOM mapper type"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    }
+  }
+}

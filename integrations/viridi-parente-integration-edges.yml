@@ -1,3 +1,21 @@
+generated: '2026-10-20'
+method: searched
+source:
+- https://products.openadr.org/
+- https://zapier.com/apps/viridi-parente/integrations
+- https://zapier.com/apps/viridi/integrations
+- https://n8n.io/integrations/viridi-parente/
+- https://composio.dev/toolkits/viridi-parente
+- https://monid.ai/tools/viridi-parente
+checked:
+- https://products.openadr.org/
+- https://composio.dev/toolkits/viridi-parente
+- https://monid.ai/tools/viridi-parente
+- https://n8n.io/integrations/viridi-parente/
+- https://zapier.com/apps/viridi-parente/integrations
+- https://zapier.com/apps/viridi/integrations
+summary: null
+marketplace_apps: []
 edges:
 - partner_name: OpenADR
   partner: null
@@ -27,9 +45,4 @@ edges:
     - 2.0b
     detected_by: sweep-energy.py
     detected: '2026-10-13'
-generated: '2026-10-13'
-method: searched
-checked:
-- https://products.openadr.org/
-source:
-- https://products.openadr.org/
+templates: []

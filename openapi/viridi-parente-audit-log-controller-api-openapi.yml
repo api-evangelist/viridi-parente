@@ -354,63 +354,14 @@ paths:
                 $ref: '#/components/schemas/PageDataAuditLog'
 components:
   schemas:
-    EntityId:
+    AuditLogId:
       properties:
         id:
           type: string
           format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          enum:
-          - TENANT
-          - CUSTOMER
-          - USER
-          - DASHBOARD
-          - ASSET
-          - DEVICE
-          - ALARM
-          - RULE_CHAIN
-          - RULE_NODE
-          - ROLE
-          - ENTITY_VIEW
-          - WIDGETS_BUNDLE
-          - WIDGET_TYPE
-          - TENANT_PROFILE
-          - DEVICE_PROFILE
-          - ASSET_PROFILE
-          - API_USAGE_STATE
-          - TB_RESOURCE
-          - OTA_PACKAGE
-          - EDGE
-          - RPC
-          - QUEUE
-          - NOTIFICATION_TARGET
-          - NOTIFICATION_TEMPLATE
-          - NOTIFICATION_REQUEST
-          - NOTIFICATION
-          - NOTIFICATION_RULE
-          - QUEUE_STATS
-          example: DEVICE
-      required:
-      - entityType
-      - id
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
           description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
       required:
-      - entityType
       - id
     AuditLog:
       properties:
@@ -507,11 +458,49 @@ components:
           type: string
           description: Failure action details info. An empty string in case of action status type 'SUCCESS', otherwise includes stack trace of the caused exception.
           readOnly: true
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    UserId:
+    EntityId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          enum:
+          - TENANT
+          - CUSTOMER
+          - USER
+          - DASHBOARD
+          - ASSET
+          - DEVICE
+          - ALARM
+          - RULE_CHAIN
+          - RULE_NODE
+          - ROLE
+          - ENTITY_VIEW
+          - WIDGETS_BUNDLE
+          - WIDGET_TYPE
+          - TENANT_PROFILE
+          - DEVICE_PROFILE
+          - ASSET_PROFILE
+          - API_USAGE_STATE
+          - TB_RESOURCE
+          - OTA_PACKAGE
+          - EDGE
+          - RPC
+          - QUEUE
+          - NOTIFICATION_TARGET
+          - NOTIFICATION_TEMPLATE
+          - NOTIFICATION_REQUEST
+          - NOTIFICATION
+          - NOTIFICATION_RULE
+          - QUEUE_STATS
+          example: DEVICE
+      required:
+      - entityType
+      - id
+    TenantId:
       properties:
         id:
           type: string
@@ -522,8 +511,8 @@ components:
           type: string
           description: string
           enum:
-          - USER
-          example: USER
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
@@ -549,7 +538,7 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    TenantId:
+    CustomerId:
       properties:
         id:
           type: string
@@ -560,19 +549,30 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - CUSTOMER
+          example: CUSTOMER
       required:
       - entityType
       - id
-    AuditLogId:
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    UserId:
       properties:
         id:
           type: string
           format: uuid
-          description: string
+          description: ID of the entity, time-based UUID v1
           example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - USER
+          example: USER
       required:
+      - entityType
       - id
   securitySchemes:
     HTTP_login_form:

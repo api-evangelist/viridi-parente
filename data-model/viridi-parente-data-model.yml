@@ -1,12 +1,11 @@
 generated: '2026-09-04'
 method: derived
 source: openapi/viridi-parente-vista-openapi.json (components.schemas $ref and *Id reference fields)
-note: >-
-  Entity graph of the ViSTA Platform API. The contract carries 425 component schemas; the
-  entities below are the ones the REST surface is organized around. Every id field is a
-  typed EntityId object ({id, entityType}), not a bare string, so relationships are
-  explicit in the schema rather than by convention. Multi-tenancy is the spine: nearly
-  every entity belongs_to a Tenant, and a Customer sub-partition sits under it.
+note: 'Entity graph of the ViSTA Platform API. The contract carries 425 component schemas; the entities
+  below are the ones the REST surface is organized around. Every id field is a typed EntityId object ({id,
+  entityType}), not a bare string, so relationships are explicit in the schema rather than by convention.
+  Multi-tenancy is the spine: nearly every entity belongs_to a Tenant, and a Customer sub-partition sits
+  under it.'
 entities:
 - name: Tenant
   description: Top-level isolation boundary. Owns every other entity.
@@ -132,9 +131,8 @@ entities:
   - belongs_to: DeviceProfile
     via: deviceProfileId
 - name: TelemRequest
-  description: >-
-    Viridi-authored request body for POST /api/telem (getSBR30Telem) — the SBR30 bulk
-    telemetry read. Not a ThingsBoard type.
+  description: Viridi-authored request body for POST /api/telem (getSBR30Telem) — the SBR30 bulk telemetry
+    read. Not a ThingsBoard type.
   fields:
   - assets (array of string)
   - keys (map of string -> array of string)
@@ -147,10 +145,9 @@ entities:
   - references: Asset
     via: assets
 first_party_surface:
-  note: >-
-    The Viridi-authored controllers return untyped `object` / JsonNode bodies, so no schema
-    can be derived for SBR30 data, generator/chiller latest values, CBRS state or Moxion
-    AEMP payloads. That is a real gap in the published contract, not a gap in this profile.
+  note: The Viridi-authored controllers return untyped `object` / JsonNode bodies, so no schema can be
+    derived for SBR30 data, generator/chiller latest values, CBRS state or Moxion AEMP payloads. That
+    is a real gap in the published contract, not a gap in this profile.
   operations:
   - getSBR30Data
   - getSBR30DataV1_2
@@ -169,3 +166,199 @@ first_party_surface:
   - registerAll
   - deregisterAll
   - getGenTelem
+relationships:
+- from: Tenant
+  to: TenantProfile
+  type: belongs_to
+  via: tenantProfileId
+- from: Tenant
+  to: Customer
+  type: has_many
+- from: Tenant
+  to: Device
+  type: has_many
+- from: Tenant
+  to: Asset
+  type: has_many
+- from: Tenant
+  to: Dashboard
+  type: has_many
+- from: Tenant
+  to: RuleChain
+  type: has_many
+- from: Tenant
+  to: Edge
+  type: has_many
+- from: Customer
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Customer
+  to: Device
+  type: has_many
+- from: Customer
+  to: Asset
+  type: has_many
+- from: Customer
+  to: User
+  type: has_many
+- from: User
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: User
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: User
+  to: Role
+  type: has_one
+  via: roleId
+- from: Device
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Device
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: Device
+  to: DeviceProfile
+  type: belongs_to
+  via: deviceProfileId
+- from: Device
+  to: OtaPackage
+  type: has_one
+  via: firmwareId
+- from: Device
+  to: OtaPackage
+  type: has_one
+  via: softwareId
+- from: Device
+  to: Alarm
+  type: has_many
+- from: Device
+  to: TimeseriesEntry
+  type: has_many
+- from: DeviceProfile
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: DeviceProfile
+  to: RuleChain
+  type: has_one
+  via: defaultRuleChainId
+- from: DeviceProfile
+  to: Dashboard
+  type: has_one
+  via: defaultDashboardId
+- from: DeviceProfile
+  to: RuleChain
+  type: has_one
+  via: defaultEdgeRuleChainId
+- from: DeviceProfile
+  to: OtaPackage
+  type: has_one
+  via: firmwareId
+- from: DeviceProfile
+  to: OtaPackage
+  type: has_one
+  via: softwareId
+- from: Asset
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Asset
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: Asset
+  to: AssetProfile
+  type: belongs_to
+  via: assetProfileId
+- from: AssetProfile
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: AssetProfile
+  to: RuleChain
+  type: has_one
+  via: defaultRuleChainId
+- from: AssetProfile
+  to: Dashboard
+  type: has_one
+  via: defaultDashboardId
+- from: EntityView
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: EntityView
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: EntityView
+  to: (Device|Asset)
+  type: has_one
+  via: entityId
+- from: Alarm
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Alarm
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: Alarm
+  to: User
+  type: has_one
+  via: assigneeId
+- from: Alarm
+  to: (Device|Asset|EntityView)
+  type: has_one
+  via: originator
+- from: Alarm
+  to: AlarmComment
+  type: has_many
+- from: RuleChain
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: RuleChain
+  to: RuleNode
+  type: has_one
+  via: firstRuleNodeId
+- from: Edge
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Edge
+  to: Customer
+  type: belongs_to
+  via: customerId
+- from: Edge
+  to: RuleChain
+  type: has_one
+  via: rootRuleChainId
+- from: Edge
+  to: EdgeEvent
+  type: has_many
+- from: Dashboard
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: Dashboard
+  to: WidgetType
+  type: has_many
+  via: WidgetsBundle
+- from: OtaPackageInfo
+  to: Tenant
+  type: belongs_to
+  via: tenantId
+- from: OtaPackageInfo
+  to: DeviceProfile
+  type: belongs_to
+  via: deviceProfileId
+- from: TelemRequest
+  to: Asset
+  type: references
+  via: assets

@@ -677,107 +677,6 @@ paths:
                 $ref: '#/components/schemas/PageDataRuleChain'
 components:
   schemas:
-    RuleChainOutputLabelsUsage:
-      properties:
-        ruleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-          description: Rule Chain Id
-          readOnly: true
-        ruleNodeId:
-          $ref: '#/components/schemas/RuleNodeId'
-          description: Rule Node Id
-          readOnly: true
-        ruleChainName:
-          type: string
-          description: Rule Chain Name
-          readOnly: true
-        ruleNodeName:
-          type: string
-          description: Rule Node Name
-          readOnly: true
-        labels:
-          type: array
-          description: Output labels
-          items:
-            type: string
-          readOnly: true
-          uniqueItems: true
-      required:
-      - labels
-      - ruleChainId
-      - ruleChainName
-      - ruleNodeId
-      - ruleNodeName
-    NodeConnectionInfo:
-      properties:
-        fromIndex:
-          type: integer
-          format: int32
-          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
-        toIndex:
-          type: integer
-          format: int32
-          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
-        type:
-          type: string
-          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
-      required:
-      - fromIndex
-      - toIndex
-      - type
-    RuleChain:
-      description: A JSON value representing the rule chain.
-      properties:
-        id:
-          $ref: '#/components/schemas/RuleChainId'
-          description: JSON object with the Rule Chain Id. Specify this field to update the Rule Chain. Referencing non-existing Rule Chain Id will cause error. Omit this field to create new rule chain.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the rule chain creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-          description: JSON object with Tenant Id.
-          readOnly: true
-        name:
-          type: string
-          description: Rule Chain name
-          example: Humidity data processing
-        type:
-          type: string
-          description: Rule Chain type. 'EDGE' rule chains are processing messages on the edge devices only.
-          enum:
-          - CORE
-          - EDGE
-          example: A4B72CCDFF33
-        firstRuleNodeId:
-          $ref: '#/components/schemas/RuleNodeId'
-          description: JSON object with Rule Chain Id. Pointer to the first rule node that should receive all messages pushed to this rule chain.
-        root:
-          type: boolean
-          description: Indicates root rule chain. The root rule chain process messages from all devices and entities by default. User may configure default rule chain per device profile.
-        debugMode:
-          type: boolean
-          description: Reserved for future usage.
-        configuration:
-          $ref: '#/components/schemas/JsonNode'
-        additionalInfo:
-          $ref: '#/components/schemas/JsonNode'
-      required:
-      - name
-      - tenantId
-    RuleChainImportResult:
-      properties:
-        ruleChainId:
-          $ref: '#/components/schemas/RuleChainId'
-        ruleChainName:
-          type: string
-        updated:
-          type: boolean
-        error:
-          type: string
     PageDataRuleChain:
       properties:
         data:
@@ -800,22 +699,6 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    RuleNodeId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - RULE_NODE
-          example: RULE_NODE
-      required:
-      - entityType
-      - id
     RuleNode:
       properties:
         id:
@@ -863,38 +746,50 @@ components:
         additionalInfo:
           $ref: '#/components/schemas/JsonNode'
           description: Additional parameters of the rule node. Contains 'layoutX' and 'layoutY' properties for visualization.
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    RuleChainData:
-      description: A JSON value representing the rule chains.
+    RuleChain:
+      description: A JSON value representing the rule chain.
       properties:
-        ruleChains:
-          type: array
-          description: List of the Rule Chain objects.
-          items:
-            $ref: '#/components/schemas/RuleChain'
+        id:
+          $ref: '#/components/schemas/RuleChainId'
+          description: JSON object with the Rule Chain Id. Specify this field to update the Rule Chain. Referencing non-existing Rule Chain Id will cause error. Omit this field to create new rule chain.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the rule chain creation, in milliseconds
+          example: 1609459200000
           readOnly: true
-        metadata:
-          type: array
-          description: List of the Rule Chain metadata objects.
-          items:
-            $ref: '#/components/schemas/RuleChainMetaData'
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+          description: JSON object with Tenant Id.
           readOnly: true
-      required:
-      - metadata
-      - ruleChains
-    DefaultRuleChainCreateRequest:
-      description: A JSON value representing the request.
-      properties:
         name:
           type: string
-          description: Name of the new rule chain
-          example: Root Rule Chain
+          description: Rule Chain name
+          example: Humidity data processing
+        type:
+          type: string
+          description: Rule Chain type. 'EDGE' rule chains are processing messages on the edge devices only.
+          enum:
+          - CORE
+          - EDGE
+          example: A4B72CCDFF33
+        firstRuleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: JSON object with Rule Chain Id. Pointer to the first rule node that should receive all messages pushed to this rule chain.
+        root:
+          type: boolean
+          description: Indicates root rule chain. The root rule chain process messages from all devices and entities by default. User may configure default rule chain per device profile.
+        debugMode:
+          type: boolean
+          description: Reserved for future usage.
+        configuration:
+          $ref: '#/components/schemas/JsonNode'
+        additionalInfo:
+          $ref: '#/components/schemas/JsonNode'
       required:
       - name
-    RuleChainId:
+      - tenantId
+    RuleNodeId:
       properties:
         id:
           type: string
@@ -905,11 +800,42 @@ components:
           type: string
           description: string
           enum:
-          - RULE_CHAIN
-          example: RULE_CHAIN
+          - RULE_NODE
+          example: RULE_NODE
       required:
       - entityType
       - id
+    RuleChainOutputLabelsUsage:
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+          description: Rule Chain Id
+          readOnly: true
+        ruleNodeId:
+          $ref: '#/components/schemas/RuleNodeId'
+          description: Rule Node Id
+          readOnly: true
+        ruleChainName:
+          type: string
+          description: Rule Chain Name
+          readOnly: true
+        ruleNodeName:
+          type: string
+          description: Rule Node Name
+          readOnly: true
+        labels:
+          type: array
+          description: Output labels
+          items:
+            type: string
+          readOnly: true
+          uniqueItems: true
+      required:
+      - labels
+      - ruleChainId
+      - ruleChainName
+      - ruleNodeId
+      - ruleNodeName
     RuleChainMetaData:
       description: A JSON value representing the rule chain metadata.
       properties:
@@ -942,6 +868,32 @@ components:
       - nodes
       - ruleChainConnections
       - ruleChainId
+    RuleChainImportResult:
+      properties:
+        ruleChainId:
+          $ref: '#/components/schemas/RuleChainId'
+        ruleChainName:
+          type: string
+        updated:
+          type: boolean
+        error:
+          type: string
+    RuleChainId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - RULE_CHAIN
+          example: RULE_CHAIN
+      required:
+      - entityType
+      - id
     TenantId:
       properties:
         id:
@@ -958,6 +910,23 @@ components:
       required:
       - entityType
       - id
+    NodeConnectionInfo:
+      properties:
+        fromIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection.
+        toIndex:
+          type: integer
+          format: int32
+          description: Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection.
+        type:
+          type: string
+          description: Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'
+      required:
+      - fromIndex
+      - toIndex
+      - type
     RuleChainConnectionInfo:
       properties:
         fromIndex:
@@ -978,6 +947,37 @@ components:
       - fromIndex
       - targetRuleChainId
       - type
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    DefaultRuleChainCreateRequest:
+      description: A JSON value representing the request.
+      properties:
+        name:
+          type: string
+          description: Name of the new rule chain
+          example: Root Rule Chain
+      required:
+      - name
+    RuleChainData:
+      description: A JSON value representing the rule chains.
+      properties:
+        ruleChains:
+          type: array
+          description: List of the Rule Chain objects.
+          items:
+            $ref: '#/components/schemas/RuleChain'
+          readOnly: true
+        metadata:
+          type: array
+          description: List of the Rule Chain metadata objects.
+          items:
+            $ref: '#/components/schemas/RuleChainMetaData'
+          readOnly: true
+      required:
+      - metadata
+      - ruleChains
   securitySchemes:
     HTTP_login_form:
       type: http

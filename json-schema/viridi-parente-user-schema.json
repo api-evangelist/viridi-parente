@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-user-schema.json",
+  "title": "User",
+  "description": "A JSON value representing the User.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/User",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/UserId",
+      "description": "JSON object with the User Id. Specify this field to update the device. Referencing non-existing User Id will cause error. Omit this field to create new customer."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the user creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with the Tenant Id.",
+      "readOnly": true
+    },
+    "customerId": {
+      "$ref": "#/$defs/CustomerId",
+      "description": "JSON object with the Customer Id.",
+      "readOnly": true
+    },
+    "roleId": {
+      "$ref": "#/$defs/RoleId"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "authority": {
+      "type": "string",
+      "description": "Authority",
+      "enum": [
+        "SYS_ADMIN",
+        "TENANT_ADMIN",
+        "CUSTOMER_USER",
+        "REFRESH_TOKEN",
+        "PRE_VERIFICATION_TOKEN"
+      ]
+    },
+    "firstName": {
+      "type": "string",
+      "description": "First name of the user"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "Last name of the user"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number of the user"
+    },
+    "name": {
+      "type": "string",
+      "description": "Duplicates the email of the user, readonly",
+      "readOnly": true
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "Additional parameters of the user"
+    }
+  },
+  "required": [
+    "authority",
+    "email"
+  ],
+  "$defs": {
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "RoleId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "UserId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "USER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

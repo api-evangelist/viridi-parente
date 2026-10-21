@@ -105,19 +105,6 @@ paths:
                 $ref: '#/components/schemas/QueueStats'
 components:
   schemas:
-    QueueStats:
-      properties:
-        id:
-          $ref: '#/components/schemas/QueueStatsId'
-        createdTime:
-          type: integer
-          format: int64
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        queueName:
-          type: string
-        serviceId:
-          type: string
     TenantId:
       properties:
         id:
@@ -134,6 +121,35 @@ components:
       required:
       - entityType
       - id
+    QueueStatsId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - QUEUE_STATS
+          example: QUEUE_STATS
+      required:
+      - entityType
+      - id
+    QueueStats:
+      properties:
+        id:
+          $ref: '#/components/schemas/QueueStatsId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        queueName:
+          type: string
+        serviceId:
+          type: string
     PageDataQueueStats:
       properties:
         data:
@@ -156,22 +172,6 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    QueueStatsId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - QUEUE_STATS
-          example: QUEUE_STATS
-      required:
-      - entityType
-      - id
   securitySchemes:
     HTTP_login_form:
       type: http

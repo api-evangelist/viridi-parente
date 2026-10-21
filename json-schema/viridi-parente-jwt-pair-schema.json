@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-jwt-pair-schema.json",
+  "title": "JwtPair",
+  "description": "JWT Pair",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/JwtPair",
+  "properties": {
+    "token": {
+      "type": "string",
+      "description": "The JWT Access Token. Used to perform API calls."
+    },
+    "refreshToken": {
+      "type": "string",
+      "description": "The JWT Refresh Token. Used to get new JWT Access Token if old one has expired."
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "SYS_ADMIN",
+        "TENANT_ADMIN",
+        "CUSTOMER_USER",
+        "REFRESH_TOKEN",
+        "PRE_VERIFICATION_TOKEN"
+      ]
+    }
+  }
+}

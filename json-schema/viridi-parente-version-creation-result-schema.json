@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-version-creation-result-schema.json",
+  "title": "VersionCreationResult",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-entities-version-control-controller-api-openapi.yml#/components/schemas/VersionCreationResult",
+  "properties": {
+    "version": {
+      "$ref": "#/$defs/EntityVersion"
+    },
+    "added": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "modified": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "removed": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "error": {
+      "type": "string"
+    },
+    "done": {
+      "type": "boolean"
+    }
+  },
+  "$defs": {
+    "EntityVersion": {
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

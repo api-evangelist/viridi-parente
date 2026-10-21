@@ -214,26 +214,6 @@ paths:
                 $ref: '#/components/schemas/JsonNode'
 components:
   schemas:
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     PageDataCustomer:
       properties:
         data:
@@ -256,6 +236,22 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     Customer:
       properties:
         id:
@@ -316,7 +312,7 @@ components:
       required:
       - email
       - title
-    TenantId:
+    CustomerId:
       properties:
         id:
           type: string
@@ -327,11 +323,15 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - CUSTOMER
+          example: CUSTOMER
       required:
       - entityType
       - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
   securitySchemes:
     HTTP_login_form:
       type: http

@@ -1,0 +1,965 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-entity-count-query-schema.json",
+  "title": "EntityCountQuery",
+  "description": "A JSON value representing the entity count query. See API call notes above for more details.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-entity-query-controller-api-openapi.yml#/components/schemas/EntityCountQuery",
+  "properties": {
+    "entityFilter": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ApiUsageStateFilter"
+        },
+        {
+          "$ref": "#/$defs/AssetSearchQueryFilter"
+        },
+        {
+          "$ref": "#/$defs/AssetTypeFilter"
+        },
+        {
+          "$ref": "#/$defs/DeviceSearchQueryFilter"
+        },
+        {
+          "$ref": "#/$defs/DeviceTypeFilter"
+        },
+        {
+          "$ref": "#/$defs/EdgeSearchQueryFilter"
+        },
+        {
+          "$ref": "#/$defs/EdgeTypeFilter"
+        },
+        {
+          "$ref": "#/$defs/EntityListFilter"
+        },
+        {
+          "$ref": "#/$defs/EntityNameFilter"
+        },
+        {
+          "$ref": "#/$defs/EntityTypeFilter"
+        },
+        {
+          "$ref": "#/$defs/EntityViewSearchQueryFilter"
+        },
+        {
+          "$ref": "#/$defs/EntityViewTypeFilter"
+        },
+        {
+          "$ref": "#/$defs/RelationsQueryFilter"
+        },
+        {
+          "$ref": "#/$defs/SingleEntityFilter"
+        }
+      ]
+    },
+    "keyFilters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/KeyFilter"
+      }
+    }
+  },
+  "$defs": {
+    "ApiUsageStateFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "$ref": "#/$defs/CustomerId"
+            }
+          }
+        }
+      ]
+    },
+    "AssetSearchQueryFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rootEntity": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "relationType": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "FROM",
+                "TO"
+              ]
+            },
+            "maxLevel": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "fetchLastLevelOnly": {
+              "type": "boolean"
+            },
+            "assetTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AssetTypeFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "assetType": {
+              "type": "string",
+              "deprecated": true,
+              "writeOnly": true
+            },
+            "assetTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "assetNameFilter": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "BooleanFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueBoolean"
+            }
+          }
+        }
+      ]
+    },
+    "ComplexFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "AND",
+                "OR"
+              ]
+            },
+            "predicates": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/KeyFilterPredicate"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DeviceSearchQueryFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rootEntity": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "relationType": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "FROM",
+                "TO"
+              ]
+            },
+            "maxLevel": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "fetchLastLevelOnly": {
+              "type": "boolean"
+            },
+            "deviceTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "DeviceTypeFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "deviceType": {
+              "type": "string",
+              "deprecated": true,
+              "writeOnly": true
+            },
+            "deviceTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "deviceNameFilter": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "DynamicValueBoolean": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueDouble": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueString": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EdgeSearchQueryFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rootEntity": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "relationType": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "FROM",
+                "TO"
+              ]
+            },
+            "maxLevel": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "fetchLastLevelOnly": {
+              "type": "boolean"
+            },
+            "edgeTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EdgeTypeFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "edgeType": {
+              "type": "string",
+              "deprecated": true,
+              "writeOnly": true
+            },
+            "edgeTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "edgeNameFilter": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "EntityFilter": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityKey": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "ATTRIBUTE",
+            "CLIENT_ATTRIBUTE",
+            "SHARED_ATTRIBUTE",
+            "SERVER_ATTRIBUTE",
+            "TIME_SERIES",
+            "ENTITY_FIELD",
+            "ALARM_FIELD"
+          ]
+        },
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "EntityListFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityType": {
+              "type": "string",
+              "enum": [
+                "TENANT",
+                "CUSTOMER",
+                "USER",
+                "DASHBOARD",
+                "ASSET",
+                "DEVICE",
+                "ALARM",
+                "RULE_CHAIN",
+                "RULE_NODE",
+                "ROLE",
+                "ENTITY_VIEW",
+                "WIDGETS_BUNDLE",
+                "WIDGET_TYPE",
+                "TENANT_PROFILE",
+                "DEVICE_PROFILE",
+                "ASSET_PROFILE",
+                "API_USAGE_STATE",
+                "TB_RESOURCE",
+                "OTA_PACKAGE",
+                "EDGE",
+                "RPC",
+                "QUEUE",
+                "NOTIFICATION_TARGET",
+                "NOTIFICATION_TEMPLATE",
+                "NOTIFICATION_REQUEST",
+                "NOTIFICATION",
+                "NOTIFICATION_RULE",
+                "QUEUE_STATS"
+              ]
+            },
+            "entityList": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EntityNameFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityType": {
+              "type": "string",
+              "enum": [
+                "TENANT",
+                "CUSTOMER",
+                "USER",
+                "DASHBOARD",
+                "ASSET",
+                "DEVICE",
+                "ALARM",
+                "RULE_CHAIN",
+                "RULE_NODE",
+                "ROLE",
+                "ENTITY_VIEW",
+                "WIDGETS_BUNDLE",
+                "WIDGET_TYPE",
+                "TENANT_PROFILE",
+                "DEVICE_PROFILE",
+                "ASSET_PROFILE",
+                "API_USAGE_STATE",
+                "TB_RESOURCE",
+                "OTA_PACKAGE",
+                "EDGE",
+                "RPC",
+                "QUEUE",
+                "NOTIFICATION_TARGET",
+                "NOTIFICATION_TEMPLATE",
+                "NOTIFICATION_REQUEST",
+                "NOTIFICATION",
+                "NOTIFICATION_RULE",
+                "QUEUE_STATS"
+              ]
+            },
+            "entityNameFilter": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "EntityTypeFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityType": {
+              "type": "string",
+              "enum": [
+                "TENANT",
+                "CUSTOMER",
+                "USER",
+                "DASHBOARD",
+                "ASSET",
+                "DEVICE",
+                "ALARM",
+                "RULE_CHAIN",
+                "RULE_NODE",
+                "ROLE",
+                "ENTITY_VIEW",
+                "WIDGETS_BUNDLE",
+                "WIDGET_TYPE",
+                "TENANT_PROFILE",
+                "DEVICE_PROFILE",
+                "ASSET_PROFILE",
+                "API_USAGE_STATE",
+                "TB_RESOURCE",
+                "OTA_PACKAGE",
+                "EDGE",
+                "RPC",
+                "QUEUE",
+                "NOTIFICATION_TARGET",
+                "NOTIFICATION_TEMPLATE",
+                "NOTIFICATION_REQUEST",
+                "NOTIFICATION",
+                "NOTIFICATION_RULE",
+                "QUEUE_STATS"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "EntityViewSearchQueryFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rootEntity": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "relationType": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "FROM",
+                "TO"
+              ]
+            },
+            "maxLevel": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "fetchLastLevelOnly": {
+              "type": "boolean"
+            },
+            "entityViewTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EntityViewTypeFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityViewType": {
+              "type": "string",
+              "deprecated": true,
+              "writeOnly": true
+            },
+            "entityViewTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "entityViewNameFilter": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "FilterPredicateValueBoolean": {
+      "properties": {
+        "defaultValue": {
+          "type": "boolean"
+        },
+        "userValue": {
+          "type": "boolean"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueBoolean"
+        }
+      }
+    },
+    "FilterPredicateValueDouble": {
+      "properties": {
+        "defaultValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "userValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueDouble"
+        }
+      }
+    },
+    "FilterPredicateValueString": {
+      "properties": {
+        "defaultValue": {
+          "type": "string"
+        },
+        "userValue": {
+          "type": "string"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueString"
+        }
+      }
+    },
+    "KeyFilter": {
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/EntityKey"
+        },
+        "valueType": {
+          "type": "string",
+          "enum": [
+            "STRING",
+            "NUMERIC",
+            "BOOLEAN",
+            "DATE_TIME"
+          ]
+        },
+        "predicate": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BooleanFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/ComplexFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/NumericFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/StringFilterPredicate"
+            }
+          ]
+        }
+      }
+    },
+    "KeyFilterPredicate": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "NumericFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL",
+                "GREATER",
+                "LESS",
+                "GREATER_OR_EQUAL",
+                "LESS_OR_EQUAL"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueDouble"
+            }
+          }
+        }
+      ]
+    },
+    "RelationEntityTypeFilter": {
+      "properties": {
+        "relationType": {
+          "type": "string",
+          "description": "Type of the relation between root entity and other entity (e.g. 'Contains' or 'Manages')."
+        },
+        "entityTypes": {
+          "type": "array",
+          "description": "Array of entity types to filter the related entities (e.g. 'DEVICE', 'ASSET').",
+          "items": {
+            "type": "string",
+            "enum": [
+              "TENANT",
+              "CUSTOMER",
+              "USER",
+              "DASHBOARD",
+              "ASSET",
+              "DEVICE",
+              "ALARM",
+              "RULE_CHAIN",
+              "RULE_NODE",
+              "ROLE",
+              "ENTITY_VIEW",
+              "WIDGETS_BUNDLE",
+              "WIDGET_TYPE",
+              "TENANT_PROFILE",
+              "DEVICE_PROFILE",
+              "ASSET_PROFILE",
+              "API_USAGE_STATE",
+              "TB_RESOURCE",
+              "OTA_PACKAGE",
+              "EDGE",
+              "RPC",
+              "QUEUE",
+              "NOTIFICATION_TARGET",
+              "NOTIFICATION_TEMPLATE",
+              "NOTIFICATION_REQUEST",
+              "NOTIFICATION",
+              "NOTIFICATION_RULE",
+              "QUEUE_STATS"
+            ]
+          }
+        },
+        "negate": {
+          "type": "boolean",
+          "description": "Negate relation type between root entity and other entity."
+        }
+      }
+    },
+    "RelationsQueryFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rootEntity": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "multiRootEntitiesType": {
+              "type": "string",
+              "enum": [
+                "TENANT",
+                "CUSTOMER",
+                "USER",
+                "DASHBOARD",
+                "ASSET",
+                "DEVICE",
+                "ALARM",
+                "RULE_CHAIN",
+                "RULE_NODE",
+                "ROLE",
+                "ENTITY_VIEW",
+                "WIDGETS_BUNDLE",
+                "WIDGET_TYPE",
+                "TENANT_PROFILE",
+                "DEVICE_PROFILE",
+                "ASSET_PROFILE",
+                "API_USAGE_STATE",
+                "TB_RESOURCE",
+                "OTA_PACKAGE",
+                "EDGE",
+                "RPC",
+                "QUEUE",
+                "NOTIFICATION_TARGET",
+                "NOTIFICATION_TEMPLATE",
+                "NOTIFICATION_REQUEST",
+                "NOTIFICATION",
+                "NOTIFICATION_RULE",
+                "QUEUE_STATS"
+              ]
+            },
+            "multiRootEntityIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "FROM",
+                "TO"
+              ]
+            },
+            "filters": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/RelationEntityTypeFilter"
+              }
+            },
+            "maxLevel": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "fetchLastLevelOnly": {
+              "type": "boolean"
+            },
+            "negate": {
+              "type": "boolean"
+            },
+            "multiRoot": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "SingleEntityFilter": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "singleEntity": {
+              "$ref": "#/$defs/EntityId"
+            }
+          }
+        }
+      ]
+    },
+    "StringFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL",
+                "STARTS_WITH",
+                "ENDS_WITH",
+                "CONTAINS",
+                "NOT_CONTAINS",
+                "IN",
+                "NOT_IN"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueString"
+            },
+            "ignoreCase": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

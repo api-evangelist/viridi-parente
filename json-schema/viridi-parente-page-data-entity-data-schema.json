@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-entity-data-schema.json",
+  "title": "PageDataEntityData",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-entity-query-controller-api-openapi.yml#/components/schemas/PageDataEntityData",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/EntityData"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "ComparisonTsValue": {
+      "properties": {
+        "current": {
+          "$ref": "#/$defs/TsValue"
+        },
+        "previous": {
+          "$ref": "#/$defs/TsValue"
+        }
+      }
+    },
+    "EntityData": {
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "latest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/TsValue"
+            }
+          }
+        },
+        "timeseries": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/TsValue"
+            }
+          }
+        },
+        "aggLatest": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ComparisonTsValue"
+          }
+        }
+      }
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TsValue": {
+      "properties": {
+        "ts": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "value": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}

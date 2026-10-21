@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-oauth2-client-info-schema.json",
+  "title": "OAuth2ClientInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-o-auth-2-controller-api-openapi.yml#/components/schemas/OAuth2ClientInfo",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "OAuth2 client name"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Name of the icon, displayed on OAuth2 log in button"
+    },
+    "url": {
+      "type": "string",
+      "description": "URI for OAuth2 log in. On HTTP GET request to this URI, it redirects to the OAuth2 provider page"
+    }
+  }
+}

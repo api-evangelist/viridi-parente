@@ -256,54 +256,26 @@ paths:
                   $ref: '#/components/schemas/SlackConversation'
 components:
   schemas:
-    DeliveryMethodNotificationTemplate:
-      discriminator:
-        propertyName: method
+    Button:
       properties:
         enabled:
           type: boolean
-        body:
+        text:
           type: string
-        method:
+        linkType:
           type: string
-      required:
-      - body
-      - method
-    EmailDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      - type: object
-        properties:
-          subject:
-            type: string
-      required:
-      - body
-      - subject
-    NotificationTemplateConfig:
-      properties:
-        deliveryMethodsTemplates:
-          type: object
-          additionalProperties:
-            oneOf:
-            - $ref: '#/components/schemas/EmailDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/MicrosoftTeamsDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/MobileAppDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/SlackDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/SmsDeliveryMethodNotificationTemplate'
-            - $ref: '#/components/schemas/WebDeliveryMethodNotificationTemplate'
-      required:
-      - deliveryMethodsTemplates
-    MobileAppDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      - type: object
-        properties:
-          subject:
-            type: string
-          additionalConfig: {}
-      required:
-      - body
-      - subject
+          enum:
+          - LINK
+          - DASHBOARD
+        link:
+          type: string
+        dashboardId:
+          type: string
+          format: uuid
+        dashboardState:
+          type: string
+        setEntityIdInState:
+          type: boolean
     NotificationTemplateId:
       properties:
         id:
@@ -320,6 +292,37 @@ components:
       required:
       - entityType
       - id
+    SmsDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      required:
+      - body
+    SlackDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      required:
+      - body
+    EmailDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+      required:
+      - body
+      - subject
+    WebDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          additionalConfig: {}
+      required:
+      - body
+      - subject
     MicrosoftTeamsDeliveryMethodNotificationTemplate:
       allOf:
       - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
@@ -333,49 +336,22 @@ components:
             $ref: '#/components/schemas/Button'
       required:
       - body
-    SmsDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      required:
-      - body
-    WebDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      - type: object
-        properties:
-          subject:
-            type: string
-          additionalConfig: {}
-      required:
-      - body
-      - subject
-    SlackDeliveryMethodNotificationTemplate:
-      allOf:
-      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
-      required:
-      - body
-    PageDataNotificationTemplate:
+    TenantId:
       properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/NotificationTemplate'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
     NotificationTemplate:
       properties:
         id:
@@ -411,26 +387,28 @@ components:
       - configuration
       - name
       - notificationType
-    Button:
+    PageDataNotificationTemplate:
       properties:
-        enabled:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/NotificationTemplate'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
           type: boolean
-        text:
-          type: string
-        linkType:
-          type: string
-          enum:
-          - LINK
-          - DASHBOARD
-        link:
-          type: string
-        dashboardId:
-          type: string
-          format: uuid
-        dashboardState:
-          type: string
-        setEntityIdInState:
-          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     SlackConversation:
       properties:
         type:
@@ -453,22 +431,44 @@ components:
       - id
       - name
       - type
-    TenantId:
+    DeliveryMethodNotificationTemplate:
+      discriminator:
+        propertyName: method
       properties:
-        id:
+        enabled:
+          type: boolean
+        body:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
+        method:
           type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
       required:
-      - entityType
-      - id
+      - body
+      - method
+    MobileAppDeliveryMethodNotificationTemplate:
+      allOf:
+      - $ref: '#/components/schemas/DeliveryMethodNotificationTemplate'
+      - type: object
+        properties:
+          subject:
+            type: string
+          additionalConfig: {}
+      required:
+      - body
+      - subject
+    NotificationTemplateConfig:
+      properties:
+        deliveryMethodsTemplates:
+          type: object
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/EmailDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MicrosoftTeamsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/MobileAppDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SlackDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/SmsDeliveryMethodNotificationTemplate'
+            - $ref: '#/components/schemas/WebDeliveryMethodNotificationTemplate'
+      required:
+      - deliveryMethodsTemplates
   securitySchemes:
     HTTP_login_form:
       type: http

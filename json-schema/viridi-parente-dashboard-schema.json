@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-dashboard-schema.json",
+  "title": "Dashboard",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/Dashboard",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/DashboardId",
+      "description": "JSON object with the dashboard Id. Specify existing dashboard Id to update the dashboard. Referencing non-existing dashboard id will cause error. Omit this field to create new dashboard."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the dashboard creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id. Tenant Id of the dashboard can't be changed.",
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the dashboard."
+    },
+    "image": {
+      "type": "string",
+      "description": "Thumbnail picture for rendering of the dashboards in a grid view on mobile devices.",
+      "readOnly": true
+    },
+    "assignedCustomers": {
+      "type": "array",
+      "description": "List of assigned customers with their info.",
+      "items": {
+        "$ref": "#/$defs/ShortCustomerInfo"
+      },
+      "readOnly": true,
+      "uniqueItems": true
+    },
+    "mobileHide": {
+      "type": "boolean",
+      "description": "Hide dashboard from mobile devices. Useful if the dashboard is not designed for small screens.",
+      "readOnly": true
+    },
+    "mobileOrder": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Order on mobile devices. Useful to adjust sorting of the dashboards for mobile applications",
+      "readOnly": true
+    },
+    "configuration": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "JSON object with main configuration of the dashboard: layouts, widgets, aliases, etc. The JSON structure of the dashboard configuration is quite complex. The easiest way to learn it is to export existing dashboard to JSON."
+    },
+    "name": {
+      "type": "string",
+      "description": "Same as title of the dashboard. Read-only field. Update the 'title' to change the 'name' of the dashboard.",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "$defs": {
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "ShortCustomerInfo": {
+      "properties": {
+        "customerId": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with the customer Id."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the customer."
+        },
+        "isPublic": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "public": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

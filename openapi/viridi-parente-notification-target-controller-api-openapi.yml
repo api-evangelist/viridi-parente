@@ -242,6 +242,47 @@ paths:
           description: OK
 components:
   schemas:
+    SlackNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          conversationType:
+            type: string
+            enum:
+            - DIRECT
+            - PUBLIC_CHANNEL
+            - PRIVATE_CHANNEL
+          conversation:
+            $ref: '#/components/schemas/SlackConversation'
+      required:
+      - conversation
+    NotificationTargetConfig:
+      discriminator:
+        propertyName: type
+      properties:
+        description:
+          type: string
+        type:
+          type: string
+      required:
+      - type
+    NotificationTargetId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - NOTIFICATION_TARGET
+          example: NOTIFICATION_TARGET
+      required:
+      - entityType
+      - id
     RoleId:
       properties:
         id:
@@ -284,22 +325,57 @@ components:
       required:
       - entityType
       - id
-    NotificationTargetId:
+    UsersFilter:
+      discriminator:
+        propertyName: type
       properties:
-        id:
+        type:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - NOTIFICATION_TARGET
-          example: NOTIFICATION_TARGET
       required:
-      - entityType
-      - id
+      - type
+    MicrosoftTeamsNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          webhookUrl:
+            type: string
+          channelName:
+            type: string
+          title:
+            type: string
+          id: {}
+          email:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+      required:
+      - channelName
+      - webhookUrl
+    PageDataUser:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     CustomerId:
       properties:
         id:
@@ -316,6 +392,28 @@ components:
       required:
       - entityType
       - id
+    PageDataNotificationTarget:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/NotificationTarget'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     NotificationTarget:
       properties:
         id:
@@ -335,6 +433,53 @@ components:
       required:
       - configuration
       - name
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    SlackConversation:
+      properties:
+        type:
+          type: string
+          enum:
+          - DIRECT
+          - PUBLIC_CHANNEL
+          - PRIVATE_CHANNEL
+        id:
+          type: string
+        name:
+          type: string
+        wholeName:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    PlatformUsersNotificationTargetConfig:
+      allOf:
+      - $ref: '#/components/schemas/NotificationTargetConfig'
+      - type: object
+        properties:
+          usersFilter:
+            $ref: '#/components/schemas/UsersFilter'
+      required:
+      - usersFilter
     User:
       description: A JSON value representing the User.
       properties:
@@ -414,151 +559,6 @@ components:
       required:
       - entityType
       - id
-    PageDataUser:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/User'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    NotificationTargetConfig:
-      discriminator:
-        propertyName: type
-      properties:
-        description:
-          type: string
-        type:
-          type: string
-      required:
-      - type
-    PageDataNotificationTarget:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/NotificationTarget'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    UsersFilter:
-      discriminator:
-        propertyName: type
-      properties:
-        type:
-          type: string
-      required:
-      - type
-    MicrosoftTeamsNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          webhookUrl:
-            type: string
-          channelName:
-            type: string
-          title:
-            type: string
-          id: {}
-          email:
-            type: string
-          firstName:
-            type: string
-          lastName:
-            type: string
-      required:
-      - channelName
-      - webhookUrl
-    SlackNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          conversationType:
-            type: string
-            enum:
-            - DIRECT
-            - PUBLIC_CHANNEL
-            - PRIVATE_CHANNEL
-          conversation:
-            $ref: '#/components/schemas/SlackConversation'
-      required:
-      - conversation
-    SlackConversation:
-      properties:
-        type:
-          type: string
-          enum:
-          - DIRECT
-          - PUBLIC_CHANNEL
-          - PRIVATE_CHANNEL
-        id:
-          type: string
-        name:
-          type: string
-        wholeName:
-          type: string
-        email:
-          type: string
-        title:
-          type: string
-      required:
-      - id
-      - name
-      - type
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
-    PlatformUsersNotificationTargetConfig:
-      allOf:
-      - $ref: '#/components/schemas/NotificationTargetConfig'
-      - type: object
-        properties:
-          usersFilter:
-            $ref: '#/components/schemas/UsersFilter'
-      required:
-      - usersFilter
   securitySchemes:
     HTTP_login_form:
       type: http

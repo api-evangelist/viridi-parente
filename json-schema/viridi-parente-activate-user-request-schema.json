@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-activate-user-request-schema.json",
+  "title": "ActivateUserRequest",
+  "description": "Activate user request.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/ActivateUserRequest",
+  "properties": {
+    "activateToken": {
+      "type": "string",
+      "description": "The activate token to verify"
+    },
+    "password": {
+      "type": "string",
+      "description": "The new password to set"
+    }
+  }
+}

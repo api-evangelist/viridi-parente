@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-login-request-schema.json",
+  "title": "LoginRequest",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-login-endpoint-api-openapi.yml#/components/schemas/LoginRequest",
+  "properties": {
+    "username": {
+      "type": "string",
+      "description": "User email"
+    },
+    "password": {
+      "type": "string",
+      "description": "User password"
+    }
+  },
+  "required": [
+    "password",
+    "username"
+  ]
+}

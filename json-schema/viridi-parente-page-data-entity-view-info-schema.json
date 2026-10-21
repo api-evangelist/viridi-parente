@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-entity-view-info-schema.json",
+  "title": "PageDataEntityViewInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-entity-view-controller-api-openapi.yml#/components/schemas/PageDataEntityViewInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/EntityViewInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "AttributesEntityView": {
+      "properties": {
+        "cs": {
+          "type": "array",
+          "description": "List of client-side attribute keys to expose",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ss": {
+          "type": "array",
+          "description": "List of server-side attribute keys to expose",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sh": {
+          "type": "array",
+          "description": "List of shared attribute keys to expose",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "cs",
+        "sh",
+        "ss"
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityViewId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "ENTITY_VIEW"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityViewInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityViewId",
+          "description": "JSON object with the Entity View Id. Specify this field to update the Entity View. Referencing non-existing Entity View Id will cause error. Omit this field to create new Entity View."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the Entity View creation, in milliseconds",
+          "readOnly": true
+        },
+        "entityId": {
+          "$ref": "#/$defs/EntityId",
+          "description": "JSON object with the referenced Entity Id (Device or Asset)."
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id.",
+          "readOnly": true
+        },
+        "customerId": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with Customer Id. Use 'assignEntityViewToCustomer' to change the Customer Id.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Entity View name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Device Profile Name"
+        },
+        "keys": {
+          "$ref": "#/$defs/TelemetryEntityView",
+          "description": "Set of telemetry and attribute keys to expose via Entity View."
+        },
+        "startTimeMs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Represents the start time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;"
+        },
+        "endTimeMs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Represents the end time of the interval that is used to limit access to target device telemetry. Customer will not be able to see entity telemetry that is outside the specified interval;"
+        },
+        "customerTitle": {
+          "type": "string",
+          "description": "Title of the Customer that owns the entity view.",
+          "readOnly": true
+        },
+        "customerIsPublic": {
+          "type": "boolean",
+          "description": "Indicates special 'Public' Customer that is auto-generated to use the entity view on public dashboards.",
+          "readOnly": true
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "Additional parameters of the device"
+        }
+      },
+      "required": [
+        "entityId",
+        "name",
+        "type"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TelemetryEntityView": {
+      "properties": {
+        "timeseries": {
+          "type": "array",
+          "description": "List of time-series data keys to expose",
+          "items": {
+            "type": "string"
+          }
+        },
+        "attributes": {
+          "$ref": "#/$defs/AttributesEntityView",
+          "description": "JSON object with attributes to expose"
+        }
+      },
+      "required": [
+        "attributes",
+        "timeseries"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

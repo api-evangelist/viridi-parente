@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-tenant-profile-schema.json",
+  "title": "TenantProfile",
+  "description": "A JSON value representing the tenant profile.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-tenant-profile-controller-api-openapi.yml#/components/schemas/TenantProfile",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/TenantProfileId",
+      "description": "JSON object with the tenant profile Id. Specify this field to update the tenant profile. Referencing non-existing tenant profile Id will cause error. Omit this field to create new tenant profile."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the tenant profile creation, in milliseconds",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the tenant profile"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the tenant profile"
+    },
+    "isolatedTbRuleEngine": {
+      "type": "boolean",
+      "description": "If enabled, will push all messages related to this tenant and processed by the rule engine into separate queue. Useful for complex microservices deployments, to isolate processing of the data for specific tenants"
+    },
+    "default": {
+      "type": "boolean"
+    },
+    "profileData": {
+      "$ref": "#/$defs/TenantProfileData"
+    }
+  },
+  "$defs": {
+    "DefaultTenantProfileConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TenantProfileConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "maxDevices": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxAssets": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxCustomers": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxUsers": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxDashboards": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxRuleChains": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxResourcesInBytes": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxOtaPackagesInBytes": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxResourceSize": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "transportTenantMsgRateLimit": {
+              "type": "string"
+            },
+            "transportTenantTelemetryMsgRateLimit": {
+              "type": "string"
+            },
+            "transportTenantTelemetryDataPointsRateLimit": {
+              "type": "string"
+            },
+            "transportDeviceMsgRateLimit": {
+              "type": "string"
+            },
+            "transportDeviceTelemetryMsgRateLimit": {
+              "type": "string"
+            },
+            "transportDeviceTelemetryDataPointsRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayMsgRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayTelemetryMsgRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayTelemetryDataPointsRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayDeviceMsgRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayDeviceTelemetryMsgRateLimit": {
+              "type": "string"
+            },
+            "transportGatewayDeviceTelemetryDataPointsRateLimit": {
+              "type": "string"
+            },
+            "tenantEntityExportRateLimit": {
+              "type": "string"
+            },
+            "tenantEntityImportRateLimit": {
+              "type": "string"
+            },
+            "tenantNotificationRequestsRateLimit": {
+              "type": "string"
+            },
+            "tenantNotificationRequestsPerRuleRateLimit": {
+              "type": "string"
+            },
+            "maxTransportMessages": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxTransportDataPoints": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxREExecutions": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxJSExecutions": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxTbelExecutions": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxDPStorageDays": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxRuleNodeExecutionsPerMessage": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxEmails": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "smsEnabled": {
+              "type": "boolean"
+            },
+            "maxSms": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxCreatedAlarms": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "tenantServerRestLimitsConfiguration": {
+              "type": "string"
+            },
+            "customerServerRestLimitsConfiguration": {
+              "type": "string"
+            },
+            "maxWsSessionsPerTenant": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxWsSessionsPerCustomer": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxWsSessionsPerRegularUser": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxWsSessionsPerPublicUser": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "wsMsgQueueLimitPerSession": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxWsSubscriptionsPerTenant": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxWsSubscriptionsPerCustomer": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxWsSubscriptionsPerRegularUser": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxWsSubscriptionsPerPublicUser": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "wsUpdatesPerSessionRateLimit": {
+              "type": "string"
+            },
+            "cassandraQueryTenantRateLimitsConfiguration": {
+              "type": "string"
+            },
+            "edgeEventRateLimits": {
+              "type": "string"
+            },
+            "edgeEventRateLimitsPerEdge": {
+              "type": "string"
+            },
+            "edgeUplinkMessagesRateLimits": {
+              "type": "string"
+            },
+            "edgeUplinkMessagesRateLimitsPerEdge": {
+              "type": "string"
+            },
+            "defaultStorageTtlDays": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "alarmsTtlDays": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "rpcTtlDays": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "queueStatsTtlDays": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "ruleEngineExceptionsTtlDays": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "warnThreshold": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "ProcessingStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SKIP_ALL_FAILURES",
+            "SKIP_ALL_FAILURES_AND_TIMED_OUT",
+            "RETRY_ALL",
+            "RETRY_FAILED",
+            "RETRY_TIMED_OUT",
+            "RETRY_FAILED_AND_TIMED_OUT"
+          ]
+        },
+        "retries": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failurePercentage": {
+          "type": "number",
+          "format": "double"
+        },
+        "pauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maxPauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "SubmitStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BURST",
+            "BATCH",
+            "SEQUENTIAL_BY_ORIGINATOR",
+            "SEQUENTIAL_BY_TENANT",
+            "SEQUENTIAL"
+          ]
+        },
+        "batchSize": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "TenantProfileConfiguration": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "TenantProfileData": {
+      "properties": {
+        "configuration": {
+          "description": "Complex JSON object that contains profile settings: max devices, max assets, rate limits, etc.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DefaultTenantProfileConfiguration"
+            }
+          ]
+        },
+        "queueConfiguration": {
+          "type": "array",
+          "description": "JSON array of queue configuration per tenant profile",
+          "items": {
+            "$ref": "#/$defs/TenantProfileQueueConfiguration"
+          }
+        }
+      }
+    },
+    "TenantProfileId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantProfileQueueConfiguration": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "pollInterval": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "partitions": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "consumerPerPartition": {
+          "type": "boolean"
+        },
+        "packProcessingTimeout": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "submitStrategy": {
+          "$ref": "#/$defs/SubmitStrategy"
+        },
+        "processingStrategy": {
+          "$ref": "#/$defs/ProcessingStrategy"
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      }
+    }
+  }
+}

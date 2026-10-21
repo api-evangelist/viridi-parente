@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-rule-chain-debug-event-filter-schema.json",
+  "title": "RuleChainDebugEventFilter",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-event-controller-api-openapi.yml#/components/schemas/RuleChainDebugEventFilter",
+  "allOf": [
+    {
+      "$ref": "#/$defs/EventFilter"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "String value representing the server name, identifier or ip address where the platform is running"
+        },
+        "isError": {
+          "type": "boolean",
+          "writeOnly": true
+        },
+        "errorStr": {
+          "type": "string",
+          "description": "The case insensitive 'contains' filter based on error message"
+        },
+        "message": {
+          "type": "string",
+          "description": "String value representing the message"
+        },
+        "error": {
+          "type": "boolean"
+        }
+      }
+    }
+  ],
+  "required": [
+    "eventType"
+  ],
+  "$defs": {
+    "EventFilter": {
+      "properties": {
+        "eventType": {
+          "type": "string",
+          "description": "String value representing the event type",
+          "enum": [
+            "ERROR",
+            "LC_EVENT",
+            "STATS",
+            "DEBUG_RULE_NODE",
+            "DEBUG_RULE_CHAIN"
+          ]
+        },
+        "notEmpty": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "eventType"
+      ]
+    }
+  }
+}

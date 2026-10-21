@@ -1,0 +1,83 @@
+generated: '2026-10-20'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 5
+  own: 3
+  other_domain: 1
+  platform: 1
+  roles:
+  - api
+  - docs
+  - other
+  - source
+  - website
+hosts:
+- host: api.viridiparente.com
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: viridiparente.com
+  role: api
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: petstore.swagger.io
+  found_by:
+  - spec-found
+  types: []
+  serves:
+  - spec
+  registrable_domain: swagger.io
+  role: other
+  relation: other-domain
+- host: viridiparente.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - contract-discovery
+  - well-known
+  types:
+  - Website
+  - Documentation
+  - SignUp
+  - Blog
+  - BlogRSS
+  - Support
+  - PrivacyPolicy
+  - TermsOfService
+  - FAQ
+  serves:
+  - docs
+  registrable_domain: viridiparente.com
+  role: website
+  relation: own
+- host: vista.viridiparente.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - spec-found
+  - contract-discovery
+  - well-known
+  types:
+  - APIReference
+  serves:
+  - api
+  - docs
+  - spec
+  registrable_domain: viridiparente.com
+  role: docs
+  relation: own

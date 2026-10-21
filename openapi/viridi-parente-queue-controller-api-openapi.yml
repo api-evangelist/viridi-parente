@@ -215,33 +215,6 @@ components:
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    ProcessingStrategy:
-      properties:
-        type:
-          type: string
-          enum:
-          - SKIP_ALL_FAILURES
-          - SKIP_ALL_FAILURES_AND_TIMED_OUT
-          - RETRY_ALL
-          - RETRY_FAILED
-          - RETRY_TIMED_OUT
-          - RETRY_FAILED_AND_TIMED_OUT
-        retries:
-          type: integer
-          format: int32
-        failurePercentage:
-          type: number
-          format: double
-        pauseBetweenRetries:
-          type: integer
-          format: int64
-        maxPauseBetweenRetries:
-          type: integer
-          format: int64
     TenantId:
       properties:
         id:
@@ -311,6 +284,33 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    ProcessingStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
+          type: integer
+          format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
   securitySchemes:
     HTTP_login_form:
       type: http

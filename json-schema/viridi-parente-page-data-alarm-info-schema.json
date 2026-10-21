@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-alarm-info-schema.json",
+  "title": "PageDataAlarmInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/PageDataAlarmInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/AlarmInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "AlarmAssignee": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "AlarmId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "ALARM"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "AlarmInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AlarmId",
+          "description": "JSON object with the alarm Id. Specify this field to update the alarm. Referencing non-existing alarm Id will cause error. Omit this field to create new alarm."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id",
+          "readOnly": true
+        },
+        "customerId": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with Customer Id",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "description": "representing type of the Alarm"
+        },
+        "originator": {
+          "$ref": "#/$defs/EntityId",
+          "description": "JSON object with alarm originator id"
+        },
+        "severity": {
+          "type": "string",
+          "description": "Alarm severity",
+          "enum": [
+            "CRITICAL",
+            "MAJOR",
+            "MINOR",
+            "WARNING",
+            "INDETERMINATE"
+          ]
+        },
+        "acknowledged": {
+          "type": "boolean",
+          "description": "Acknowledged"
+        },
+        "cleared": {
+          "type": "boolean",
+          "description": "Cleared"
+        },
+        "assigneeId": {
+          "$ref": "#/$defs/UserId",
+          "description": "Alarm assignee user id"
+        },
+        "startTs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm start time, in milliseconds"
+        },
+        "endTs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm end time(last time update), in milliseconds"
+        },
+        "ackTs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm acknowledgement, in milliseconds"
+        },
+        "clearTs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm clearing, in milliseconds"
+        },
+        "assignTs": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the alarm assignment, in milliseconds"
+        },
+        "propagate": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to parent entities of alarm originator"
+        },
+        "propagateToOwner": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator"
+        },
+        "propagateToTenant": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to the tenant entity"
+        },
+        "propagateRelationTypes": {
+          "type": "array",
+          "description": "JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "originatorName": {
+          "type": "string",
+          "description": "Alarm originator name"
+        },
+        "originatorLabel": {
+          "type": "string",
+          "description": "Alarm originator label"
+        },
+        "assignee": {
+          "$ref": "#/$defs/AlarmAssignee",
+          "description": "Alarm assignee"
+        },
+        "name": {
+          "type": "string",
+          "description": "representing type of the Alarm",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "status of the Alarm",
+          "enum": [
+            "ACTIVE_UNACK",
+            "ACTIVE_ACK",
+            "CLEARED_UNACK",
+            "CLEARED_ACK"
+          ],
+          "readOnly": true
+        },
+        "details": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      },
+      "required": [
+        "acknowledged",
+        "cleared",
+        "name",
+        "originator",
+        "severity",
+        "status",
+        "type"
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "UserId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "USER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

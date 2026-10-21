@@ -1,0 +1,1079 @@
+{
+  "@context": {
+    "@vocab": "https://viridiparente.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "viridi": "https://viridiparente.com/schema#",
+    "RepositorySettings": "viridi:RepositorySettings",
+    "repositoryUri": {
+      "@id": "viridi:repositoryUri",
+      "@type": "xsd:string"
+    },
+    "authMethod": {
+      "@id": "viridi:authMethod",
+      "@type": "xsd:string"
+    },
+    "username": {
+      "@id": "viridi:username",
+      "@type": "xsd:string"
+    },
+    "password": {
+      "@id": "viridi:password",
+      "@type": "xsd:string"
+    },
+    "privateKeyFileName": {
+      "@id": "viridi:privateKeyFileName",
+      "@type": "xsd:string"
+    },
+    "privateKey": {
+      "@id": "viridi:privateKey",
+      "@type": "xsd:string"
+    },
+    "privateKeyPassword": {
+      "@id": "viridi:privateKeyPassword",
+      "@type": "xsd:string"
+    },
+    "defaultBranch": {
+      "@id": "viridi:defaultBranch",
+      "@type": "xsd:string"
+    },
+    "readOnly": {
+      "@id": "viridi:readOnly",
+      "@type": "xsd:boolean"
+    },
+    "showMergeCommits": {
+      "@id": "viridi:showMergeCommits",
+      "@type": "xsd:boolean"
+    },
+    "UpdateMessage": "viridi:UpdateMessage",
+    "updateAvailable": {
+      "@id": "viridi:updateAvailable",
+      "@type": "xsd:boolean"
+    },
+    "currentVersion": {
+      "@id": "viridi:currentVersion",
+      "@type": "xsd:string"
+    },
+    "latestVersion": {
+      "@id": "viridi:latestVersion",
+      "@type": "xsd:string"
+    },
+    "upgradeInstructionsUrl": {
+      "@id": "viridi:upgradeInstructionsUrl",
+      "@type": "xsd:string"
+    },
+    "currentVersionReleaseNotesUrl": {
+      "@id": "viridi:currentVersionReleaseNotesUrl",
+      "@type": "xsd:string"
+    },
+    "latestVersionReleaseNotesUrl": {
+      "@id": "viridi:latestVersionReleaseNotesUrl",
+      "@type": "xsd:string"
+    },
+    "JwtSettings": "viridi:JwtSettings",
+    "tokenExpirationTime": {
+      "@id": "viridi:tokenExpirationTime",
+      "@type": "xsd:integer"
+    },
+    "refreshTokenExpTime": {
+      "@id": "viridi:refreshTokenExpTime",
+      "@type": "xsd:integer"
+    },
+    "tokenIssuer": {
+      "@id": "viridi:tokenIssuer",
+      "@type": "xsd:string"
+    },
+    "tokenSigningKey": {
+      "@id": "viridi:tokenSigningKey",
+      "@type": "xsd:string"
+    },
+    "SecuritySettings": "viridi:SecuritySettings",
+    "passwordPolicy": {
+      "@id": "viridi:passwordPolicy",
+      "@type": "@id"
+    },
+    "maxFailedLoginAttempts": {
+      "@id": "viridi:maxFailedLoginAttempts",
+      "@type": "xsd:integer"
+    },
+    "userLockoutNotificationEmail": {
+      "@id": "viridi:userLockoutNotificationEmail",
+      "@type": "xsd:string"
+    },
+    "mobileSecretKeyLength": {
+      "@id": "viridi:mobileSecretKeyLength",
+      "@type": "xsd:integer"
+    },
+    "AutoVersionCreateConfig": "viridi:AutoVersionCreateConfig",
+    "saveRelations": {
+      "@id": "viridi:saveRelations",
+      "@type": "xsd:boolean"
+    },
+    "saveAttributes": {
+      "@id": "viridi:saveAttributes",
+      "@type": "xsd:boolean"
+    },
+    "saveCredentials": {
+      "@id": "viridi:saveCredentials",
+      "@type": "xsd:boolean"
+    },
+    "branch": {
+      "@id": "viridi:branch",
+      "@type": "xsd:string"
+    },
+    "TenantId": "viridi:TenantId",
+    "id": {
+      "@id": "viridi:id",
+      "@type": "xsd:string"
+    },
+    "entityType": {
+      "@id": "viridi:entityType",
+      "@type": "xsd:string"
+    },
+    "TestSmsRequest": "viridi:TestSmsRequest",
+    "providerConfiguration": {
+      "@id": "viridi:providerConfiguration"
+    },
+    "numberTo": {
+      "@id": "viridi:numberTo",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "viridi:message",
+      "@type": "xsd:string"
+    },
+    "FeaturesInfo": "viridi:FeaturesInfo",
+    "smsEnabled": {
+      "@id": "viridi:smsEnabled",
+      "@type": "xsd:boolean"
+    },
+    "oauthEnabled": {
+      "@id": "viridi:oauthEnabled",
+      "@type": "xsd:boolean"
+    },
+    "notificationEnabled": {
+      "@id": "viridi:notificationEnabled",
+      "@type": "xsd:boolean"
+    },
+    "emailEnabled": {
+      "@id": "viridi:emailEnabled",
+      "@type": "xsd:boolean"
+    },
+    "twoFaEnabled": {
+      "@id": "viridi:twoFaEnabled",
+      "@type": "xsd:boolean"
+    },
+    "SmsProviderConfiguration": "viridi:SmsProviderConfiguration",
+    "type": {
+      "@id": "viridi:type",
+      "@type": "xsd:string"
+    },
+    "AdminSettingsId": "viridi:AdminSettingsId",
+    "SystemInfoData": "viridi:SystemInfoData",
+    "serviceId": {
+      "@id": "viridi:serviceId",
+      "@type": "xsd:string"
+    },
+    "serviceType": {
+      "@id": "viridi:serviceType",
+      "@type": "xsd:string"
+    },
+    "cpuUsage": {
+      "@id": "viridi:cpuUsage",
+      "@type": "xsd:integer"
+    },
+    "cpuCount": {
+      "@id": "viridi:cpuCount",
+      "@type": "xsd:integer"
+    },
+    "memoryUsage": {
+      "@id": "viridi:memoryUsage",
+      "@type": "xsd:integer"
+    },
+    "totalMemory": {
+      "@id": "viridi:totalMemory",
+      "@type": "xsd:integer"
+    },
+    "discUsage": {
+      "@id": "viridi:discUsage",
+      "@type": "xsd:integer"
+    },
+    "totalDiscSpace": {
+      "@id": "viridi:totalDiscSpace",
+      "@type": "xsd:integer"
+    },
+    "AdminSettings": "viridi:AdminSettings",
+    "createdTime": {
+      "@id": "viridi:createdTime",
+      "@type": "xsd:integer"
+    },
+    "tenantId": {
+      "@id": "viridi:tenantId",
+      "@type": "@id"
+    },
+    "key": {
+      "@id": "viridi:key",
+      "@type": "xsd:string"
+    },
+    "jsonValue": {
+      "@id": "viridi:jsonValue",
+      "@type": "@id"
+    },
+    "SystemInfo": "viridi:SystemInfo",
+    "systemData": {
+      "@id": "viridi:systemData",
+      "@container": "@list"
+    },
+    "monolith": {
+      "@id": "viridi:monolith",
+      "@type": "xsd:boolean"
+    },
+    "RepositorySettingsInfo": "viridi:RepositorySettingsInfo",
+    "configured": {
+      "@id": "viridi:configured",
+      "@type": "xsd:boolean"
+    },
+    "JwtPair": "viridi:JwtPair",
+    "token": {
+      "@id": "viridi:token",
+      "@type": "xsd:string"
+    },
+    "refreshToken": {
+      "@id": "viridi:refreshToken",
+      "@type": "xsd:string"
+    },
+    "scope": {
+      "@id": "viridi:scope",
+      "@type": "xsd:string"
+    },
+    "UserPasswordPolicy": "viridi:UserPasswordPolicy",
+    "minimumLength": {
+      "@id": "viridi:minimumLength",
+      "@type": "xsd:integer"
+    },
+    "maximumLength": {
+      "@id": "viridi:maximumLength",
+      "@type": "xsd:integer"
+    },
+    "minimumUppercaseLetters": {
+      "@id": "viridi:minimumUppercaseLetters",
+      "@type": "xsd:integer"
+    },
+    "minimumLowercaseLetters": {
+      "@id": "viridi:minimumLowercaseLetters",
+      "@type": "xsd:integer"
+    },
+    "minimumDigits": {
+      "@id": "viridi:minimumDigits",
+      "@type": "xsd:integer"
+    },
+    "minimumSpecialCharacters": {
+      "@id": "viridi:minimumSpecialCharacters",
+      "@type": "xsd:integer"
+    },
+    "allowWhitespaces": {
+      "@id": "viridi:allowWhitespaces",
+      "@type": "xsd:boolean"
+    },
+    "forceUserToResetPasswordIfNotValid": {
+      "@id": "viridi:forceUserToResetPasswordIfNotValid",
+      "@type": "xsd:boolean"
+    },
+    "passwordExpirationPeriodDays": {
+      "@id": "viridi:passwordExpirationPeriodDays",
+      "@type": "xsd:integer"
+    },
+    "passwordReuseFrequencyDays": {
+      "@id": "viridi:passwordReuseFrequencyDays",
+      "@type": "xsd:integer"
+    },
+    "PageDataAlarmCommentInfo": "viridi:PageDataAlarmCommentInfo",
+    "data": {
+      "@id": "viridi:data",
+      "@container": "@list"
+    },
+    "totalPages": {
+      "@id": "viridi:totalPages",
+      "@type": "xsd:integer"
+    },
+    "totalElements": {
+      "@id": "viridi:totalElements",
+      "@type": "xsd:integer"
+    },
+    "hasNext": {
+      "@id": "viridi:hasNext",
+      "@type": "xsd:boolean"
+    },
+    "UserId": "viridi:UserId",
+    "AlarmComment": "viridi:AlarmComment",
+    "alarmId": {
+      "@id": "viridi:alarmId",
+      "@type": "@id"
+    },
+    "userId": {
+      "@id": "viridi:userId",
+      "@type": "@id"
+    },
+    "comment": {
+      "@id": "viridi:comment",
+      "@type": "@id"
+    },
+    "name": {
+      "@id": "viridi:name",
+      "@type": "xsd:string"
+    },
+    "AlarmCommentId": "viridi:AlarmCommentId",
+    "AlarmId": "viridi:AlarmId",
+    "AlarmCommentInfo": "viridi:AlarmCommentInfo",
+    "firstName": {
+      "@id": "viridi:firstName",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "viridi:lastName",
+      "@type": "xsd:string"
+    },
+    "email": {
+      "@id": "viridi:email",
+      "@type": "xsd:string"
+    },
+    "EntitySubtype": "viridi:EntitySubtype",
+    "AlarmInfo": "viridi:AlarmInfo",
+    "customerId": {
+      "@id": "viridi:customerId",
+      "@type": "@id"
+    },
+    "originator": {
+      "@id": "viridi:originator",
+      "@type": "@id"
+    },
+    "severity": {
+      "@id": "viridi:severity",
+      "@type": "xsd:string"
+    },
+    "acknowledged": {
+      "@id": "viridi:acknowledged",
+      "@type": "xsd:boolean"
+    },
+    "cleared": {
+      "@id": "viridi:cleared",
+      "@type": "xsd:boolean"
+    },
+    "assigneeId": {
+      "@id": "viridi:assigneeId",
+      "@type": "@id"
+    },
+    "startTs": {
+      "@id": "viridi:startTs",
+      "@type": "xsd:integer"
+    },
+    "endTs": {
+      "@id": "viridi:endTs",
+      "@type": "xsd:integer"
+    },
+    "ackTs": {
+      "@id": "viridi:ackTs",
+      "@type": "xsd:integer"
+    },
+    "clearTs": {
+      "@id": "viridi:clearTs",
+      "@type": "xsd:integer"
+    },
+    "assignTs": {
+      "@id": "viridi:assignTs",
+      "@type": "xsd:integer"
+    },
+    "propagate": {
+      "@id": "viridi:propagate",
+      "@type": "xsd:boolean"
+    },
+    "propagateToOwner": {
+      "@id": "viridi:propagateToOwner",
+      "@type": "xsd:boolean"
+    },
+    "propagateToTenant": {
+      "@id": "viridi:propagateToTenant",
+      "@type": "xsd:boolean"
+    },
+    "propagateRelationTypes": {
+      "@id": "viridi:propagateRelationTypes",
+      "@container": "@list"
+    },
+    "originatorName": {
+      "@id": "viridi:originatorName",
+      "@type": "xsd:string"
+    },
+    "originatorLabel": {
+      "@id": "viridi:originatorLabel",
+      "@type": "xsd:string"
+    },
+    "assignee": {
+      "@id": "viridi:assignee",
+      "@type": "@id"
+    },
+    "status": {
+      "@id": "viridi:status",
+      "@type": "xsd:string"
+    },
+    "details": {
+      "@id": "viridi:details",
+      "@type": "@id"
+    },
+    "EntityId": "viridi:EntityId",
+    "CustomerId": "viridi:CustomerId",
+    "PageDataAlarmInfo": "viridi:PageDataAlarmInfo",
+    "Alarm": "viridi:Alarm",
+    "PageDataEntitySubtype": "viridi:PageDataEntitySubtype",
+    "AlarmAssignee": "viridi:AlarmAssignee",
+    "RelationsSearchParameters": "viridi:RelationsSearchParameters",
+    "rootId": {
+      "@id": "viridi:rootId",
+      "@type": "xsd:string"
+    },
+    "rootType": {
+      "@id": "viridi:rootType",
+      "@type": "xsd:string"
+    },
+    "direction": {
+      "@id": "viridi:direction",
+      "@type": "xsd:string"
+    },
+    "relationTypeGroup": {
+      "@id": "viridi:relationTypeGroup",
+      "@type": "xsd:string"
+    },
+    "maxLevel": {
+      "@id": "viridi:maxLevel",
+      "@type": "xsd:integer"
+    },
+    "fetchLastLevelOnly": {
+      "@id": "viridi:fetchLastLevelOnly",
+      "@type": "xsd:boolean"
+    },
+    "AssetId": "viridi:AssetId",
+    "BulkImportRequest": "viridi:BulkImportRequest",
+    "file": {
+      "@id": "viridi:file",
+      "@type": "xsd:string"
+    },
+    "mapping": {
+      "@id": "viridi:mapping",
+      "@type": "@id"
+    },
+    "PageDataAsset": "viridi:PageDataAsset",
+    "BulkImportResultAsset": "viridi:BulkImportResultAsset",
+    "created": {
+      "@id": "viridi:created"
+    },
+    "updated": {
+      "@id": "viridi:updated"
+    },
+    "errors": {
+      "@id": "viridi:errors"
+    },
+    "errorsList": {
+      "@id": "viridi:errorsList",
+      "@container": "@list"
+    },
+    "AssetSearchQuery": "viridi:AssetSearchQuery",
+    "parameters": {
+      "@id": "viridi:parameters",
+      "@type": "@id"
+    },
+    "relationType": {
+      "@id": "viridi:relationType",
+      "@type": "xsd:string"
+    },
+    "assetTypes": {
+      "@id": "viridi:assetTypes",
+      "@container": "@list"
+    },
+    "PageDataAssetInfo": "viridi:PageDataAssetInfo",
+    "AssetInfo": "viridi:AssetInfo",
+    "label": {
+      "@id": "viridi:label",
+      "@type": "xsd:string"
+    },
+    "assetProfileId": {
+      "@id": "viridi:assetProfileId",
+      "@type": "@id"
+    },
+    "customerTitle": {
+      "@id": "viridi:customerTitle",
+      "@type": "xsd:string"
+    },
+    "customerIsPublic": {
+      "@id": "viridi:customerIsPublic",
+      "@type": "xsd:boolean"
+    },
+    "assetProfileName": {
+      "@id": "viridi:assetProfileName",
+      "@type": "xsd:string"
+    },
+    "additionalInfo": {
+      "@id": "viridi:additionalInfo",
+      "@type": "@id"
+    },
+    "Mapping": "viridi:Mapping",
+    "columns": {
+      "@id": "viridi:columns",
+      "@container": "@list"
+    },
+    "delimiter": {
+      "@id": "viridi:delimiter",
+      "@type": "xsd:string"
+    },
+    "update": {
+      "@id": "viridi:update",
+      "@type": "xsd:boolean"
+    },
+    "header": {
+      "@id": "viridi:header",
+      "@type": "xsd:boolean"
+    },
+    "AssetProfileId": "viridi:AssetProfileId",
+    "Asset": "viridi:Asset",
+    "ColumnMapping": "viridi:ColumnMapping",
+    "DashboardId": "viridi:DashboardId",
+    "EntityInfo": "viridi:EntityInfo",
+    "AssetProfileInfo": "viridi:AssetProfileInfo",
+    "image": {
+      "@id": "viridi:image",
+      "@type": "xsd:string"
+    },
+    "defaultDashboardId": {
+      "@id": "viridi:defaultDashboardId",
+      "@type": "@id"
+    },
+    "PageDataAssetProfile": "viridi:PageDataAssetProfile",
+    "AssetProfile": "viridi:AssetProfile",
+    "description": {
+      "@id": "viridi:description",
+      "@type": "xsd:string"
+    },
+    "defaultRuleChainId": {
+      "@id": "viridi:defaultRuleChainId",
+      "@type": "@id"
+    },
+    "defaultQueueName": {
+      "@id": "viridi:defaultQueueName",
+      "@type": "xsd:string"
+    },
+    "defaultEdgeRuleChainId": {
+      "@id": "viridi:defaultEdgeRuleChainId",
+      "@type": "@id"
+    },
+    "default": {
+      "@id": "viridi:default",
+      "@type": "xsd:boolean"
+    },
+    "RuleChainId": "viridi:RuleChainId",
+    "PageDataAssetProfileInfo": "viridi:PageDataAssetProfileInfo",
+    "AuditLog": "viridi:AuditLog",
+    "entityId": {
+      "@id": "viridi:entityId",
+      "@type": "@id"
+    },
+    "entityName": {
+      "@id": "viridi:entityName",
+      "@type": "xsd:string"
+    },
+    "userName": {
+      "@id": "viridi:userName",
+      "@type": "xsd:string"
+    },
+    "actionType": {
+      "@id": "viridi:actionType",
+      "@type": "xsd:string"
+    },
+    "actionData": {
+      "@id": "viridi:actionData",
+      "@type": "@id"
+    },
+    "actionStatus": {
+      "@id": "viridi:actionStatus",
+      "@type": "xsd:string"
+    },
+    "actionFailureDetails": {
+      "@id": "viridi:actionFailureDetails",
+      "@type": "xsd:string"
+    },
+    "PageDataAuditLog": "viridi:PageDataAuditLog",
+    "AuditLogId": "viridi:AuditLogId",
+    "ActivateUserRequest": "viridi:ActivateUserRequest",
+    "activateToken": {
+      "@id": "viridi:activateToken",
+      "@type": "xsd:string"
+    },
+    "ResetPasswordRequest": "viridi:ResetPasswordRequest",
+    "resetToken": {
+      "@id": "viridi:resetToken",
+      "@type": "xsd:string"
+    },
+    "RoleId": "viridi:RoleId",
+    "User": "viridi:User",
+    "roleId": {
+      "@id": "viridi:roleId",
+      "@type": "@id"
+    },
+    "authority": {
+      "@id": "viridi:authority",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "viridi:phone",
+      "@type": "xsd:string"
+    },
+    "ChangePasswordRequest": "viridi:ChangePasswordRequest",
+    "currentPassword": {
+      "@id": "viridi:currentPassword",
+      "@type": "xsd:string"
+    },
+    "newPassword": {
+      "@id": "viridi:newPassword",
+      "@type": "xsd:string"
+    },
+    "ResetPasswordEmailRequest": "viridi:ResetPasswordEmailRequest",
+    "ComponentDescriptor": "viridi:ComponentDescriptor",
+    "clusteringMode": {
+      "@id": "viridi:clusteringMode",
+      "@type": "xsd:string"
+    },
+    "clazz": {
+      "@id": "viridi:clazz",
+      "@type": "xsd:string"
+    },
+    "configurationVersion": {
+      "@id": "viridi:configurationVersion",
+      "@type": "xsd:integer"
+    },
+    "actions": {
+      "@id": "viridi:actions",
+      "@type": "xsd:string"
+    },
+    "hasQueueName": {
+      "@id": "viridi:hasQueueName",
+      "@type": "xsd:boolean"
+    },
+    "configurationDescriptor": {
+      "@id": "viridi:configurationDescriptor",
+      "@type": "@id"
+    },
+    "ComponentDescriptorId": "viridi:ComponentDescriptorId",
+    "PageDataCustomer": "viridi:PageDataCustomer",
+    "Customer": "viridi:Customer",
+    "country": {
+      "@id": "viridi:country",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "viridi:state",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "viridi:city",
+      "@type": "xsd:string"
+    },
+    "address": {
+      "@id": "viridi:address",
+      "@type": "xsd:string"
+    },
+    "address2": {
+      "@id": "viridi:address2",
+      "@type": "xsd:string"
+    },
+    "zip": {
+      "@id": "viridi:zip",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "viridi:title",
+      "@type": "xsd:string"
+    },
+    "DashboardInfo": "viridi:DashboardInfo",
+    "assignedCustomers": {
+      "@id": "viridi:assignedCustomers",
+      "@container": "@list"
+    },
+    "mobileHide": {
+      "@id": "viridi:mobileHide",
+      "@type": "xsd:boolean"
+    },
+    "mobileOrder": {
+      "@id": "viridi:mobileOrder",
+      "@type": "xsd:integer"
+    },
+    "Dashboard": "viridi:Dashboard",
+    "configuration": {
+      "@id": "viridi:configuration",
+      "@type": "@id"
+    },
+    "ShortCustomerInfo": "viridi:ShortCustomerInfo",
+    "isPublic": {
+      "@id": "viridi:isPublic",
+      "@type": "xsd:boolean"
+    },
+    "public": {
+      "@id": "viridi:public",
+      "@type": "xsd:boolean"
+    },
+    "PageDataDashboardInfo": "viridi:PageDataDashboardInfo",
+    "HomeDashboardInfo": "viridi:HomeDashboardInfo",
+    "dashboardId": {
+      "@id": "viridi:dashboardId",
+      "@type": "@id"
+    },
+    "hideDashboardToolbar": {
+      "@id": "viridi:hideDashboardToolbar",
+      "@type": "xsd:boolean"
+    },
+    "HomeDashboard": "viridi:HomeDashboard",
+    "ClaimRequest": "viridi:ClaimRequest",
+    "secretKey": {
+      "@id": "viridi:secretKey",
+      "@type": "xsd:string"
+    },
+    "DeviceTransportConfiguration": "viridi:DeviceTransportConfiguration",
+    "PageDataDeviceInfo": "viridi:PageDataDeviceInfo",
+    "Device": "viridi:Device",
+    "deviceProfileId": {
+      "@id": "viridi:deviceProfileId",
+      "@type": "@id"
+    },
+    "firmwareId": {
+      "@id": "viridi:firmwareId",
+      "@type": "@id"
+    },
+    "softwareId": {
+      "@id": "viridi:softwareId",
+      "@type": "@id"
+    },
+    "deviceData": {
+      "@id": "viridi:deviceData",
+      "@type": "@id"
+    },
+    "DeviceId": "viridi:DeviceId",
+    "DeviceProfileId": "viridi:DeviceProfileId",
+    "OtaPackageId": "viridi:OtaPackageId",
+    "DeviceData": "viridi:DeviceData",
+    "transportConfiguration": {
+      "@id": "viridi:transportConfiguration"
+    },
+    "DeviceCredentialsId": "viridi:DeviceCredentialsId",
+    "SaveDeviceWithCredentialsRequest": "viridi:SaveDeviceWithCredentialsRequest",
+    "device": {
+      "@id": "viridi:device",
+      "@type": "@id"
+    },
+    "credentials": {
+      "@id": "viridi:credentials",
+      "@type": "@id"
+    },
+    "BulkImportResultDevice": "viridi:BulkImportResultDevice",
+    "DeviceConfiguration": "viridi:DeviceConfiguration",
+    "DeviceInfo": "viridi:DeviceInfo",
+    "deviceProfileName": {
+      "@id": "viridi:deviceProfileName",
+      "@type": "xsd:string"
+    },
+    "active": {
+      "@id": "viridi:active",
+      "@type": "xsd:boolean"
+    },
+    "PageDataDevice": "viridi:PageDataDevice",
+    "DeviceCredentials": "viridi:DeviceCredentials",
+    "deviceId": {
+      "@id": "viridi:deviceId",
+      "@type": "@id"
+    },
+    "credentialsType": {
+      "@id": "viridi:credentialsType",
+      "@type": "xsd:string"
+    },
+    "credentialsId": {
+      "@id": "viridi:credentialsId",
+      "@type": "xsd:string"
+    },
+    "credentialsValue": {
+      "@id": "viridi:credentialsValue",
+      "@type": "xsd:string"
+    },
+    "DeviceSearchQuery": "viridi:DeviceSearchQuery",
+    "deviceTypes": {
+      "@id": "viridi:deviceTypes",
+      "@container": "@list"
+    },
+    "SnmpCommunicationConfig": "viridi:SnmpCommunicationConfig",
+    "spec": {
+      "@id": "viridi:spec",
+      "@type": "xsd:string"
+    },
+    "FilterPredicateValueLong": "viridi:FilterPredicateValueLong",
+    "defaultValue": {
+      "@id": "viridi:defaultValue",
+      "@type": "xsd:integer"
+    },
+    "userValue": {
+      "@id": "viridi:userValue",
+      "@type": "xsd:integer"
+    },
+    "dynamicValue": {
+      "@id": "viridi:dynamicValue",
+      "@type": "@id"
+    },
+    "DynamicValueBoolean": "viridi:DynamicValueBoolean",
+    "sourceType": {
+      "@id": "viridi:sourceType",
+      "@type": "xsd:string"
+    },
+    "sourceAttribute": {
+      "@id": "viridi:sourceAttribute",
+      "@type": "xsd:string"
+    },
+    "inherit": {
+      "@id": "viridi:inherit",
+      "@type": "xsd:boolean"
+    },
+    "TransportPayloadTypeConfiguration": "viridi:TransportPayloadTypeConfiguration",
+    "transportPayloadType": {
+      "@id": "viridi:transportPayloadType",
+      "@type": "xsd:string"
+    },
+    "KeyFilterPredicate": "viridi:KeyFilterPredicate",
+    "CustomTimeScheduleItem": "viridi:CustomTimeScheduleItem",
+    "enabled": {
+      "@id": "viridi:enabled",
+      "@type": "xsd:boolean"
+    },
+    "dayOfWeek": {
+      "@id": "viridi:dayOfWeek",
+      "@type": "xsd:integer"
+    },
+    "startsOn": {
+      "@id": "viridi:startsOn",
+      "@type": "xsd:integer"
+    },
+    "endsOn": {
+      "@id": "viridi:endsOn",
+      "@type": "xsd:integer"
+    },
+    "ObjectAttributes": "viridi:ObjectAttributes",
+    "dim": {
+      "@id": "viridi:dim",
+      "@type": "xsd:integer"
+    },
+    "ssid": {
+      "@id": "viridi:ssid",
+      "@type": "xsd:integer"
+    },
+    "uri": {
+      "@id": "viridi:uri",
+      "@type": "xsd:string"
+    },
+    "ver": {
+      "@id": "viridi:ver"
+    },
+    "lwm2m": {
+      "@id": "viridi:lwm2m",
+      "@type": "@id"
+    },
+    "pmin": {
+      "@id": "viridi:pmin",
+      "@type": "xsd:integer"
+    },
+    "pmax": {
+      "@id": "viridi:pmax",
+      "@type": "xsd:integer"
+    },
+    "gt": {
+      "@id": "viridi:gt",
+      "@type": "xsd:decimal"
+    },
+    "lt": {
+      "@id": "viridi:lt",
+      "@type": "xsd:decimal"
+    },
+    "st": {
+      "@id": "viridi:st",
+      "@type": "xsd:decimal"
+    },
+    "epmin": {
+      "@id": "viridi:epmin",
+      "@type": "xsd:integer"
+    },
+    "epmax": {
+      "@id": "viridi:epmax",
+      "@type": "xsd:integer"
+    },
+    "DeviceProfile": "viridi:DeviceProfile",
+    "transportType": {
+      "@id": "viridi:transportType",
+      "@type": "xsd:string"
+    },
+    "provisionType": {
+      "@id": "viridi:provisionType",
+      "@type": "xsd:string"
+    },
+    "provisionDeviceKey": {
+      "@id": "viridi:provisionDeviceKey",
+      "@type": "xsd:string"
+    },
+    "profileData": {
+      "@id": "viridi:profileData",
+      "@type": "@id"
+    },
+    "DynamicValueInteger": "viridi:DynamicValueInteger",
+    "CoapDeviceTypeConfiguration": "viridi:CoapDeviceTypeConfiguration",
+    "coapDeviceType": {
+      "@id": "viridi:coapDeviceType",
+      "@type": "xsd:string"
+    },
+    "DeviceProfileConfiguration": "viridi:DeviceProfileConfiguration",
+    "TelemetryMappingConfiguration": "viridi:TelemetryMappingConfiguration",
+    "keyName": {
+      "@id": "viridi:keyName"
+    },
+    "observe": {
+      "@id": "viridi:observe",
+      "@container": "@list"
+    },
+    "attribute": {
+      "@id": "viridi:attribute",
+      "@container": "@list"
+    },
+    "telemetry": {
+      "@id": "viridi:telemetry",
+      "@container": "@list"
+    },
+    "attributeLwm2m": {
+      "@id": "viridi:attributeLwm2m"
+    },
+    "LwM2MBootstrapServerCredential": "viridi:LwM2MBootstrapServerCredential",
+    "securityMode": {
+      "@id": "viridi:securityMode",
+      "@type": "xsd:string"
+    },
+    "DynamicValueLong": "viridi:DynamicValueLong",
+    "DeviceProfileData": "viridi:DeviceProfileData",
+    "provisionConfiguration": {
+      "@id": "viridi:provisionConfiguration"
+    },
+    "alarms": {
+      "@id": "viridi:alarms",
+      "@container": "@list"
+    },
+    "AlarmConditionFilterKey": "viridi:AlarmConditionFilterKey",
+    "DynamicValueString": "viridi:DynamicValueString",
+    "OtherConfiguration": "viridi:OtherConfiguration",
+    "fwUpdateStrategy": {
+      "@id": "viridi:fwUpdateStrategy",
+      "@type": "xsd:integer"
+    },
+    "swUpdateStrategy": {
+      "@id": "viridi:swUpdateStrategy",
+      "@type": "xsd:integer"
+    },
+    "clientOnlyObserveAfterConnect": {
+      "@id": "viridi:clientOnlyObserveAfterConnect",
+      "@type": "xsd:integer"
+    },
+    "powerMode": {
+      "@id": "viridi:powerMode",
+      "@type": "xsd:string"
+    },
+    "psmActivityTimer": {
+      "@id": "viridi:psmActivityTimer",
+      "@type": "xsd:integer"
+    },
+    "edrxCycle": {
+      "@id": "viridi:edrxCycle",
+      "@type": "xsd:integer"
+    },
+    "pagingTransmissionWindow": {
+      "@id": "viridi:pagingTransmissionWindow",
+      "@type": "xsd:integer"
+    },
+    "fwUpdateResource": {
+      "@id": "viridi:fwUpdateResource",
+      "@type": "xsd:string"
+    },
+    "swUpdateResource": {
+      "@id": "viridi:swUpdateResource",
+      "@type": "xsd:string"
+    },
+    "defaultObjectIDVer": {
+      "@id": "viridi:defaultObjectIDVer",
+      "@type": "xsd:string"
+    },
+    "AlarmConditionSpec": "viridi:AlarmConditionSpec",
+    "FilterPredicateValueInteger": "viridi:FilterPredicateValueInteger",
+    "AlarmRule": "viridi:AlarmRule",
+    "condition": {
+      "@id": "viridi:condition",
+      "@type": "@id"
+    },
+    "schedule": {
+      "@id": "viridi:schedule"
+    },
+    "alarmDetails": {
+      "@id": "viridi:alarmDetails",
+      "@type": "xsd:string"
+    },
+    "FilterPredicateValueString": "viridi:FilterPredicateValueString",
+    "FilterPredicateValueDouble": "viridi:FilterPredicateValueDouble",
+    "PageDataDeviceProfileInfo": "viridi:PageDataDeviceProfileInfo",
+    "PowerSavingConfiguration": "viridi:PowerSavingConfiguration",
+    "DynamicValueDouble": "viridi:DynamicValueDouble",
+    "DeviceProfileAlarm": "viridi:DeviceProfileAlarm",
+    "alarmType": {
+      "@id": "viridi:alarmType",
+      "@type": "xsd:string"
+    },
+    "createRules": {
+      "@id": "viridi:createRules"
+    },
+    "clearRule": {
+      "@id": "viridi:clearRule",
+      "@type": "@id"
+    },
+    "PageDataDeviceProfile": "viridi:PageDataDeviceProfile",
+    "AlarmCondition": "viridi:AlarmCondition",
+    "AlarmConditionFilter": "viridi:AlarmConditionFilter",
+    "valueType": {
+      "@id": "viridi:valueType",
+      "@type": "xsd:string"
+    },
+    "value": {
+      "@id": "viridi:value"
+    },
+    "predicate": {
+      "@id": "viridi:predicate"
+    },
+    "LwM2mVersion": "viridi:LwM2mVersion",
+    "supported": {
+      "@id": "viridi:supported",
+      "@type": "xsd:boolean"
+    },
+    "DeviceProfileTransportConfiguration": "viridi:DeviceProfileTransportConfiguration",
+    "AlarmSchedule": "viridi:AlarmSchedule",
+    "FilterPredicateValueBoolean": "viridi:FilterPredicateValueBoolean",
+    "DeviceProfileProvisionConfiguration": "viridi:DeviceProfileProvisionConfiguration",
+    "provisionDeviceSecret": {
+      "@id": "viridi:provisionDeviceSecret",
+      "@type": "xsd:string"
+    },
+    "DeviceProfileInfo": "viridi:DeviceProfileInfo"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Viridi API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Viridi's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-20) from openapi/viridi-parente-admin-controller-api-openapi.yml, openapi/viridi-parente-alarm-comment-controller-api-openapi.yml, openapi/viridi-parente-alarm-controller-api-openapi.yml.",
+  "dcterms:created": "2026-10-20",
+  "dcterms:source": [
+    "openapi/viridi-parente-admin-controller-api-openapi.yml",
+    "openapi/viridi-parente-alarm-comment-controller-api-openapi.yml",
+    "openapi/viridi-parente-alarm-controller-api-openapi.yml",
+    "openapi/viridi-parente-asset-controller-api-openapi.yml",
+    "openapi/viridi-parente-asset-profile-controller-api-openapi.yml"
+  ]
+}

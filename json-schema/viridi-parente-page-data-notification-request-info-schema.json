@@ -1,0 +1,589 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-notification-request-info-schema.json",
+  "title": "PageDataNotificationRequestInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-controller-api-openapi.yml#/components/schemas/PageDataNotificationRequestInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/NotificationRequestInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "Button": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "text": {
+          "type": "string"
+        },
+        "linkType": {
+          "type": "string",
+          "enum": [
+            "LINK",
+            "DASHBOARD"
+          ]
+        },
+        "link": {
+          "type": "string"
+        },
+        "dashboardId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "dashboardState": {
+          "type": "string"
+        },
+        "setEntityIdInState": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DeliveryMethodNotificationTemplate": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "body": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "method"
+      ]
+    },
+    "EmailDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "MicrosoftTeamsDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "themeColor": {
+              "type": "string"
+            },
+            "button": {
+              "$ref": "#/$defs/Button"
+            }
+          }
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "MobileAppDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "additionalConfig": {}
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    },
+    "NotificationInfo": {
+      "properties": {
+        "dashboardId": {
+          "$ref": "#/$defs/DashboardId"
+        },
+        "stateEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "NotificationRequestConfig": {
+      "properties": {
+        "sendingDelayInSec": {
+          "type": "integer",
+          "format": "int32",
+          "maximum": 604800
+        }
+      }
+    },
+    "NotificationRequestId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_REQUEST"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "NotificationRequestInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/NotificationRequestId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "templateId": {
+          "$ref": "#/$defs/NotificationTemplateId"
+        },
+        "template": {
+          "$ref": "#/$defs/NotificationTemplate"
+        },
+        "info": {
+          "$ref": "#/$defs/NotificationInfo"
+        },
+        "additionalConfig": {
+          "$ref": "#/$defs/NotificationRequestConfig"
+        },
+        "originatorEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "ruleId": {
+          "$ref": "#/$defs/NotificationRuleId"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PROCESSING",
+            "SENT",
+            "SCHEDULED"
+          ]
+        },
+        "stats": {
+          "$ref": "#/$defs/NotificationRequestStats"
+        },
+        "placeholderData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "templateName": {
+          "type": "string"
+        },
+        "deliveryMethods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "WEB",
+              "EMAIL",
+              "SMS",
+              "SLACK",
+              "MICROSOFT_TEAMS",
+              "MOBILE_APP"
+            ]
+          }
+        }
+      },
+      "required": [
+        "targets"
+      ]
+    },
+    "NotificationRequestStats": {
+      "properties": {
+        "sent": {
+          "type": "object",
+          "additionalProperties": {
+            "properties": {
+              "opaque": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "acquire": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "release": {
+                "type": "integer",
+                "format": "int32",
+                "writeOnly": true
+              },
+              "andIncrement": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "andDecrement": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "plain": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        },
+        "errors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "totalErrors": {
+          "properties": {
+            "opaque": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "acquire": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "release": {
+              "type": "integer",
+              "format": "int32",
+              "writeOnly": true
+            },
+            "andIncrement": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "andDecrement": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "plain": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "NotificationRuleId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_RULE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "NotificationTemplate": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/NotificationTemplateId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notificationType": {
+          "type": "string",
+          "enum": [
+            "GENERAL",
+            "ALARM",
+            "DEVICE_ACTIVITY",
+            "ENTITY_ACTION",
+            "ALARM_COMMENT",
+            "RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT",
+            "ALARM_ASSIGNMENT",
+            "NEW_PLATFORM_VERSION",
+            "ENTITIES_LIMIT",
+            "API_USAGE_LIMIT",
+            "RULE_NODE",
+            "RATE_LIMITS",
+            "EDGE_CONNECTION",
+            "EDGE_COMMUNICATION_FAILURE",
+            "TASK_PROCESSING_FAILURE"
+          ]
+        },
+        "configuration": {
+          "$ref": "#/$defs/NotificationTemplateConfig"
+        }
+      },
+      "required": [
+        "configuration",
+        "name",
+        "notificationType"
+      ]
+    },
+    "NotificationTemplateConfig": {
+      "properties": {
+        "deliveryMethodsTemplates": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/EmailDeliveryMethodNotificationTemplate"
+              },
+              {
+                "$ref": "#/$defs/MicrosoftTeamsDeliveryMethodNotificationTemplate"
+              },
+              {
+                "$ref": "#/$defs/MobileAppDeliveryMethodNotificationTemplate"
+              },
+              {
+                "$ref": "#/$defs/SlackDeliveryMethodNotificationTemplate"
+              },
+              {
+                "$ref": "#/$defs/SmsDeliveryMethodNotificationTemplate"
+              },
+              {
+                "$ref": "#/$defs/WebDeliveryMethodNotificationTemplate"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "deliveryMethodsTemplates"
+      ]
+    },
+    "NotificationTemplateId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_TEMPLATE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "SlackDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "SmsDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "WebDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "additionalConfig": {}
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    }
+  }
+}

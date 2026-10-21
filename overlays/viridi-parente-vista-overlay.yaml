@@ -13,7 +13,7 @@ x-provenance:
     upstream ThingsBoard one), marks which operations are Viridi-authored rather than
     upstream platform operations, and flags the high-consequence physical-actuation
     operations that have no idempotency key and no documented reversal.
-extends: openapi/viridi-parente-vista-openapi.json
+extends: ../openapi/_original/viridi-parente-vista-openapi.json
 actions:
 - target: $.info
   update:

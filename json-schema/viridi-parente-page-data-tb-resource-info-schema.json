@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-tb-resource-info-schema.json",
+  "title": "PageDataTbResourceInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-image-controller-api-openapi.yml#/components/schemas/PageDataTbResourceInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/TbResourceInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TbResourceId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TB_RESOURCE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TbResourceInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/TbResourceId",
+          "description": "JSON object with the Resource Id. Specify this field to update the Resource. Referencing non-existing Resource Id will cause error. Omit this field to create new Resource."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the resource creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id. Tenant Id of the resource can't be changed.",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Resource title."
+        },
+        "resourceType": {
+          "type": "string",
+          "description": "Resource type.",
+          "enum": [
+            "LWM2M_MODEL",
+            "JKS",
+            "PKCS_12",
+            "JS_MODULE",
+            "IMAGE"
+          ],
+          "readOnly": true
+        },
+        "resourceKey": {
+          "type": "string",
+          "description": "Resource key.",
+          "readOnly": true
+        },
+        "publicResourceKey": {
+          "type": "string"
+        },
+        "etag": {
+          "type": "string",
+          "description": "Resource etag.",
+          "readOnly": true
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Resource file name.",
+          "readOnly": true
+        },
+        "descriptor": {
+          "$ref": "#/$defs/JsonNode"
+        },
+        "name": {
+          "type": "string",
+          "readOnly": true
+        },
+        "public": {
+          "type": "boolean"
+        },
+        "link": {
+          "type": "string",
+          "readOnly": true
+        },
+        "publicLink": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

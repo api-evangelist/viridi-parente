@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-audit-log-schema.json",
+  "title": "PageDataAuditLog",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-audit-log-controller-api-openapi.yml#/components/schemas/PageDataAuditLog",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/AuditLog"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "AuditLog": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AuditLogId",
+          "description": "JSON object with the auditLog Id"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the auditLog creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id",
+          "readOnly": true
+        },
+        "customerId": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with Customer Id",
+          "readOnly": true
+        },
+        "entityId": {
+          "$ref": "#/$defs/EntityId",
+          "description": "JSON object with Entity id",
+          "readOnly": true
+        },
+        "entityName": {
+          "type": "string",
+          "description": "Name of the logged entity",
+          "readOnly": true
+        },
+        "userId": {
+          "$ref": "#/$defs/UserId",
+          "description": "JSON object with User id.",
+          "readOnly": true
+        },
+        "userName": {
+          "type": "string",
+          "description": "Unique user name(email) of the user that performed some action on logged entity",
+          "readOnly": true
+        },
+        "actionType": {
+          "type": "string",
+          "description": "String represented Action type",
+          "enum": [
+            "ADDED",
+            "DELETED",
+            "UPDATED",
+            "ATTRIBUTES_UPDATED",
+            "ATTRIBUTES_DELETED",
+            "TIMESERIES_UPDATED",
+            "TIMESERIES_DELETED",
+            "RPC_CALL",
+            "CREDENTIALS_UPDATED",
+            "ASSIGNED_TO_CUSTOMER",
+            "UNASSIGNED_FROM_CUSTOMER",
+            "ACTIVATED",
+            "SUSPENDED",
+            "CREDENTIALS_READ",
+            "ATTRIBUTES_READ",
+            "RELATION_ADD_OR_UPDATE",
+            "RELATION_DELETED",
+            "RELATIONS_DELETED",
+            "ALARM_ACK",
+            "ALARM_CLEAR",
+            "ALARM_DELETE",
+            "ALARM_ASSIGNED",
+            "ALARM_UNASSIGNED",
+            "LOGIN",
+            "LOGOUT",
+            "LOCKOUT",
+            "ASSIGNED_FROM_TENANT",
+            "ASSIGNED_TO_TENANT",
+            "PROVISION_SUCCESS",
+            "PROVISION_FAILURE",
+            "ASSIGNED_TO_EDGE",
+            "UNASSIGNED_FROM_EDGE",
+            "ADDED_COMMENT",
+            "UPDATED_COMMENT",
+            "DELETED_COMMENT",
+            "SMS_SENT"
+          ],
+          "readOnly": true
+        },
+        "actionData": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "JsonNode represented action data",
+          "readOnly": true
+        },
+        "actionStatus": {
+          "type": "string",
+          "description": "String represented Action status",
+          "enum": [
+            "SUCCESS",
+            "FAILURE"
+          ],
+          "readOnly": true
+        },
+        "actionFailureDetails": {
+          "type": "string",
+          "description": "Failure action details info. An empty string in case of action status type 'SUCCESS', otherwise includes stack trace of the caused exception.",
+          "readOnly": true
+        }
+      }
+    },
+    "AuditLogId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "UserId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "USER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

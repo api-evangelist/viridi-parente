@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-edge-info-schema.json",
+  "title": "EdgeInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-edge-controller-api-openapi.yml#/components/schemas/EdgeInfo",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/EdgeId",
+      "description": "JSON object with the Edge Id. Specify this field to update the Edge. Referencing non-existing Edge Id will cause error. Omit this field to create new Edge."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the edge creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id. Use 'assignDeviceToTenant' to change the Tenant Id.",
+      "readOnly": true
+    },
+    "customerId": {
+      "$ref": "#/$defs/CustomerId",
+      "description": "JSON object with Customer Id. Use 'assignEdgeToCustomer' to change the Customer Id.",
+      "readOnly": true
+    },
+    "rootRuleChainId": {
+      "$ref": "#/$defs/RuleChainId",
+      "description": "JSON object with Root Rule Chain Id. Use 'setEdgeRootRuleChain' to change the Root Rule Chain Id.",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique Edge Name in scope of Tenant"
+    },
+    "type": {
+      "type": "string",
+      "description": "Edge type"
+    },
+    "label": {
+      "type": "string",
+      "description": "Label that may be used in widgets"
+    },
+    "routingKey": {
+      "type": "string",
+      "description": "Edge routing key ('username') to authorize on cloud"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Edge secret ('password') to authorize on cloud"
+    },
+    "customerTitle": {
+      "type": "string"
+    },
+    "customerIsPublic": {
+      "type": "boolean"
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode"
+    }
+  },
+  "required": [
+    "name",
+    "routingKey",
+    "secret",
+    "type"
+  ],
+  "$defs": {
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EdgeId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "EDGE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "RuleChainId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_CHAIN"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

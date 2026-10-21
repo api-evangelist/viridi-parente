@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-notification-settings-schema.json",
+  "title": "NotificationSettings",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-controller-api-openapi.yml#/components/schemas/NotificationSettings",
+  "properties": {
+    "deliveryMethodsConfigs": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/MobileAppNotificationDeliveryMethodConfig"
+          },
+          {
+            "$ref": "#/$defs/SlackNotificationDeliveryMethodConfig"
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "deliveryMethodsConfigs"
+  ],
+  "$defs": {
+    "MobileAppNotificationDeliveryMethodConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationDeliveryMethodConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "firebaseServiceAccountCredentialsFileName": {
+              "type": "string"
+            },
+            "firebaseServiceAccountCredentials": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "firebaseServiceAccountCredentials"
+      ]
+    },
+    "NotificationDeliveryMethodConfig": {
+      "properties": {
+        "method": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "method"
+      ]
+    },
+    "SlackNotificationDeliveryMethodConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationDeliveryMethodConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "botToken": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "botToken"
+      ]
+    }
+  }
+}

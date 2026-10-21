@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-widgets-bundle-schema.json",
+  "title": "PageDataWidgetsBundle",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-widgets-bundle-controller-api-openapi.yml#/components/schemas/PageDataWidgetsBundle",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/WidgetsBundle"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "WidgetsBundle": {
+      "description": "A JSON value representing the Widget Bundle.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/WidgetsBundleId",
+          "description": "JSON object with the Widget Bundle Id. Specify this field to update the Widget Bundle. Referencing non-existing Widget Bundle Id will cause error. Omit this field to create new Widget Bundle."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the Widget Bundle creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id.",
+          "readOnly": true
+        },
+        "alias": {
+          "type": "string",
+          "description": "Unique alias that is used in widget types as a reference widget bundle",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title used in search and UI",
+          "readOnly": true
+        },
+        "image": {
+          "type": "string",
+          "description": "Relative or external image URL. Replaced with image data URL (Base64) in case of relative URL and 'inlineImages' option enabled.",
+          "readOnly": true
+        },
+        "description": {
+          "type": "string",
+          "description": "Description",
+          "readOnly": true
+        },
+        "order": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Order",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Same as title of the Widget Bundle. Read-only field. Update the 'title' to change the 'name' of the Widget Bundle.",
+          "readOnly": true
+        }
+      }
+    },
+    "WidgetsBundleId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "WIDGETS_BUNDLE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

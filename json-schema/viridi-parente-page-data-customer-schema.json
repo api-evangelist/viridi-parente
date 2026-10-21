@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-customer-schema.json",
+  "title": "PageDataCustomer",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-customer-controller-api-openapi.yml#/components/schemas/PageDataCustomer",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/Customer"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "Customer": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with the customer Id. Specify this field to update the customer. Referencing non-existing customer Id will cause error. Omit this field to create new customer."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the customer creation, in milliseconds",
+          "readOnly": true
+        },
+        "country": {
+          "type": "string",
+          "description": "Country"
+        },
+        "state": {
+          "type": "string",
+          "description": "State"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "address": {
+          "type": "string",
+          "description": "Address Line 1"
+        },
+        "address2": {
+          "type": "string",
+          "description": "Address Line 2"
+        },
+        "zip": {
+          "type": "string",
+          "description": "Zip code"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the customer"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the customer. Read-only, duplicated from title for backward compatibility",
+          "readOnly": true
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "Additional parameters of the device"
+        }
+      },
+      "required": [
+        "email",
+        "title"
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

@@ -712,6 +712,15 @@ paths:
                 $ref: '#/components/schemas/PageDataDashboardInfo'
 components:
   schemas:
+    HomeDashboardInfo:
+      description: A JSON object that represents home dashboard id and other parameters
+      properties:
+        dashboardId:
+          $ref: '#/components/schemas/DashboardId'
+          description: JSON object with the dashboard Id.
+        hideDashboardToolbar:
+          type: boolean
+          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
     DashboardInfo:
       properties:
         id:
@@ -756,22 +765,6 @@ components:
           readOnly: true
       required:
       - title
-    DashboardId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - DASHBOARD
-          example: DASHBOARD
-      required:
-      - entityType
-      - id
     Dashboard:
       properties:
         id:
@@ -819,39 +812,6 @@ components:
           readOnly: true
       required:
       - title
-    ShortCustomerInfo:
-      properties:
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-          description: JSON object with the customer Id.
-        title:
-          type: string
-          description: Title of the customer.
-        isPublic:
-          type: boolean
-          writeOnly: true
-        public:
-          type: boolean
-    CustomerId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - CUSTOMER
-          example: CUSTOMER
-      required:
-      - entityType
-      - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
     PageDataDashboardInfo:
       properties:
         data:
@@ -874,31 +834,19 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    HomeDashboardInfo:
-      description: A JSON object that represents home dashboard id and other parameters
+    ShortCustomerInfo:
       properties:
-        dashboardId:
-          $ref: '#/components/schemas/DashboardId'
-          description: JSON object with the dashboard Id.
-        hideDashboardToolbar:
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+          description: JSON object with the customer Id.
+        title:
+          type: string
+          description: Title of the customer.
+        isPublic:
           type: boolean
-          description: Hide dashboard toolbar flag. Useful for rendering dashboards on mobile.
-    TenantId:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT
-          example: TENANT
-      required:
-      - entityType
-      - id
+          writeOnly: true
+        public:
+          type: boolean
     HomeDashboard:
       properties:
         id:
@@ -949,6 +897,58 @@ components:
           readOnly: true
       required:
       - title
+    TenantId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - TENANT
+          example: TENANT
+      required:
+      - entityType
+      - id
+    CustomerId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - CUSTOMER
+          example: CUSTOMER
+      required:
+      - entityType
+      - id
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    DashboardId:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
+          type: string
+          description: string
+          enum:
+          - DASHBOARD
+          example: DASHBOARD
+      required:
+      - entityType
+      - id
   securitySchemes:
     HTTP_login_form:
       type: http

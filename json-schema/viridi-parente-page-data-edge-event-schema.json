@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-edge-event-schema.json",
+  "title": "PageDataEdgeEvent",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-edge-event-controller-api-openapi.yml#/components/schemas/PageDataEdgeEvent",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/EdgeEvent"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "EdgeEvent": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EdgeEventId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seqId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "edgeId": {
+          "$ref": "#/$defs/EdgeId"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "ADDED",
+            "UPDATED",
+            "DELETED",
+            "POST_ATTRIBUTES",
+            "ATTRIBUTES_UPDATED",
+            "ATTRIBUTES_DELETED",
+            "TIMESERIES_UPDATED",
+            "CREDENTIALS_UPDATED",
+            "ASSIGNED_TO_CUSTOMER",
+            "UNASSIGNED_FROM_CUSTOMER",
+            "RELATION_ADD_OR_UPDATE",
+            "RELATION_DELETED",
+            "RPC_CALL",
+            "ALARM_ACK",
+            "ALARM_CLEAR",
+            "ALARM_DELETE",
+            "ALARM_ASSIGNED",
+            "ALARM_UNASSIGNED",
+            "ADDED_COMMENT",
+            "UPDATED_COMMENT",
+            "DELETED_COMMENT",
+            "ASSIGNED_TO_EDGE",
+            "UNASSIGNED_FROM_EDGE",
+            "CREDENTIALS_REQUEST",
+            "ENTITY_MERGE_REQUEST"
+          ]
+        },
+        "entityId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "ENTITY_VIEW",
+            "ALARM",
+            "ALARM_COMMENT",
+            "RULE_CHAIN",
+            "RULE_CHAIN_METADATA",
+            "EDGE",
+            "USER",
+            "CUSTOMER",
+            "RELATION",
+            "TENANT",
+            "TENANT_PROFILE",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "ADMIN_SETTINGS",
+            "OTA_PACKAGE",
+            "QUEUE",
+            "NOTIFICATION_RULE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "TB_RESOURCE",
+            "OAUTH2"
+          ]
+        },
+        "body": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      }
+    },
+    "EdgeEventId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "EdgeId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "EDGE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

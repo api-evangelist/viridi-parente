@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-sms-two-fa-account-config-schema.json",
+  "title": "SmsTwoFaAccountConfig",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-two-factor-auth-config-controller-api-openapi.yml#/components/schemas/SmsTwoFaAccountConfig",
+  "allOf": [
+    {
+      "$ref": "#/$defs/TwoFaAccountConfig"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$"
+        }
+      }
+    }
+  ],
+  "required": [
+    "phoneNumber"
+  ],
+  "$defs": {
+    "TwoFaAccountConfig": {
+      "properties": {
+        "useByDefault": {
+          "type": "boolean"
+        },
+        "providerType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "providerType"
+      ]
+    }
+  }
+}

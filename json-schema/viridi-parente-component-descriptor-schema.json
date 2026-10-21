@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-component-descriptor-schema.json",
+  "title": "ComponentDescriptor",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-component-descriptor-controller-api-openapi.yml#/components/schemas/ComponentDescriptor",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/ComponentDescriptorId",
+      "description": "JSON object with the descriptor Id. Specify existing descriptor id to update the descriptor. Referencing non-existing descriptor Id will cause error. Omit this field to create new descriptor."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the descriptor creation, in milliseconds",
+      "readOnly": true
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the Rule Node",
+      "enum": [
+        "ENRICHMENT",
+        "FILTER",
+        "TRANSFORMATION",
+        "ACTION",
+        "EXTERNAL",
+        "FLOW"
+      ],
+      "readOnly": true
+    },
+    "scope": {
+      "type": "string",
+      "description": "Scope of the Rule Node. Always set to 'TENANT', since no rule chains on the 'SYSTEM' level yet.",
+      "enum": [
+        "TENANT"
+      ],
+      "readOnly": true
+    },
+    "clusteringMode": {
+      "type": "string",
+      "description": "Clustering mode of the RuleNode. This mode represents the ability to start Rule Node in multiple microservices.",
+      "enum": [
+        "USER_PREFERENCE",
+        "ENABLED",
+        "SINGLETON"
+      ],
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the Rule Node. Taken from the @RuleNode annotation.",
+      "readOnly": true
+    },
+    "clazz": {
+      "type": "string",
+      "description": "Full name of the Java class that implements the Rule Engine Node interface.",
+      "readOnly": true
+    },
+    "configurationVersion": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Rule node configuration version. By default, this value is 0. If the rule node is a versioned node, this value might be greater than 0.",
+      "readOnly": true
+    },
+    "actions": {
+      "type": "string",
+      "description": "Rule Node Actions. Deprecated. Always null.",
+      "readOnly": true
+    },
+    "hasQueueName": {
+      "type": "boolean",
+      "description": "Indicates that the RuleNode supports queue name configuration.",
+      "readOnly": true
+    },
+    "configurationDescriptor": {
+      "$ref": "#/$defs/JsonNode"
+    }
+  },
+  "$defs": {
+    "ComponentDescriptorId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-notification-request-preview-schema.json",
+  "title": "NotificationRequestPreview",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-controller-api-openapi.yml#/components/schemas/NotificationRequestPreview",
+  "properties": {
+    "processedTemplates": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/EmailDeliveryMethodNotificationTemplate"
+          },
+          {
+            "$ref": "#/$defs/MicrosoftTeamsDeliveryMethodNotificationTemplate"
+          },
+          {
+            "$ref": "#/$defs/MobileAppDeliveryMethodNotificationTemplate"
+          },
+          {
+            "$ref": "#/$defs/SlackDeliveryMethodNotificationTemplate"
+          },
+          {
+            "$ref": "#/$defs/SmsDeliveryMethodNotificationTemplate"
+          },
+          {
+            "$ref": "#/$defs/WebDeliveryMethodNotificationTemplate"
+          }
+        ]
+      }
+    },
+    "totalRecipientsCount": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "recipientsCountByTarget": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "recipientsPreview": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "Button": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "text": {
+          "type": "string"
+        },
+        "linkType": {
+          "type": "string",
+          "enum": [
+            "LINK",
+            "DASHBOARD"
+          ]
+        },
+        "link": {
+          "type": "string"
+        },
+        "dashboardId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "dashboardState": {
+          "type": "string"
+        },
+        "setEntityIdInState": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DeliveryMethodNotificationTemplate": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "body": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "method"
+      ]
+    },
+    "EmailDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    },
+    "MicrosoftTeamsDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "themeColor": {
+              "type": "string"
+            },
+            "button": {
+              "$ref": "#/$defs/Button"
+            }
+          }
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "MobileAppDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "additionalConfig": {}
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    },
+    "SlackDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "SmsDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        }
+      ],
+      "required": [
+        "body"
+      ]
+    },
+    "WebDeliveryMethodNotificationTemplate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryMethodNotificationTemplate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "additionalConfig": {}
+          }
+        }
+      ],
+      "required": [
+        "body",
+        "subject"
+      ]
+    }
+  }
+}

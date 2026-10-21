@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-mobile-app-settings-schema.json",
+  "title": "MobileAppSettings",
+  "description": "A JSON value representing the mobile apps configuration",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-mobile-application-controller-api-openapi.yml#/components/schemas/MobileAppSettings",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/MobileAppSettingsId"
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id.",
+      "readOnly": true
+    },
+    "useDefaultApp": {
+      "type": "boolean",
+      "description": "Type of application: true means use default Thingsboard app"
+    },
+    "androidConfig": {
+      "$ref": "#/$defs/AndroidConfig",
+      "description": "Android mobile app configuration."
+    },
+    "iosConfig": {
+      "$ref": "#/$defs/IosConfig",
+      "description": "Ios mobile app configuration."
+    },
+    "qrCodeConfig": {
+      "$ref": "#/$defs/QRCodeConfig",
+      "description": "QR code config configuration."
+    },
+    "defaultGooglePlayLink": {
+      "type": "string",
+      "readOnly": true
+    },
+    "defaultAppStoreLink": {
+      "type": "string",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "androidConfig",
+    "iosConfig",
+    "qrCodeConfig",
+    "useDefaultApp"
+  ],
+  "$defs": {
+    "AndroidConfig": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "appPackage": {
+          "type": "string"
+        },
+        "sha256CertFingerprints": {
+          "type": "string"
+        },
+        "storeLink": {
+          "type": "string"
+        }
+      }
+    },
+    "IosConfig": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "appId": {
+          "type": "string"
+        },
+        "storeLink": {
+          "type": "string"
+        }
+      }
+    },
+    "MobileAppSettingsId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "QRCodeConfig": {
+      "properties": {
+        "showOnHomePage": {
+          "type": "boolean"
+        },
+        "badgeEnabled": {
+          "type": "boolean"
+        },
+        "qrCodeLabelEnabled": {
+          "type": "boolean"
+        },
+        "badgePosition": {
+          "type": "string",
+          "enum": [
+            "RIGHT",
+            "LEFT"
+          ]
+        },
+        "qrCodeLabel": {
+          "type": "string"
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

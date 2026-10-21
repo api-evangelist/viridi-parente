@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-test-sms-request-schema.json",
+  "title": "TestSmsRequest",
+  "description": "A JSON value representing the Test SMS request.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/TestSmsRequest",
+  "properties": {
+    "providerConfiguration": {
+      "description": "The SMS provider configuration",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AwsSnsSmsProviderConfiguration"
+        },
+        {
+          "$ref": "#/$defs/SmppSmsProviderConfiguration"
+        },
+        {
+          "$ref": "#/$defs/TwilioSmsProviderConfiguration"
+        }
+      ]
+    },
+    "numberTo": {
+      "type": "string",
+      "description": "The phone number or other identifier to specify as a recipient of the SMS."
+    },
+    "message": {
+      "type": "string",
+      "description": "The test message"
+    }
+  },
+  "$defs": {
+    "AwsSnsSmsProviderConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SmsProviderConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "accessKeyId": {
+              "type": "string",
+              "description": "The AWS SNS Access Key ID."
+            },
+            "secretAccessKey": {
+              "type": "string",
+              "description": "The AWS SNS Access Key."
+            },
+            "region": {
+              "type": "string",
+              "description": "The AWS region."
+            }
+          }
+        }
+      ]
+    },
+    "SmppSmsProviderConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SmsProviderConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "protocolVersion": {
+              "type": "string",
+              "description": "SMPP version",
+              "enum": [
+                "3.3, 3.4"
+              ]
+            },
+            "host": {
+              "type": "string",
+              "description": "SMPP host"
+            },
+            "port": {
+              "type": "integer",
+              "format": "int32",
+              "description": "SMPP port"
+            },
+            "systemId": {
+              "type": "string",
+              "description": "System ID"
+            },
+            "password": {
+              "type": "string",
+              "description": "Password"
+            },
+            "systemType": {
+              "type": "string",
+              "description": "System type"
+            },
+            "bindType": {
+              "type": "string",
+              "description": "TX - Transmitter, RX - Receiver, TRX - Transciever. By default TX is used",
+              "enum": [
+                "TX",
+                "RX",
+                "TRX"
+              ]
+            },
+            "serviceType": {
+              "type": "string",
+              "description": "Service type"
+            },
+            "sourceAddress": {
+              "type": "string",
+              "description": "Source address"
+            },
+            "sourceTon": {
+              "type": "string",
+              "format": "byte",
+              "description": "Source TON (Type of Number). Needed is source address is set. 5 by default.\n0 - Unknown\n1 - International\n2 - National\n3 - Network Specific\n4 - Subscriber Number\n5 - Alphanumeric\n6 - Abbreviated"
+            },
+            "sourceNpi": {
+              "type": "string",
+              "format": "byte",
+              "description": "Source NPI (Numbering Plan Identification). Needed is source address is set. 0 by default.\n0 - Unknown\n1 - ISDN/telephone numbering plan (E163/E164)\n3 - Data numbering plan (X.121)\n4 - Telex numbering plan (F.69)\n6 - Land Mobile (E.212) =6\n8 - National numbering plan\n9 - Private numbering plan\n10 - ERMES numbering plan (ETSI DE/PS 3 01-3)\n13 - Internet (IP)\n18 - WAP Client Id (to be defined by WAP Forum)"
+            },
+            "destinationTon": {
+              "type": "string",
+              "format": "byte",
+              "description": "Destination TON (Type of Number). 5 by default.\n0 - Unknown\n1 - International\n2 - National\n3 - Network Specific\n4 - Subscriber Number\n5 - Alphanumeric\n6 - Abbreviated"
+            },
+            "destinationNpi": {
+              "type": "string",
+              "format": "byte",
+              "description": "Destination NPI (Numbering Plan Identification). 0 by default.\n0 - Unknown\n1 - ISDN/telephone numbering plan (E163/E164)\n3 - Data numbering plan (X.121)\n4 - Telex numbering plan (F.69)\n6 - Land Mobile (E.212) =6\n8 - National numbering plan\n9 - Private numbering plan\n10 - ERMES numbering plan (ETSI DE/PS 3 01-3)\n13 - Internet (IP)\n18 - WAP Client Id (to be defined by WAP Forum)"
+            },
+            "addressRange": {
+              "type": "string",
+              "description": "Address range"
+            },
+            "codingScheme": {
+              "type": "string",
+              "format": "byte",
+              "description": "0 - SMSC Default Alphabet (ASCII for short and long code and to GSM for toll-free, used as default)\n1 - IA5 (ASCII for short and long code, Latin 9 for toll-free (ISO-8859-9))\n2 - Octet Unspecified (8-bit binary)\n3 - Latin 1 (ISO-8859-1)\n4 - Octet Unspecified (8-bit binary)\n5 - JIS (X 0208-1990)\n6 - Cyrillic (ISO-8859-5)\n7 - Latin/Hebrew (ISO-8859-8)\n8 - UCS2/UTF-16 (ISO/IEC-10646)\n9 - Pictogram Encoding\n10 - Music Codes (ISO-2022-JP)\n13 - Extended Kanji JIS (X 0212-1990)\n14 - Korean Graphic Character Set (KS C 5601/KS X 1001)",
+              "enum": [
+                "0-10",
+                "13-14"
+              ]
+            }
+          }
+        }
+      ],
+      "required": [
+        "host",
+        "password",
+        "port",
+        "protocolVersion",
+        "systemId"
+      ]
+    },
+    "SmsProviderConfiguration": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "TwilioSmsProviderConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SmsProviderConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "accountSid": {
+              "type": "string",
+              "description": "Twilio account Sid."
+            },
+            "accountToken": {
+              "type": "string",
+              "description": "Twilio account Token."
+            },
+            "numberFrom": {
+              "type": "string",
+              "description": "The number/id of a sender."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

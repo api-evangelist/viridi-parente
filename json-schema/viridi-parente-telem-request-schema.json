@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-telem-request-schema.json",
+  "title": "TelemRequest",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-gen-data-api-openapi.yml#/components/schemas/TelemRequest",
+  "properties": {
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keys": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "start_ts": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "end_ts": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "report": {
+      "type": "boolean"
+    },
+    "limit": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "interval": {
+      "type": "string"
+    }
+  }
+}

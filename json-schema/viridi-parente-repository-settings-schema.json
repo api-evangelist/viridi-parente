@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-repository-settings-schema.json",
+  "title": "RepositorySettings",
+  "description": "A JSON value representing the Repository Settings.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/RepositorySettings",
+  "properties": {
+    "repositoryUri": {
+      "type": "string"
+    },
+    "authMethod": {
+      "type": "string",
+      "enum": [
+        "USERNAME_PASSWORD",
+        "PRIVATE_KEY"
+      ]
+    },
+    "username": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    },
+    "privateKeyFileName": {
+      "type": "string"
+    },
+    "privateKey": {
+      "type": "string"
+    },
+    "privateKeyPassword": {
+      "type": "string"
+    },
+    "defaultBranch": {
+      "type": "string"
+    },
+    "readOnly": {
+      "type": "boolean"
+    },
+    "showMergeCommits": {
+      "type": "boolean"
+    }
+  }
+}

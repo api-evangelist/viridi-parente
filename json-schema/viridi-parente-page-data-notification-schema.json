@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-notification-schema.json",
+  "title": "PageDataNotification",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-controller-api-openapi.yml#/components/schemas/PageDataNotification",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/Notification"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "Notification": {
+      "properties": {
+        "requestId": {
+          "$ref": "#/$defs/NotificationRequestId"
+        },
+        "recipientId": {
+          "$ref": "#/$defs/UserId"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "GENERAL",
+            "ALARM",
+            "DEVICE_ACTIVITY",
+            "ENTITY_ACTION",
+            "ALARM_COMMENT",
+            "RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT",
+            "ALARM_ASSIGNMENT",
+            "NEW_PLATFORM_VERSION",
+            "ENTITIES_LIMIT",
+            "API_USAGE_LIMIT",
+            "RULE_NODE",
+            "RATE_LIMITS",
+            "EDGE_CONNECTION",
+            "EDGE_COMMUNICATION_FAILURE",
+            "TASK_PROCESSING_FAILURE"
+          ]
+        },
+        "deliveryMethod": {
+          "type": "string",
+          "enum": [
+            "WEB",
+            "EMAIL",
+            "SMS",
+            "SLACK",
+            "MICROSOFT_TEAMS",
+            "MOBILE_APP"
+          ]
+        },
+        "subject": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "additionalConfig": {
+          "$ref": "#/$defs/JsonNode"
+        },
+        "info": {
+          "$ref": "#/$defs/NotificationInfo"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "SENT",
+            "READ"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/NotificationId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "NotificationId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "NotificationInfo": {
+      "properties": {
+        "dashboardId": {
+          "$ref": "#/$defs/DashboardId"
+        },
+        "stateEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "NotificationRequestId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_REQUEST"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "UserId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "USER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

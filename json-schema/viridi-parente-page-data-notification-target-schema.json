@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-notification-target-schema.json",
+  "title": "PageDataNotificationTarget",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-target-controller-api-openapi.yml#/components/schemas/PageDataNotificationTarget",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/NotificationTarget"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "MicrosoftTeamsNotificationTargetConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationTargetConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "webhookUrl": {
+              "type": "string"
+            },
+            "channelName": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "id": {},
+            "email": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "channelName",
+        "webhookUrl"
+      ]
+    },
+    "NotificationTarget": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/NotificationTargetId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "configuration": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MicrosoftTeamsNotificationTargetConfig"
+            },
+            {
+              "$ref": "#/$defs/PlatformUsersNotificationTargetConfig"
+            },
+            {
+              "$ref": "#/$defs/SlackNotificationTargetConfig"
+            }
+          ]
+        }
+      },
+      "required": [
+        "configuration",
+        "name"
+      ]
+    },
+    "NotificationTargetConfig": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "NotificationTargetId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_TARGET"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "PlatformUsersNotificationTargetConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationTargetConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "usersFilter": {
+              "$ref": "#/$defs/UsersFilter"
+            }
+          }
+        }
+      ],
+      "required": [
+        "usersFilter"
+      ]
+    },
+    "SlackConversation": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "DIRECT",
+            "PUBLIC_CHANNEL",
+            "PRIVATE_CHANNEL"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "wholeName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type"
+      ]
+    },
+    "SlackNotificationTargetConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationTargetConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "conversationType": {
+              "type": "string",
+              "enum": [
+                "DIRECT",
+                "PUBLIC_CHANNEL",
+                "PRIVATE_CHANNEL"
+              ]
+            },
+            "conversation": {
+              "$ref": "#/$defs/SlackConversation"
+            }
+          }
+        }
+      ],
+      "required": [
+        "conversation"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "UsersFilter": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    }
+  }
+}

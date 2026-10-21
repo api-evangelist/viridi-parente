@@ -403,7 +403,29 @@ components:
       required:
       - entityType
       - id
-    UserId:
+    PageDataUser:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
+    TenantId:
       properties:
         id:
           type: string
@@ -414,15 +436,27 @@ components:
           type: string
           description: string
           enum:
-          - USER
-          example: USER
+          - TENANT
+          example: TENANT
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
+    Role:
+      description: A JSON value representing the Role.
+      properties:
+        id:
+          $ref: '#/components/schemas/RoleId'
+        createdTime:
+          type: integer
+          format: int64
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
+        policy:
+          $ref: '#/components/schemas/JsonNode'
+        default:
+          type: boolean
     User:
       description: A JSON value representing the User.
       properties:
@@ -482,6 +516,10 @@ components:
       required:
       - authority
       - email
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
     PageDataRole:
       properties:
         data:
@@ -504,29 +542,7 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    PageDataUser:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/User'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    TenantId:
+    UserId:
       properties:
         id:
           type: string
@@ -537,27 +553,11 @@ components:
           type: string
           description: string
           enum:
-          - TENANT
-          example: TENANT
+          - USER
+          example: USER
       required:
       - entityType
       - id
-    Role:
-      description: A JSON value representing the Role.
-      properties:
-        id:
-          $ref: '#/components/schemas/RoleId'
-        createdTime:
-          type: integer
-          format: int64
-        tenantId:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          type: string
-        policy:
-          $ref: '#/components/schemas/JsonNode'
-        default:
-          type: boolean
   securitySchemes:
     HTTP_login_form:
       type: http

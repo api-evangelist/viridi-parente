@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-usage-info-schema.json",
+  "title": "UsageInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-usage-info-controller-api-openapi.yml#/components/schemas/UsageInfo",
+  "properties": {
+    "devices": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxDevices": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "assets": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxAssets": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "customers": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxCustomers": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "users": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxUsers": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "dashboards": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxDashboards": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "transportMessages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxTransportMessages": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "jsExecutions": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "tbelExecutions": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxJsExecutions": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxTbelExecutions": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "emails": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxEmails": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "sms": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxSms": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "smsEnabled": {
+      "type": "boolean"
+    },
+    "alarms": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "maxAlarms": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

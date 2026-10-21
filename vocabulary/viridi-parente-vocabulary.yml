@@ -1,0 +1,428 @@
+generated: '2026-10-20'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/viridi-parente-admin-controller-api-openapi.yml
+- openapi/viridi-parente-alarm-comment-controller-api-openapi.yml
+- openapi/viridi-parente-alarm-controller-api-openapi.yml
+- openapi/viridi-parente-asset-controller-api-openapi.yml
+- openapi/viridi-parente-asset-profile-controller-api-openapi.yml
+vocabulary:
+  name: Viridi Domain Vocabulary
+  description: 'Terms declared by Viridi''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-20'
+  terms:
+  - term: RepositorySettings
+    definition: A JSON value representing the Repository Settings.
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/RepositorySettings
+  - term: UpdateMessage
+    definition: 'Object declared by the contract with fields: updateAvailable, currentVersion, latestVersion, upgradeInstructionsUrl, currentVersionReleaseNotesUrl,
+      latestVersionReleaseNotesUrl.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/UpdateMessage
+  - term: JwtSettings
+    definition: A JSON value representing the JWT Settings.
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/JwtSettings
+  - term: SecuritySettings
+    definition: A JSON value representing the Security Settings.
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/SecuritySettings
+  - term: AutoVersionCreateConfig
+    definition: 'Object declared by the contract with fields: saveRelations, saveAttributes, saveCredentials, branch.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/AutoVersionCreateConfig
+  - term: TenantId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/TenantId
+  - term: TestSmsRequest
+    definition: A JSON value representing the Test SMS request.
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/TestSmsRequest
+  - term: FeaturesInfo
+    definition: 'Object declared by the contract with fields: smsEnabled, oauthEnabled, notificationEnabled, emailEnabled, twoFaEnabled.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/FeaturesInfo
+  - term: SmsProviderConfiguration
+    definition: 'Object declared by the contract with fields: type.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/SmsProviderConfiguration
+  - term: AdminSettingsId
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/AdminSettingsId
+  - term: SystemInfoData
+    definition: 'Object declared by the contract with fields: serviceId, serviceType, cpuUsage, cpuCount, memoryUsage, totalMemory, discUsage,
+      totalDiscSpace.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/SystemInfoData
+  - term: AdminSettings
+    definition: A JSON value representing the Mail Settings.
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/AdminSettings
+  - term: SystemInfo
+    definition: 'Object declared by the contract with fields: systemData, monolith.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/SystemInfo
+  - term: RepositorySettingsInfo
+    definition: 'Object declared by the contract with fields: configured, readOnly.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/RepositorySettingsInfo
+  - term: JwtPair
+    definition: JWT Pair
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/JwtPair
+  - term: JsonNode
+    definition: A value representing the any type (object or primitive)
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/JsonNode
+  - term: UserPasswordPolicy
+    definition: 'Object declared by the contract with fields: minimumLength, maximumLength, minimumUppercaseLetters, minimumLowercaseLetters,
+      minimumDigits, minimumSpecialCharacters, allowWhitespaces, forceUserToResetPasswordIfNotValid, passwordExpirationPeriodDays, passwordReuseFrequencyDays.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/UserPasswordPolicy
+  - term: PageDataAlarmCommentInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/PageDataAlarmCommentInfo
+  - term: UserId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/UserId
+  - term: AlarmComment
+    definition: 'Object declared by the contract with fields: alarmId, userId, type, comment, id, createdTime, name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/AlarmComment
+  - term: AlarmCommentId
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/AlarmCommentId
+  - term: AlarmId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/AlarmId
+  - term: AlarmCommentInfo
+    definition: 'Object declared by the contract with fields: id, createdTime, alarmId, userId, type, comment, firstName, lastName, email, name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-comment-controller-api-openapi.yml#/components/schemas/AlarmCommentInfo
+  - term: EntitySubtype
+    definition: 'Object declared by the contract with fields: tenantId, entityType, type.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/EntitySubtype
+  - term: AlarmInfo
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, customerId, type, originator, severity, acknowledged,
+      cleared, assigneeId, startTs, endTs. (13 more)'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/AlarmInfo
+  - term: EntityId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/EntityId
+  - term: CustomerId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/CustomerId
+  - term: PageDataAlarmInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/PageDataAlarmInfo
+  - term: Alarm
+    definition: 'Object declared by the contract with fields: tenantId, customerId, type, originator, severity, acknowledged, cleared, assigneeId,
+      startTs, endTs, ackTs, clearTs. (10 more)'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/Alarm
+  - term: PageDataEntitySubtype
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/PageDataEntitySubtype
+  - term: AlarmAssignee
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, email.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-alarm-controller-api-openapi.yml#/components/schemas/AlarmAssignee
+  - term: RelationsSearchParameters
+    definition: 'Object declared by the contract with fields: rootId, rootType, direction, relationTypeGroup, maxLevel, fetchLastLevelOnly.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/RelationsSearchParameters
+  - term: AssetId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/AssetId
+  - term: BulkImportRequest
+    definition: 'Object declared by the contract with fields: file, mapping.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/BulkImportRequest
+  - term: PageDataAsset
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/PageDataAsset
+  - term: BulkImportResultAsset
+    definition: 'Object declared by the contract with fields: created, updated, errors, errorsList.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/BulkImportResultAsset
+  - term: AssetSearchQuery
+    definition: 'Object declared by the contract with fields: parameters, relationType, assetTypes.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/AssetSearchQuery
+  - term: PageDataAssetInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/PageDataAssetInfo
+  - term: AssetInfo
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, customerId, name, type, label, assetProfileId, customerTitle,
+      customerIsPublic, assetProfileName, additionalInfo.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/AssetInfo
+  - term: Mapping
+    definition: 'Object declared by the contract with fields: columns, delimiter, update, header.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/Mapping
+  - term: AssetProfileId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/AssetProfileId
+  - term: Asset
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, customerId, name, type, label, assetProfileId, additionalInfo.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/Asset
+  - term: ColumnMapping
+    definition: 'Object declared by the contract with fields: type, key.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/ColumnMapping
+  - term: DashboardId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/DashboardId
+  - term: EntityInfo
+    definition: 'Object declared by the contract with fields: id, name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/EntityInfo
+  - term: AssetProfileInfo
+    definition: 'Object declared by the contract with fields: id, tenantId, name, image, defaultDashboardId.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/AssetProfileInfo
+  - term: PageDataAssetProfile
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/PageDataAssetProfile
+  - term: AssetProfile
+    definition: A JSON value representing the asset profile.
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/AssetProfile
+  - term: RuleChainId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/RuleChainId
+  - term: PageDataAssetProfileInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-asset-profile-controller-api-openapi.yml#/components/schemas/PageDataAssetProfileInfo
+  - term: AuditLog
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, customerId, entityId, entityName, userId, userName, actionType,
+      actionData, actionStatus, actionFailureDetails.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-audit-log-controller-api-openapi.yml#/components/schemas/AuditLog
+  - term: PageDataAuditLog
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-audit-log-controller-api-openapi.yml#/components/schemas/PageDataAuditLog
+  - term: AuditLogId
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-audit-log-controller-api-openapi.yml#/components/schemas/AuditLogId
+  - term: ActivateUserRequest
+    definition: Activate user request.
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/ActivateUserRequest
+  - term: ResetPasswordRequest
+    definition: Reset password request.
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/ResetPasswordRequest
+  - term: RoleId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/RoleId
+  - term: User
+    definition: A JSON value representing the User.
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/User
+  - term: ChangePasswordRequest
+    definition: Change Password Request
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/ChangePasswordRequest
+  - term: ResetPasswordEmailRequest
+    definition: The JSON object representing the reset password email request.
+    tags:
+    - Object
+    source: openapi/viridi-parente-auth-controller-api-openapi.yml#/components/schemas/ResetPasswordEmailRequest
+  - term: ComponentDescriptor
+    definition: 'Object declared by the contract with fields: id, createdTime, type, scope, clusteringMode, name, clazz, configurationVersion,
+      actions, hasQueueName, configurationDescriptor.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-component-descriptor-controller-api-openapi.yml#/components/schemas/ComponentDescriptor
+  - term: ComponentDescriptorId
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-component-descriptor-controller-api-openapi.yml#/components/schemas/ComponentDescriptorId
+  - term: PageDataCustomer
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-customer-controller-api-openapi.yml#/components/schemas/PageDataCustomer
+  - term: Customer
+    definition: 'Object declared by the contract with fields: id, createdTime, country, state, city, address, address2, zip, phone, email, title,
+      tenantId. (2 more)'
+    tags:
+    - Object
+    source: openapi/viridi-parente-customer-controller-api-openapi.yml#/components/schemas/Customer
+  - term: DashboardInfo
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, title, image, assignedCustomers, mobileHide, mobileOrder,
+      name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/DashboardInfo
+  - term: Dashboard
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, title, image, assignedCustomers, mobileHide, mobileOrder,
+      configuration, name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/Dashboard
+  - term: ShortCustomerInfo
+    definition: 'Object declared by the contract with fields: customerId, title, isPublic, public.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/ShortCustomerInfo
+  - term: PageDataDashboardInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/PageDataDashboardInfo
+  - term: HomeDashboardInfo
+    definition: A JSON object that represents home dashboard id and other parameters
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/HomeDashboardInfo
+  - term: HomeDashboard
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, title, image, assignedCustomers, mobileHide, mobileOrder,
+      hideDashboardToolbar, configuration, name.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/HomeDashboard
+  - term: ClaimRequest
+    definition: Claiming request which can optionally contain secret key
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/ClaimRequest
+  - term: DeviceTransportConfiguration
+    definition: 'Object declared by the contract with fields: type.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/DeviceTransportConfiguration
+  - term: PageDataDeviceInfo
+    definition: 'Object declared by the contract with fields: data, totalPages, totalElements, hasNext.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/PageDataDeviceInfo
+  - term: Device
+    definition: 'Object declared by the contract with fields: id, createdTime, tenantId, customerId, name, type, label, deviceProfileId, firmwareId,
+      softwareId, additionalInfo, deviceData.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/Device
+  - term: DeviceId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/DeviceId
+  - term: DeviceProfileId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/DeviceProfileId
+  - term: OtaPackageId
+    definition: 'Object declared by the contract with fields: id, entityType.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/OtaPackageId
+  - term: DeviceData
+    definition: 'Object declared by the contract with fields: configuration, transportConfiguration.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/DeviceData
+  - term: DeviceCredentialsId
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/DeviceCredentialsId
+  - term: SaveDeviceWithCredentialsRequest
+    definition: The JSON object with device and credentials. See method description above for example.
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/SaveDeviceWithCredentialsRequest
+  - term: BulkImportResultDevice
+    definition: 'Object declared by the contract with fields: created, updated, errors, errorsList.'
+    tags:
+    - Object
+    source: openapi/viridi-parente-device-controller-api-openapi.yml#/components/schemas/BulkImportResultDevice

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-tenant-schema.json",
+  "title": "Tenant",
+  "description": "A JSON value representing the tenant.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-tenant-controller-api-openapi.yml#/components/schemas/Tenant",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with the tenant Id. Specify this field to update the tenant. Referencing non-existing tenant Id will cause error. Omit this field to create new tenant."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the tenant creation, in milliseconds",
+      "readOnly": true
+    },
+    "country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "state": {
+      "type": "string",
+      "description": "State"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "address": {
+      "type": "string",
+      "description": "Address Line 1"
+    },
+    "address2": {
+      "type": "string",
+      "description": "Address Line 2"
+    },
+    "zip": {
+      "type": "string",
+      "description": "Zip code"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the tenant"
+    },
+    "region": {
+      "type": "string",
+      "description": "Geo region of the tenant"
+    },
+    "tenantProfileId": {
+      "$ref": "#/$defs/TenantProfileId",
+      "description": "JSON object with Tenant Profile Id"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the tenant. Read-only, duplicated from title for backward compatibility",
+      "readOnly": true
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "Additional parameters of the device"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantProfileId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

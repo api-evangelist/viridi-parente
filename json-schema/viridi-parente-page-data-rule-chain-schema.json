@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-rule-chain-schema.json",
+  "title": "PageDataRuleChain",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-rule-chain-controller-api-openapi.yml#/components/schemas/PageDataRuleChain",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/RuleChain"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "RuleChain": {
+      "description": "A JSON value representing the rule chain.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/RuleChainId",
+          "description": "JSON object with the Rule Chain Id. Specify this field to update the Rule Chain. Referencing non-existing Rule Chain Id will cause error. Omit this field to create new rule chain."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the rule chain creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Rule Chain name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Rule Chain type. 'EDGE' rule chains are processing messages on the edge devices only.",
+          "enum": [
+            "CORE",
+            "EDGE"
+          ]
+        },
+        "firstRuleNodeId": {
+          "$ref": "#/$defs/RuleNodeId",
+          "description": "JSON object with Rule Chain Id. Pointer to the first rule node that should receive all messages pushed to this rule chain."
+        },
+        "root": {
+          "type": "boolean",
+          "description": "Indicates root rule chain. The root rule chain process messages from all devices and entities by default. User may configure default rule chain per device profile."
+        },
+        "debugMode": {
+          "type": "boolean",
+          "description": "Reserved for future usage."
+        },
+        "configuration": {
+          "$ref": "#/$defs/JsonNode"
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      },
+      "required": [
+        "name",
+        "tenantId"
+      ]
+    },
+    "RuleChainId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_CHAIN"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "RuleNodeId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_NODE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

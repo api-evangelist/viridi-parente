@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-totp-two-fa-account-config-schema.json",
+  "title": "TotpTwoFaAccountConfig",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-two-factor-auth-config-controller-api-openapi.yml#/components/schemas/TotpTwoFaAccountConfig",
+  "allOf": [
+    {
+      "$ref": "#/$defs/TwoFaAccountConfig"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "authUrl": {
+          "type": "string",
+          "pattern": "otpauth://totp/(\\S+?):(\\S+?)\\?issuer=(\\S+?)&secret=(\\w+?)"
+        }
+      }
+    }
+  ],
+  "required": [
+    "authUrl"
+  ],
+  "$defs": {
+    "TwoFaAccountConfig": {
+      "properties": {
+        "useByDefault": {
+          "type": "boolean"
+        },
+        "providerType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "providerType"
+      ]
+    }
+  }
+}

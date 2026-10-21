@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-update-message-schema.json",
+  "title": "UpdateMessage",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/UpdateMessage",
+  "properties": {
+    "updateAvailable": {
+      "type": "boolean",
+      "description": "'True' if new platform update is available."
+    },
+    "currentVersion": {
+      "type": "string",
+      "description": "Current ThingsBoard version."
+    },
+    "latestVersion": {
+      "type": "string",
+      "description": "Latest ThingsBoard version."
+    },
+    "upgradeInstructionsUrl": {
+      "type": "string",
+      "description": "Upgrade instructions URL."
+    },
+    "currentVersionReleaseNotesUrl": {
+      "type": "string",
+      "description": "Current ThingsBoard version release notes URL."
+    },
+    "latestVersionReleaseNotesUrl": {
+      "type": "string",
+      "description": "Latest ThingsBoard version release notes URL."
+    }
+  }
+}

@@ -1,0 +1,846 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-notification-rule-info-schema.json",
+  "title": "PageDataNotificationRuleInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-notification-rule-controller-api-openapi.yml#/components/schemas/PageDataNotificationRuleInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/NotificationRuleInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "AlarmAssignmentNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alarmTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "alarmSeverities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CRITICAL",
+                  "MAJOR",
+                  "MINOR",
+                  "WARNING",
+                  "INDETERMINATE"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "alarmStatuses": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ANY",
+                  "ACTIVE",
+                  "CLEARED",
+                  "ACK",
+                  "UNACK"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "notifyOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ASSIGNED",
+                  "UNASSIGNED"
+                ]
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ],
+      "required": [
+        "notifyOn"
+      ]
+    },
+    "AlarmCommentNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alarmTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "alarmSeverities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CRITICAL",
+                  "MAJOR",
+                  "MINOR",
+                  "WARNING",
+                  "INDETERMINATE"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "alarmStatuses": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ANY",
+                  "ACTIVE",
+                  "CLEARED",
+                  "ACK",
+                  "UNACK"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "onlyUserComments": {
+              "type": "boolean"
+            },
+            "notifyOnCommentUpdate": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "AlarmNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alarmTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "alarmSeverities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CRITICAL",
+                  "MAJOR",
+                  "MINOR",
+                  "WARNING",
+                  "INDETERMINATE"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "notifyOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATED",
+                  "SEVERITY_CHANGED",
+                  "ACKNOWLEDGED",
+                  "CLEARED"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "clearRule": {
+              "$ref": "#/$defs/ClearRule"
+            }
+          }
+        }
+      ],
+      "required": [
+        "notifyOn"
+      ]
+    },
+    "ApiUsageLimitNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "apiFeatures": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "TRANSPORT",
+                  "DB",
+                  "RE",
+                  "JS",
+                  "TBEL",
+                  "EMAIL",
+                  "SMS",
+                  "ALARM"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "notifyOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ENABLED",
+                  "WARNING",
+                  "DISABLED"
+                ]
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "ClearRule": {
+      "properties": {
+        "alarmStatuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ANY",
+              "ACTIVE",
+              "CLEARED",
+              "ACK",
+              "UNACK"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "DeviceActivityNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "devices": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "deviceProfiles": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "notifyOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "INACTIVE"
+                ]
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ],
+      "required": [
+        "notifyOn"
+      ]
+    },
+    "EdgeCommunicationFailureNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "EdgeConnectionNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "notifyOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CONNECTED",
+                  "DISCONNECTED"
+                ]
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "EntitiesLimitNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityTypes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "TENANT",
+                  "CUSTOMER",
+                  "USER",
+                  "DASHBOARD",
+                  "ASSET",
+                  "DEVICE",
+                  "ALARM",
+                  "RULE_CHAIN",
+                  "RULE_NODE",
+                  "ROLE",
+                  "ENTITY_VIEW",
+                  "WIDGETS_BUNDLE",
+                  "WIDGET_TYPE",
+                  "TENANT_PROFILE",
+                  "DEVICE_PROFILE",
+                  "ASSET_PROFILE",
+                  "API_USAGE_STATE",
+                  "TB_RESOURCE",
+                  "OTA_PACKAGE",
+                  "EDGE",
+                  "RPC",
+                  "QUEUE",
+                  "NOTIFICATION_TARGET",
+                  "NOTIFICATION_TEMPLATE",
+                  "NOTIFICATION_REQUEST",
+                  "NOTIFICATION",
+                  "NOTIFICATION_RULE",
+                  "QUEUE_STATS"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "threshold": {
+              "type": "number",
+              "format": "float",
+              "maximum": 1
+            }
+          }
+        }
+      ]
+    },
+    "EntityActionNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityTypes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "TENANT",
+                  "CUSTOMER",
+                  "USER",
+                  "DASHBOARD",
+                  "ASSET",
+                  "DEVICE",
+                  "ALARM",
+                  "RULE_CHAIN",
+                  "RULE_NODE",
+                  "ROLE",
+                  "ENTITY_VIEW",
+                  "WIDGETS_BUNDLE",
+                  "WIDGET_TYPE",
+                  "TENANT_PROFILE",
+                  "DEVICE_PROFILE",
+                  "ASSET_PROFILE",
+                  "API_USAGE_STATE",
+                  "TB_RESOURCE",
+                  "OTA_PACKAGE",
+                  "EDGE",
+                  "RPC",
+                  "QUEUE",
+                  "NOTIFICATION_TARGET",
+                  "NOTIFICATION_TEMPLATE",
+                  "NOTIFICATION_REQUEST",
+                  "NOTIFICATION",
+                  "NOTIFICATION_RULE",
+                  "QUEUE_STATS"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "created": {
+              "type": "boolean"
+            },
+            "updated": {
+              "type": "boolean"
+            },
+            "deleted": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "EscalatedNotificationRuleRecipientsConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleRecipientsConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "escalationTable": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "escalationTable",
+        "triggerType"
+      ]
+    },
+    "NewPlatformVersionNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        }
+      ]
+    },
+    "NotificationRuleConfig": {
+      "properties": {
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "NotificationRuleId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_RULE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "NotificationRuleInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/NotificationRuleId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "templateId": {
+          "$ref": "#/$defs/NotificationTemplateId"
+        },
+        "triggerType": {
+          "type": "string",
+          "enum": [
+            "ENTITY_ACTION",
+            "ALARM",
+            "ALARM_COMMENT",
+            "ALARM_ASSIGNMENT",
+            "DEVICE_ACTIVITY",
+            "RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT",
+            "EDGE_CONNECTION",
+            "EDGE_COMMUNICATION_FAILURE",
+            "NEW_PLATFORM_VERSION",
+            "ENTITIES_LIMIT",
+            "API_USAGE_LIMIT",
+            "RATE_LIMITS",
+            "TASK_PROCESSING_FAILURE"
+          ]
+        },
+        "triggerConfig": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AlarmAssignmentNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/AlarmCommentNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/AlarmNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/ApiUsageLimitNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/DeviceActivityNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/EdgeCommunicationFailureNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/EdgeConnectionNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/EntitiesLimitNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/EntityActionNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/NewPlatformVersionNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/RateLimitsNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/RuleEngineComponentLifecycleEventNotificationRuleTriggerConfig"
+            },
+            {
+              "$ref": "#/$defs/TaskProcessingFailureNotificationRuleTriggerConfig"
+            }
+          ]
+        },
+        "recipientsConfig": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/EscalatedNotificationRuleRecipientsConfig"
+            }
+          ]
+        },
+        "additionalConfig": {
+          "$ref": "#/$defs/NotificationRuleConfig"
+        },
+        "templateName": {
+          "type": "string"
+        },
+        "deliveryMethods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "WEB",
+              "EMAIL",
+              "SMS",
+              "SLACK",
+              "MICROSOFT_TEAMS",
+              "MOBILE_APP"
+            ]
+          }
+        }
+      },
+      "required": [
+        "name",
+        "recipientsConfig",
+        "templateId",
+        "triggerConfig",
+        "triggerType"
+      ]
+    },
+    "NotificationRuleRecipientsConfig": {
+      "properties": {
+        "triggerType": {
+          "type": "string",
+          "enum": [
+            "ENTITY_ACTION",
+            "ALARM",
+            "ALARM_COMMENT",
+            "ALARM_ASSIGNMENT",
+            "DEVICE_ACTIVITY",
+            "RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT",
+            "EDGE_CONNECTION",
+            "EDGE_COMMUNICATION_FAILURE",
+            "NEW_PLATFORM_VERSION",
+            "ENTITIES_LIMIT",
+            "API_USAGE_LIMIT",
+            "RATE_LIMITS",
+            "TASK_PROCESSING_FAILURE"
+          ]
+        }
+      },
+      "required": [
+        "triggerType"
+      ]
+    },
+    "NotificationRuleTriggerConfig": {
+      "properties": {
+        "triggerType": {
+          "type": "string",
+          "enum": [
+            "ENTITY_ACTION",
+            "ALARM",
+            "ALARM_COMMENT",
+            "ALARM_ASSIGNMENT",
+            "DEVICE_ACTIVITY",
+            "RULE_ENGINE_COMPONENT_LIFECYCLE_EVENT",
+            "EDGE_CONNECTION",
+            "EDGE_COMMUNICATION_FAILURE",
+            "NEW_PLATFORM_VERSION",
+            "ENTITIES_LIMIT",
+            "API_USAGE_LIMIT",
+            "RATE_LIMITS",
+            "TASK_PROCESSING_FAILURE"
+          ]
+        }
+      }
+    },
+    "NotificationTemplateId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "NOTIFICATION_TEMPLATE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "RateLimitsNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "apis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ENTITY_EXPORT",
+                  "ENTITY_IMPORT",
+                  "NOTIFICATION_REQUESTS",
+                  "NOTIFICATION_REQUESTS_PER_RULE",
+                  "REST_REQUESTS_PER_TENANT",
+                  "REST_REQUESTS_PER_CUSTOMER",
+                  "WS_UPDATES_PER_SESSION",
+                  "CASSANDRA_QUERIES",
+                  "EDGE_EVENTS",
+                  "EDGE_EVENTS_PER_EDGE",
+                  "EDGE_UPLINK_MESSAGES",
+                  "EDGE_UPLINK_MESSAGES_PER_EDGE",
+                  "PASSWORD_RESET",
+                  "TWO_FA_VERIFICATION_CODE_SEND",
+                  "TWO_FA_VERIFICATION_CODE_CHECK",
+                  "TRANSPORT_MESSAGES_PER_TENANT",
+                  "TRANSPORT_MESSAGES_PER_DEVICE",
+                  "TRANSPORT_MESSAGES_PER_GATEWAY",
+                  "TRANSPORT_MESSAGES_PER_GATEWAY_DEVICE",
+                  "EMAILS"
+                ]
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "RuleEngineComponentLifecycleEventNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ruleChains": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "ruleChainEvents": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATED",
+                  "STARTED",
+                  "ACTIVATED",
+                  "SUSPENDED",
+                  "UPDATED",
+                  "STOPPED",
+                  "DELETED",
+                  "FAILED",
+                  "DEACTIVATED"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "onlyRuleChainLifecycleFailures": {
+              "type": "boolean"
+            },
+            "trackRuleNodeEvents": {
+              "type": "boolean"
+            },
+            "ruleNodeEvents": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATED",
+                  "STARTED",
+                  "ACTIVATED",
+                  "SUSPENDED",
+                  "UPDATED",
+                  "STOPPED",
+                  "DELETED",
+                  "FAILED",
+                  "DEACTIVATED"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "onlyRuleNodeLifecycleFailures": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "TaskProcessingFailureNotificationRuleTriggerConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NotificationRuleTriggerConfig"
+        }
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

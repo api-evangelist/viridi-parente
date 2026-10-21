@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-queue-schema.json",
+  "title": "Queue",
+  "description": "A JSON value representing the queue.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-queue-controller-api-openapi.yml#/components/schemas/Queue",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/QueueId"
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId"
+    },
+    "name": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "pollInterval": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "partitions": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "consumerPerPartition": {
+      "type": "boolean"
+    },
+    "packProcessingTimeout": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "submitStrategy": {
+      "$ref": "#/$defs/SubmitStrategy"
+    },
+    "processingStrategy": {
+      "$ref": "#/$defs/ProcessingStrategy"
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode"
+    }
+  },
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "ProcessingStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SKIP_ALL_FAILURES",
+            "SKIP_ALL_FAILURES_AND_TIMED_OUT",
+            "RETRY_ALL",
+            "RETRY_FAILED",
+            "RETRY_TIMED_OUT",
+            "RETRY_FAILED_AND_TIMED_OUT"
+          ]
+        },
+        "retries": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failurePercentage": {
+          "type": "number",
+          "format": "double"
+        },
+        "pauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maxPauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "QueueId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "QUEUE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "SubmitStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BURST",
+            "BATCH",
+            "SEQUENTIAL_BY_ORIGINATOR",
+            "SEQUENTIAL_BY_TENANT",
+            "SEQUENTIAL"
+          ]
+        },
+        "batchSize": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

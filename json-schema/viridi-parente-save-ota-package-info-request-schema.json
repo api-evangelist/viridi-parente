@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-save-ota-package-info-request-schema.json",
+  "title": "SaveOtaPackageInfoRequest",
+  "description": "A JSON value representing the OTA Package.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-ota-package-controller-api-openapi.yml#/components/schemas/SaveOtaPackageInfoRequest",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/OtaPackageId",
+      "description": "JSON object with the ota package Id. Specify existing ota package Id to update the ota package. Referencing non-existing ota package id will cause error. Omit this field to create new ota package."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the ota package creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id. Tenant Id of the ota package can't be changed.",
+      "readOnly": true
+    },
+    "deviceProfileId": {
+      "$ref": "#/$defs/DeviceProfileId",
+      "description": "JSON object with Device Profile Id. Device Profile Id of the ota package can't be changed.",
+      "readOnly": true
+    },
+    "type": {
+      "type": "string",
+      "description": "OTA Package type.",
+      "enum": [
+        "FIRMWARE",
+        "SOFTWARE"
+      ],
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "description": "OTA Package title.",
+      "readOnly": true
+    },
+    "version": {
+      "type": "string",
+      "description": "OTA Package version.",
+      "readOnly": true
+    },
+    "tag": {
+      "type": "string",
+      "description": "OTA Package tag.",
+      "readOnly": true
+    },
+    "url": {
+      "type": "string",
+      "description": "OTA Package url.",
+      "readOnly": true
+    },
+    "hasData": {
+      "type": "boolean",
+      "description": "Indicates OTA Package 'has data'. Field is returned from DB ('true' if data exists or url is set).  If OTA Package 'has data' is 'false' we can not assign the OTA Package to the Device or Device Profile.",
+      "readOnly": true
+    },
+    "fileName": {
+      "type": "string",
+      "description": "OTA Package file name.",
+      "readOnly": true
+    },
+    "contentType": {
+      "type": "string",
+      "description": "OTA Package content type.",
+      "readOnly": true
+    },
+    "checksumAlgorithm": {
+      "type": "string",
+      "description": "OTA Package checksum algorithm.",
+      "enum": [
+        "MD5",
+        "SHA256",
+        "SHA384",
+        "SHA512",
+        "CRC32",
+        "MURMUR3_32",
+        "MURMUR3_128"
+      ],
+      "readOnly": true
+    },
+    "checksum": {
+      "type": "string",
+      "description": "OTA Package checksum.",
+      "readOnly": true
+    },
+    "dataSize": {
+      "type": "integer",
+      "format": "int64",
+      "description": "OTA Package data size.",
+      "readOnly": true
+    },
+    "usesUrl": {
+      "type": "boolean",
+      "description": "Indicates OTA Package uses url. Should be 'true' if uses url or 'false' if will be used data.",
+      "readOnly": true
+    },
+    "additionalInfo": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "OTA Package description."
+    }
+  },
+  "$defs": {
+    "DeviceProfileId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DEVICE_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "OtaPackageId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "OTA_PACKAGE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

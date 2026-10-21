@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-admin-settings-schema.json",
+  "title": "AdminSettings",
+  "description": "A JSON value representing the Mail Settings.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-admin-controller-api-openapi.yml#/components/schemas/AdminSettings",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/AdminSettingsId",
+      "description": "The Id of the Administration Settings, auto-generated, UUID"
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the settings creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id.",
+      "readOnly": true
+    },
+    "key": {
+      "type": "string",
+      "description": "The Administration Settings key, (e.g. 'general' or 'mail')"
+    },
+    "jsonValue": {
+      "$ref": "#/$defs/JsonNode",
+      "description": "JSON representation of the Administration Settings value"
+    }
+  },
+  "$defs": {
+    "AdminSettingsId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

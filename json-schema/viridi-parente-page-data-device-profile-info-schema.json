@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-device-profile-info-schema.json",
+  "title": "PageDataDeviceProfileInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-device-profile-controller-api-openapi.yml#/components/schemas/PageDataDeviceProfileInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/DeviceProfileInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DeviceProfileInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId",
+          "description": "JSON object with the entity Id. "
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "Tenant id."
+        },
+        "name": {
+          "type": "string",
+          "description": "Entity Name"
+        },
+        "image": {
+          "type": "string",
+          "description": "Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. "
+        },
+        "defaultDashboardId": {
+          "$ref": "#/$defs/DashboardId",
+          "description": "Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the profile. Always 'DEFAULT' for now. Reserved for future use.",
+          "enum": [
+            "DEFAULT"
+          ]
+        },
+        "transportType": {
+          "type": "string",
+          "description": "Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.",
+          "enum": [
+            "DEFAULT",
+            "MQTT",
+            "COAP",
+            "LWM2M",
+            "SNMP"
+          ]
+        }
+      }
+    },
+    "EntityId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

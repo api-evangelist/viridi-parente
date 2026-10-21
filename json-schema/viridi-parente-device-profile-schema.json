@@ -1,0 +1,1255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-device-profile-schema.json",
+  "title": "DeviceProfile",
+  "description": "A JSON value representing the device profile.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-device-profile-controller-api-openapi.yml#/components/schemas/DeviceProfile",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/DeviceProfileId",
+      "description": "JSON object with the device profile Id. Specify this field to update the device profile. Referencing non-existing device profile Id will cause error. Omit this field to create new device profile."
+    },
+    "createdTime": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp of the profile creation, in milliseconds",
+      "readOnly": true
+    },
+    "tenantId": {
+      "$ref": "#/$defs/TenantId",
+      "description": "JSON object with Tenant Id that owns the profile.",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique Device Profile Name in scope of Tenant."
+    },
+    "description": {
+      "type": "string",
+      "description": "Device Profile description. "
+    },
+    "image": {
+      "type": "string",
+      "description": "Either URL or Base64 data of the icon. Used in the mobile application to visualize set of device profiles in the grid view. "
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the profile. Always 'DEFAULT' for now. Reserved for future use.",
+      "enum": [
+        "DEFAULT"
+      ]
+    },
+    "transportType": {
+      "type": "string",
+      "description": "Type of the transport used to connect the device. Default transport supports HTTP, CoAP and MQTT.",
+      "enum": [
+        "DEFAULT",
+        "MQTT",
+        "COAP",
+        "LWM2M",
+        "SNMP"
+      ]
+    },
+    "provisionType": {
+      "type": "string",
+      "description": "Provisioning strategy.",
+      "enum": [
+        "DISABLED",
+        "ALLOW_CREATE_NEW_DEVICES",
+        "CHECK_PRE_PROVISIONED_DEVICES",
+        "CREATE_OR_CHECK_DEVICES",
+        "X509_CERTIFICATE_CHAIN"
+      ]
+    },
+    "defaultRuleChainId": {
+      "$ref": "#/$defs/RuleChainId",
+      "description": "Reference to the rule chain. If present, the specified rule chain will be used to process all messages related to device, including telemetry, attribute updates, etc. Otherwise, the root rule chain will be used to process those messages."
+    },
+    "defaultDashboardId": {
+      "$ref": "#/$defs/DashboardId",
+      "description": "Reference to the dashboard. Used in the mobile application to open the default dashboard when user navigates to device details."
+    },
+    "defaultQueueName": {
+      "type": "string",
+      "description": "Rule engine queue name. If present, the specified queue will be used to store all unprocessed messages related to device, including telemetry, attribute updates, etc. Otherwise, the 'Main' queue will be used to store those messages."
+    },
+    "provisionDeviceKey": {
+      "type": "string",
+      "description": "Unique provisioning key used by 'Device Provisioning' feature."
+    },
+    "firmwareId": {
+      "$ref": "#/$defs/OtaPackageId",
+      "description": "Reference to the firmware OTA package. If present, the specified package will be used as default device firmware. "
+    },
+    "softwareId": {
+      "$ref": "#/$defs/OtaPackageId",
+      "description": "Reference to the software OTA package. If present, the specified package will be used as default device software. "
+    },
+    "defaultEdgeRuleChainId": {
+      "$ref": "#/$defs/RuleChainId",
+      "description": "Reference to the edge rule chain. If present, the specified edge rule chain will be used on the edge to process all messages related to device, including telemetry, attribute updates, etc. Otherwise, the edge root rule chain will be used to process those messages."
+    },
+    "default": {
+      "type": "boolean",
+      "description": "Used to mark the default profile. Default profile is used when the device profile is not specified during device creation."
+    },
+    "profileData": {
+      "$ref": "#/$defs/DeviceProfileData",
+      "description": "Complex JSON object that includes addition device profile configuration (transport, alarm rules, etc)."
+    }
+  },
+  "$defs": {
+    "AlarmCondition": {
+      "properties": {
+        "condition": {
+          "type": "array",
+          "description": "JSON array of alarm condition filters",
+          "items": {
+            "$ref": "#/$defs/AlarmConditionFilter"
+          }
+        },
+        "spec": {
+          "description": "JSON object representing alarm condition type",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DurationAlarmConditionSpec"
+            },
+            {
+              "$ref": "#/$defs/RepeatingAlarmConditionSpec"
+            },
+            {
+              "$ref": "#/$defs/SimpleAlarmConditionSpec"
+            }
+          ]
+        }
+      }
+    },
+    "AlarmConditionFilter": {
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/AlarmConditionFilterKey",
+          "description": "JSON object for specifying alarm condition by specific key"
+        },
+        "valueType": {
+          "type": "string",
+          "description": "String representation of the type of the value",
+          "enum": [
+            "STRING",
+            "NUMERIC",
+            "BOOLEAN",
+            "DATE_TIME"
+          ]
+        },
+        "value": {
+          "description": "Value used in Constant comparison. For other types, such as TIME_SERIES or ATTRIBUTE, the predicate condition is used"
+        },
+        "predicate": {
+          "description": "JSON object representing filter condition",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BooleanFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/ComplexFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/NumericFilterPredicate"
+            },
+            {
+              "$ref": "#/$defs/StringFilterPredicate"
+            }
+          ]
+        }
+      }
+    },
+    "AlarmConditionFilterKey": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The key type",
+          "enum": [
+            "ATTRIBUTE",
+            "TIME_SERIES",
+            "ENTITY_FIELD",
+            "CONSTANT"
+          ]
+        },
+        "key": {
+          "type": "string",
+          "description": "String value representing the key"
+        }
+      }
+    },
+    "AlarmConditionSpec": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "AlarmRule": {
+      "properties": {
+        "condition": {
+          "$ref": "#/$defs/AlarmCondition",
+          "description": "JSON object representing the alarm rule condition"
+        },
+        "schedule": {
+          "description": "JSON object representing time interval during which the rule is active",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AnyTimeSchedule"
+            },
+            {
+              "$ref": "#/$defs/CustomTimeSchedule"
+            },
+            {
+              "$ref": "#/$defs/SpecificTimeSchedule"
+            }
+          ]
+        },
+        "alarmDetails": {
+          "type": "string",
+          "description": "String value representing the additional details for an alarm rule"
+        },
+        "dashboardId": {
+          "$ref": "#/$defs/DashboardId",
+          "description": "JSON object with the dashboard Id representing the reference to alarm details dashboard used by mobile application"
+        }
+      }
+    },
+    "AlarmSchedule": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "ANY_TIME",
+            "SPECIFIC_TIME",
+            "CUSTOM"
+          ]
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueString"
+        }
+      }
+    },
+    "AllowCreateNewDevicesDeviceProfileProvisionConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileProvisionConfiguration"
+        }
+      ]
+    },
+    "AnyTimeSchedule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmSchedule"
+        }
+      ]
+    },
+    "BooleanFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueBoolean"
+            }
+          }
+        }
+      ]
+    },
+    "CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileProvisionConfiguration"
+        }
+      ]
+    },
+    "CoapDeviceProfileTransportConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileTransportConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "coapDeviceTypeConfiguration": {
+              "$ref": "#/$defs/CoapDeviceTypeConfiguration"
+            },
+            "clientSettings": {
+              "$ref": "#/$defs/PowerSavingConfiguration"
+            }
+          }
+        }
+      ]
+    },
+    "CoapDeviceTypeConfiguration": {
+      "properties": {
+        "coapDeviceType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "coapDeviceType"
+      ]
+    },
+    "ComplexFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "AND",
+                "OR"
+              ]
+            },
+            "predicates": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/KeyFilterPredicate"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CreateOrCheckDevicesDeviceProfileProvisionConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileProvisionConfiguration"
+        }
+      ]
+    },
+    "CustomTimeSchedule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmSchedule"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CustomTimeScheduleItem"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CustomTimeScheduleItem": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "dayOfWeek": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "startsOn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "endsOn": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DefaultDeviceProfileConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileConfiguration"
+        }
+      ]
+    },
+    "DefaultDeviceProfileTransportConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileTransportConfiguration"
+        }
+      ]
+    },
+    "DeviceProfileAlarm": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "String value representing the alarm rule id"
+        },
+        "alarmType": {
+          "type": "string",
+          "description": "String value representing type of the alarm"
+        },
+        "createRules": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/AlarmRule"
+          },
+          "description": "Complex JSON object representing create alarm rules. The unique create alarm rule can be created for each alarm severity type. There can be 5 create alarm rules configured per a single alarm type. See method implementation notes and AlarmRule model for more details"
+        },
+        "clearRule": {
+          "$ref": "#/$defs/AlarmRule",
+          "description": "JSON object representing clear alarm rule"
+        },
+        "propagate": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to parent entities of alarm originator"
+        },
+        "propagateToOwner": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to the owner (tenant or customer) of alarm originator"
+        },
+        "propagateToTenant": {
+          "type": "boolean",
+          "description": "Propagation flag to specify if alarm should be propagated to the tenant entity"
+        },
+        "propagateRelationTypes": {
+          "type": "array",
+          "description": "JSON array of relation types that should be used for propagation. By default, 'propagateRelationTypes' array is empty which means that the alarm will be propagated based on any relation type to parent entities. This parameter should be used only in case when 'propagate' parameter is set to true, otherwise, 'propagateRelationTypes' array will be ignored.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DeviceProfileConfiguration": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "DeviceProfileData": {
+      "properties": {
+        "configuration": {
+          "description": "JSON object of device profile configuration",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DefaultDeviceProfileConfiguration"
+            }
+          ]
+        },
+        "transportConfiguration": {
+          "description": "JSON object of device profile transport configuration",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CoapDeviceProfileTransportConfiguration"
+            },
+            {
+              "$ref": "#/$defs/DefaultDeviceProfileTransportConfiguration"
+            },
+            {
+              "$ref": "#/$defs/Lwm2mDeviceProfileTransportConfiguration"
+            },
+            {
+              "$ref": "#/$defs/MqttDeviceProfileTransportConfiguration"
+            },
+            {
+              "$ref": "#/$defs/SnmpDeviceProfileTransportConfiguration"
+            }
+          ]
+        },
+        "provisionConfiguration": {
+          "description": "JSON object of provisioning strategy type per device profile",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllowCreateNewDevicesDeviceProfileProvisionConfiguration"
+            },
+            {
+              "$ref": "#/$defs/CheckPreProvisionedDevicesDeviceProfileProvisionConfiguration"
+            },
+            {
+              "$ref": "#/$defs/CreateOrCheckDevicesDeviceProfileProvisionConfiguration"
+            },
+            {
+              "$ref": "#/$defs/DisabledDeviceProfileProvisionConfiguration"
+            },
+            {
+              "$ref": "#/$defs/X509CertificateChainProvisionConfiguration"
+            }
+          ]
+        },
+        "alarms": {
+          "type": "array",
+          "description": "JSON array of alarm rules configuration per device profile",
+          "items": {
+            "$ref": "#/$defs/DeviceProfileAlarm"
+          }
+        }
+      }
+    },
+    "DeviceProfileId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DEVICE_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "DeviceProfileProvisionConfiguration": {
+      "properties": {
+        "provisionDeviceSecret": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "DeviceProfileTransportConfiguration": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "DisabledDeviceProfileProvisionConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileProvisionConfiguration"
+        }
+      ]
+    },
+    "DurationAlarmConditionSpec": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmConditionSpec"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "unit": {
+              "type": "string",
+              "enum": [
+                "NANOSECONDS",
+                "MICROSECONDS",
+                "MILLISECONDS",
+                "SECONDS",
+                "MINUTES",
+                "HOURS",
+                "DAYS"
+              ]
+            },
+            "predicate": {
+              "$ref": "#/$defs/FilterPredicateValueLong"
+            }
+          }
+        }
+      ]
+    },
+    "DynamicValueBoolean": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueDouble": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueInteger": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueLong": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DynamicValueString": {
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "enum": [
+            "CURRENT_TENANT",
+            "CURRENT_CUSTOMER",
+            "CURRENT_USER",
+            "CURRENT_DEVICE"
+          ]
+        },
+        "sourceAttribute": {
+          "type": "string"
+        },
+        "inherit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "FilterPredicateValueBoolean": {
+      "properties": {
+        "defaultValue": {
+          "type": "boolean"
+        },
+        "userValue": {
+          "type": "boolean"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueBoolean"
+        }
+      }
+    },
+    "FilterPredicateValueDouble": {
+      "properties": {
+        "defaultValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "userValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueDouble"
+        }
+      }
+    },
+    "FilterPredicateValueInteger": {
+      "properties": {
+        "defaultValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueInteger"
+        }
+      }
+    },
+    "FilterPredicateValueLong": {
+      "properties": {
+        "defaultValue": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userValue": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueLong"
+        }
+      }
+    },
+    "FilterPredicateValueString": {
+      "properties": {
+        "defaultValue": {
+          "type": "string"
+        },
+        "userValue": {
+          "type": "string"
+        },
+        "dynamicValue": {
+          "$ref": "#/$defs/DynamicValueString"
+        }
+      }
+    },
+    "KeyFilterPredicate": {
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "LwM2MBootstrapServerCredential": {
+      "properties": {
+        "securityMode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "securityMode"
+      ]
+    },
+    "LwM2mVersion": {
+      "properties": {
+        "supported": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Lwm2mDeviceProfileTransportConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileTransportConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "observeAttr": {
+              "$ref": "#/$defs/TelemetryMappingConfiguration"
+            },
+            "bootstrapServerUpdateEnable": {
+              "type": "boolean"
+            },
+            "bootstrap": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/LwM2MBootstrapServerCredential"
+              }
+            },
+            "clientLwM2mSettings": {
+              "$ref": "#/$defs/OtherConfiguration"
+            }
+          }
+        }
+      ]
+    },
+    "MqttDeviceProfileTransportConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileTransportConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "deviceTelemetryTopic": {
+              "type": "string"
+            },
+            "deviceAttributesTopic": {
+              "type": "string"
+            },
+            "deviceAttributesSubscribeTopic": {
+              "type": "string"
+            },
+            "transportPayloadTypeConfiguration": {
+              "$ref": "#/$defs/TransportPayloadTypeConfiguration"
+            },
+            "sparkplug": {
+              "type": "boolean"
+            },
+            "sparkplugAttributesMetricNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "sendAckOnValidationException": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "NumericFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL",
+                "GREATER",
+                "LESS",
+                "GREATER_OR_EQUAL",
+                "LESS_OR_EQUAL"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueDouble"
+            }
+          }
+        }
+      ]
+    },
+    "ObjectAttributes": {
+      "properties": {
+        "dim": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ssid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "ver": {},
+        "lwm2m": {
+          "$ref": "#/$defs/LwM2mVersion"
+        },
+        "pmin": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pmax": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "gt": {
+          "type": "number",
+          "format": "double"
+        },
+        "lt": {
+          "type": "number",
+          "format": "double"
+        },
+        "st": {
+          "type": "number",
+          "format": "double"
+        },
+        "epmin": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epmax": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "OtaPackageId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "OTA_PACKAGE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "OtherConfiguration": {
+      "properties": {
+        "fwUpdateStrategy": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "swUpdateStrategy": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "clientOnlyObserveAfterConnect": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "powerMode": {
+          "type": "string",
+          "enum": [
+            "PSM",
+            "DRX",
+            "E_DRX"
+          ]
+        },
+        "psmActivityTimer": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "edrxCycle": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pagingTransmissionWindow": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fwUpdateResource": {
+          "type": "string"
+        },
+        "swUpdateResource": {
+          "type": "string"
+        },
+        "defaultObjectIDVer": {
+          "type": "string"
+        }
+      }
+    },
+    "PowerSavingConfiguration": {
+      "properties": {
+        "powerMode": {
+          "type": "string",
+          "enum": [
+            "PSM",
+            "DRX",
+            "E_DRX"
+          ]
+        },
+        "psmActivityTimer": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "edrxCycle": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pagingTransmissionWindow": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RepeatingAlarmConditionSpec": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmConditionSpec"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "predicate": {
+              "$ref": "#/$defs/FilterPredicateValueInteger"
+            }
+          }
+        }
+      ]
+    },
+    "RuleChainId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_CHAIN"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "SimpleAlarmConditionSpec": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmConditionSpec"
+        }
+      ]
+    },
+    "SnmpCommunicationConfig": {
+      "properties": {
+        "spec": {
+          "type": "string",
+          "enum": [
+            "TELEMETRY_QUERYING",
+            "CLIENT_ATTRIBUTES_QUERYING",
+            "SHARED_ATTRIBUTES_SETTING",
+            "TO_DEVICE_RPC_REQUEST",
+            "TO_SERVER_RPC_REQUEST"
+          ]
+        }
+      }
+    },
+    "SnmpDeviceProfileTransportConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileTransportConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "timeoutMs": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "retries": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "communicationConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/SnmpCommunicationConfig"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SpecificTimeSchedule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AlarmSchedule"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string"
+            },
+            "daysOfWeek": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "uniqueItems": true
+            },
+            "startsOn": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "endsOn": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      ]
+    },
+    "StringFilterPredicate": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/KeyFilterPredicate"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "EQUAL",
+                "NOT_EQUAL",
+                "STARTS_WITH",
+                "ENDS_WITH",
+                "CONTAINS",
+                "NOT_CONTAINS",
+                "IN",
+                "NOT_IN"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/FilterPredicateValueString"
+            },
+            "ignoreCase": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "TelemetryMappingConfiguration": {
+      "properties": {
+        "keyName": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "observe": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "attribute": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "telemetry": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "attributeLwm2m": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ObjectAttributes"
+          }
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "TransportPayloadTypeConfiguration": {
+      "properties": {
+        "transportPayloadType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "transportPayloadType"
+      ]
+    },
+    "X509CertificateChainProvisionConfiguration": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeviceProfileProvisionConfiguration"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "certificateRegExPattern": {
+              "type": "string"
+            },
+            "allowCreateNewDevicesByX509Certificate": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

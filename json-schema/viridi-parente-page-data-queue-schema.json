@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-queue-schema.json",
+  "title": "PageDataQueue",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-queue-controller-api-openapi.yml#/components/schemas/PageDataQueue",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/Queue"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "ProcessingStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SKIP_ALL_FAILURES",
+            "SKIP_ALL_FAILURES_AND_TIMED_OUT",
+            "RETRY_ALL",
+            "RETRY_FAILED",
+            "RETRY_TIMED_OUT",
+            "RETRY_FAILED_AND_TIMED_OUT"
+          ]
+        },
+        "retries": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failurePercentage": {
+          "type": "number",
+          "format": "double"
+        },
+        "pauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maxPauseBetweenRetries": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Queue": {
+      "description": "A JSON value representing the queue.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/QueueId"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "pollInterval": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "partitions": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "consumerPerPartition": {
+          "type": "boolean"
+        },
+        "packProcessingTimeout": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "submitStrategy": {
+          "$ref": "#/$defs/SubmitStrategy"
+        },
+        "processingStrategy": {
+          "$ref": "#/$defs/ProcessingStrategy"
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode"
+        }
+      }
+    },
+    "QueueId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "QUEUE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "SubmitStrategy": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BURST",
+            "BATCH",
+            "SEQUENTIAL_BY_ORIGINATOR",
+            "SEQUENTIAL_BY_TENANT",
+            "SEQUENTIAL"
+          ]
+        },
+        "batchSize": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

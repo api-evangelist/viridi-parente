@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-home-dashboard-info-schema.json",
+  "title": "HomeDashboardInfo",
+  "description": "A JSON object that represents home dashboard id and other parameters",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-dashboard-controller-api-openapi.yml#/components/schemas/HomeDashboardInfo",
+  "properties": {
+    "dashboardId": {
+      "$ref": "#/$defs/DashboardId",
+      "description": "JSON object with the dashboard Id."
+    },
+    "hideDashboardToolbar": {
+      "type": "boolean",
+      "description": "Hide dashboard toolbar flag. Useful for rendering dashboards on mobile."
+    }
+  },
+  "$defs": {
+    "DashboardId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "DASHBOARD"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

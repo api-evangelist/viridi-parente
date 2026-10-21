@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-page-data-asset-info-schema.json",
+  "title": "PageDataAssetInfo",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/PageDataAssetInfo",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Array of the entities",
+      "items": {
+        "$ref": "#/$defs/AssetInfo"
+      },
+      "readOnly": true
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria",
+      "readOnly": true
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Total number of elements in all available pages",
+      "readOnly": true
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "'false' value indicates the end of the result set",
+      "readOnly": true
+    }
+  },
+  "$defs": {
+    "AssetId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "ASSET"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "AssetInfo": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AssetId",
+          "description": "JSON object with the asset Id. Specify this field to update the asset. Referencing non-existing asset Id will cause error. Omit this field to create new asset."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the asset creation, in milliseconds",
+          "readOnly": true
+        },
+        "tenantId": {
+          "$ref": "#/$defs/TenantId",
+          "description": "JSON object with Tenant Id.",
+          "readOnly": true
+        },
+        "customerId": {
+          "$ref": "#/$defs/CustomerId",
+          "description": "JSON object with Customer Id. Use 'assignAssetToCustomer' to change the Customer Id.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Unique Asset Name in scope of Tenant"
+        },
+        "type": {
+          "type": "string",
+          "description": "Asset type"
+        },
+        "label": {
+          "type": "string",
+          "description": "Label that may be used in widgets"
+        },
+        "assetProfileId": {
+          "$ref": "#/$defs/AssetProfileId",
+          "description": "JSON object with Asset Profile Id."
+        },
+        "customerTitle": {
+          "type": "string",
+          "description": "Title of the Customer that owns the asset.",
+          "readOnly": true
+        },
+        "customerIsPublic": {
+          "type": "boolean",
+          "description": "Indicates special 'Public' Customer that is auto-generated to use the assets on public dashboards.",
+          "readOnly": true
+        },
+        "assetProfileName": {
+          "type": "string",
+          "description": "Name of the corresponding Asset Profile.",
+          "readOnly": true
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "Additional parameters of the asset"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "AssetProfileId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "ASSET_PROFILE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "CustomerId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

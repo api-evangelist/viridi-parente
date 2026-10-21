@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-entity-subtype-schema.json",
+  "title": "EntitySubtype",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-asset-controller-api-openapi.yml#/components/schemas/EntitySubtype",
+  "properties": {
+    "tenantId": {
+      "$ref": "#/$defs/TenantId"
+    },
+    "entityType": {
+      "type": "string",
+      "enum": [
+        "TENANT",
+        "CUSTOMER",
+        "USER",
+        "DASHBOARD",
+        "ASSET",
+        "DEVICE",
+        "ALARM",
+        "RULE_CHAIN",
+        "RULE_NODE",
+        "ROLE",
+        "ENTITY_VIEW",
+        "WIDGETS_BUNDLE",
+        "WIDGET_TYPE",
+        "TENANT_PROFILE",
+        "DEVICE_PROFILE",
+        "ASSET_PROFILE",
+        "API_USAGE_STATE",
+        "TB_RESOURCE",
+        "OTA_PACKAGE",
+        "EDGE",
+        "RPC",
+        "QUEUE",
+        "NOTIFICATION_TARGET",
+        "NOTIFICATION_TEMPLATE",
+        "NOTIFICATION_REQUEST",
+        "NOTIFICATION",
+        "NOTIFICATION_RULE",
+        "QUEUE_STATS"
+      ]
+    },
+    "type": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "TenantId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "TENANT"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

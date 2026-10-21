@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-platform-two-fa-settings-schema.json",
+  "title": "PlatformTwoFaSettings",
+  "description": "Settings value",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-two-factor-auth-config-controller-api-openapi.yml#/components/schemas/PlatformTwoFaSettings",
+  "properties": {
+    "providers": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/BackupCodeTwoFaProviderConfig"
+          },
+          {
+            "$ref": "#/$defs/EmailTwoFaProviderConfig"
+          },
+          {
+            "$ref": "#/$defs/SmsTwoFaProviderConfig"
+          },
+          {
+            "$ref": "#/$defs/TotpTwoFaProviderConfig"
+          }
+        ]
+      }
+    },
+    "minVerificationCodeSendPeriod": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 5
+    },
+    "verificationCodeCheckRateLimit": {
+      "type": "string",
+      "pattern": "[1-9]\\d*:[1-9]\\d*"
+    },
+    "maxVerificationFailuresBeforeUserLockout": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    },
+    "totalAllowedTimeForVerification": {
+      "type": "integer",
+      "format": "int32",
+      "minimum": 60
+    }
+  },
+  "required": [
+    "minVerificationCodeSendPeriod",
+    "providers",
+    "totalAllowedTimeForVerification"
+  ],
+  "$defs": {
+    "BackupCodeTwoFaProviderConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TwoFaProviderConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "codesQuantity": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "EmailTwoFaProviderConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TwoFaProviderConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verificationCodeLifetime": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "SmsTwoFaProviderConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TwoFaProviderConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verificationCodeLifetime": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "smsVerificationMessageTemplate": {
+              "type": "string",
+              "pattern": ".*\\$\\{code}.*"
+            }
+          }
+        }
+      ],
+      "required": [
+        "smsVerificationMessageTemplate"
+      ]
+    },
+    "TotpTwoFaProviderConfig": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/TwoFaProviderConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "issuerName": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "issuerName"
+      ]
+    },
+    "TwoFaProviderConfig": {
+      "properties": {
+        "providerType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "providerType"
+      ]
+    }
+  }
+}

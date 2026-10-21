@@ -377,17 +377,6 @@ paths:
           description: OK
 components:
   schemas:
-    TenantProfileData:
-      properties:
-        configuration:
-          description: 'Complex JSON object that contains profile settings: max devices, max assets, rate limits, etc.'
-          oneOf:
-          - $ref: '#/components/schemas/DefaultTenantProfileConfiguration'
-        queueConfiguration:
-          type: array
-          description: JSON array of queue configuration per tenant profile
-          items:
-            $ref: '#/components/schemas/TenantProfileQueueConfiguration'
     PageDataTenantProfile:
       properties:
         data:
@@ -410,36 +399,47 @@ components:
           type: boolean
           description: '''false'' value indicates the end of the result set'
           readOnly: true
-    PageDataEntityInfo:
-      properties:
-        data:
-          type: array
-          description: Array of the entities
-          items:
-            $ref: '#/components/schemas/EntityInfo'
-          readOnly: true
-        totalPages:
-          type: integer
-          format: int32
-          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
-          readOnly: true
-        totalElements:
-          type: integer
-          format: int64
-          description: Total number of elements in all available pages
-          readOnly: true
-        hasNext:
-          type: boolean
-          description: '''false'' value indicates the end of the result set'
-          readOnly: true
-    EntityInfo:
+    TenantProfile:
+      description: A JSON value representing the tenant profile.
       properties:
         id:
-          $ref: '#/components/schemas/EntityId'
-          description: 'JSON object with the entity Id. '
+          $ref: '#/components/schemas/TenantProfileId'
+          description: JSON object with the tenant profile Id. Specify this field to update the tenant profile. Referencing non-existing tenant profile Id will cause error. Omit this field to create new tenant profile.
+        createdTime:
+          type: integer
+          format: int64
+          description: Timestamp of the tenant profile creation, in milliseconds
+          example: 1609459200000
+          readOnly: true
         name:
           type: string
-          description: Entity Name
+          description: Name of the tenant profile
+          example: High Priority Tenants
+        description:
+          type: string
+          description: Description of the tenant profile
+          example: Any text
+        isolatedTbRuleEngine:
+          type: boolean
+          description: If enabled, will push all messages related to this tenant and processed by the rule engine into separate queue. Useful for complex microservices deployments, to isolate processing of the data for specific tenants
+          example: true
+        default:
+          type: boolean
+        profileData:
+          $ref: '#/components/schemas/TenantProfileData'
+    SubmitStrategy:
+      properties:
+        type:
+          type: string
+          enum:
+          - BURST
+          - BATCH
+          - SEQUENTIAL_BY_ORIGINATOR
+          - SEQUENTIAL_BY_TENANT
+          - SEQUENTIAL
+        batchSize:
+          type: integer
+          format: int32
     TenantProfileQueueConfiguration:
       properties:
         name:
@@ -463,19 +463,36 @@ components:
           $ref: '#/components/schemas/ProcessingStrategy'
         additionalInfo:
           $ref: '#/components/schemas/JsonNode'
-    SubmitStrategy:
+    TenantProfileConfiguration:
+      discriminator:
+        propertyName: type
       properties:
         type:
           type: string
-          enum:
-          - BURST
-          - BATCH
-          - SEQUENTIAL_BY_ORIGINATOR
-          - SEQUENTIAL_BY_TENANT
-          - SEQUENTIAL
-        batchSize:
+      required:
+      - type
+    PageDataEntityInfo:
+      properties:
+        data:
+          type: array
+          description: Array of the entities
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          readOnly: true
+        totalPages:
           type: integer
           format: int32
+          description: Total number of available pages. Calculated based on the 'pageSize' request parameter and total number of entities that match search criteria
+          readOnly: true
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of elements in all available pages
+          readOnly: true
+        hasNext:
+          type: boolean
+          description: '''false'' value indicates the end of the result set'
+          readOnly: true
     EntityId:
       properties:
         id:
@@ -518,61 +535,22 @@ components:
       required:
       - entityType
       - id
-    JsonNode:
-      description: A value representing the any type (object or primitive)
-      examples:
-      - {}
-    ProcessingStrategy:
-      properties:
-        type:
-          type: string
-          enum:
-          - SKIP_ALL_FAILURES
-          - SKIP_ALL_FAILURES_AND_TIMED_OUT
-          - RETRY_ALL
-          - RETRY_FAILED
-          - RETRY_TIMED_OUT
-          - RETRY_FAILED_AND_TIMED_OUT
-        retries:
-          type: integer
-          format: int32
-        failurePercentage:
-          type: number
-          format: double
-        pauseBetweenRetries:
-          type: integer
-          format: int64
-        maxPauseBetweenRetries:
-          type: integer
-          format: int64
-    TenantProfile:
-      description: A JSON value representing the tenant profile.
+    TenantProfileId:
       properties:
         id:
-          $ref: '#/components/schemas/TenantProfileId'
-          description: JSON object with the tenant profile Id. Specify this field to update the tenant profile. Referencing non-existing tenant profile Id will cause error. Omit this field to create new tenant profile.
-        createdTime:
-          type: integer
-          format: int64
-          description: Timestamp of the tenant profile creation, in milliseconds
-          example: 1609459200000
-          readOnly: true
-        name:
           type: string
-          description: Name of the tenant profile
-          example: High Priority Tenants
-        description:
+          format: uuid
+          description: ID of the entity, time-based UUID v1
+          example: 784f394c-42b6-435a-983c-b7beff2784f9
+        entityType:
           type: string
-          description: Description of the tenant profile
-          example: Any text
-        isolatedTbRuleEngine:
-          type: boolean
-          description: If enabled, will push all messages related to this tenant and processed by the rule engine into separate queue. Useful for complex microservices deployments, to isolate processing of the data for specific tenants
-          example: true
-        default:
-          type: boolean
-        profileData:
-          $ref: '#/components/schemas/TenantProfileData'
+          description: string
+          enum:
+          - TENANT_PROFILE
+          example: TENANT_PROFILE
+      required:
+      - entityType
+      - id
     DefaultTenantProfileConfiguration:
       allOf:
       - $ref: '#/components/schemas/TenantProfileConfiguration'
@@ -730,30 +708,52 @@ components:
           warnThreshold:
             type: number
             format: double
-    TenantProfileConfiguration:
-      discriminator:
-        propertyName: type
+    TenantProfileData:
+      properties:
+        configuration:
+          description: 'Complex JSON object that contains profile settings: max devices, max assets, rate limits, etc.'
+          oneOf:
+          - $ref: '#/components/schemas/DefaultTenantProfileConfiguration'
+        queueConfiguration:
+          type: array
+          description: JSON array of queue configuration per tenant profile
+          items:
+            $ref: '#/components/schemas/TenantProfileQueueConfiguration'
+    JsonNode:
+      description: A value representing the any type (object or primitive)
+      examples:
+      - {}
+    ProcessingStrategy:
       properties:
         type:
           type: string
-      required:
-      - type
-    TenantProfileId:
+          enum:
+          - SKIP_ALL_FAILURES
+          - SKIP_ALL_FAILURES_AND_TIMED_OUT
+          - RETRY_ALL
+          - RETRY_FAILED
+          - RETRY_TIMED_OUT
+          - RETRY_FAILED_AND_TIMED_OUT
+        retries:
+          type: integer
+          format: int32
+        failurePercentage:
+          type: number
+          format: double
+        pauseBetweenRetries:
+          type: integer
+          format: int64
+        maxPauseBetweenRetries:
+          type: integer
+          format: int64
+    EntityInfo:
       properties:
         id:
+          $ref: '#/components/schemas/EntityId'
+          description: 'JSON object with the entity Id. '
+        name:
           type: string
-          format: uuid
-          description: ID of the entity, time-based UUID v1
-          example: 784f394c-42b6-435a-983c-b7beff2784f9
-        entityType:
-          type: string
-          description: string
-          enum:
-          - TENANT_PROFILE
-          example: TENANT_PROFILE
-      required:
-      - entityType
-      - id
+          description: Entity Name
   securitySchemes:
     HTTP_login_form:
       type: http

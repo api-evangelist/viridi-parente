@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-rule-chain-meta-data-schema.json",
+  "title": "RuleChainMetaData",
+  "description": "A JSON value representing the rule chain metadata.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-rule-chain-controller-api-openapi.yml#/components/schemas/RuleChainMetaData",
+  "properties": {
+    "ruleChainId": {
+      "$ref": "#/$defs/RuleChainId",
+      "description": "JSON object with Rule Chain Id.",
+      "readOnly": true
+    },
+    "firstNodeIndex": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Index of the first rule node in the 'nodes' list"
+    },
+    "nodes": {
+      "type": "array",
+      "description": "List of rule node JSON objects",
+      "items": {
+        "$ref": "#/$defs/RuleNode"
+      }
+    },
+    "connections": {
+      "type": "array",
+      "description": "List of JSON objects that represent connections between rule nodes",
+      "items": {
+        "$ref": "#/$defs/NodeConnectionInfo"
+      }
+    },
+    "ruleChainConnections": {
+      "type": "array",
+      "description": "List of JSON objects that represent connections between rule nodes and other rule chains.",
+      "items": {
+        "$ref": "#/$defs/RuleChainConnectionInfo"
+      }
+    }
+  },
+  "required": [
+    "connections",
+    "firstNodeIndex",
+    "nodes",
+    "ruleChainConnections",
+    "ruleChainId"
+  ],
+  "$defs": {
+    "JsonNode": {
+      "description": "A value representing the any type (object or primitive)"
+    },
+    "NodeConnectionInfo": {
+      "properties": {
+        "fromIndex": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection."
+        },
+        "toIndex": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'to' part of the connection."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'"
+        }
+      },
+      "required": [
+        "fromIndex",
+        "toIndex",
+        "type"
+      ]
+    },
+    "RuleChainConnectionInfo": {
+      "properties": {
+        "fromIndex": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Index of rule node in the 'nodes' array of the RuleChainMetaData. Indicates the 'from' part of the connection."
+        },
+        "targetRuleChainId": {
+          "$ref": "#/$defs/RuleChainId",
+          "description": "JSON object with the Rule Chain Id."
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "JSON object with the additional information about the connection."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the relation. Typically indicated the result of processing by the 'from' rule node. For example, 'Success' or 'Failure'"
+        }
+      },
+      "required": [
+        "additionalInfo",
+        "fromIndex",
+        "targetRuleChainId",
+        "type"
+      ]
+    },
+    "RuleChainId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_CHAIN"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    },
+    "RuleNode": {
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/RuleNodeId",
+          "description": "JSON object with the Rule Node Id. Specify this field to update the Rule Node. Referencing non-existing Rule Node Id will cause error. Omit this field to create new rule node."
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp of the rule node creation, in milliseconds",
+          "readOnly": true
+        },
+        "ruleChainId": {
+          "$ref": "#/$defs/RuleChainId",
+          "description": "JSON object with the Rule Chain Id. ",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "description": "Full Java Class Name of the rule node implementation. "
+        },
+        "name": {
+          "type": "string",
+          "description": "User defined name of the rule node. Used on UI and for logging. "
+        },
+        "debugMode": {
+          "type": "boolean",
+          "description": "Enable/disable debug. "
+        },
+        "singletonMode": {
+          "type": "boolean",
+          "description": "Enable/disable singleton mode. "
+        },
+        "queueName": {
+          "type": "string",
+          "description": "Queue name. "
+        },
+        "configurationVersion": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Version of rule node configuration. "
+        },
+        "externalId": {
+          "$ref": "#/$defs/RuleNodeId"
+        },
+        "configuration": {
+          "$ref": "#/$defs/JsonNode"
+        },
+        "additionalInfo": {
+          "$ref": "#/$defs/JsonNode",
+          "description": "Additional parameters of the rule node. Contains 'layoutX' and 'layoutY' properties for visualization."
+        }
+      }
+    },
+    "RuleNodeId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the entity, time-based UUID v1"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "string",
+          "enum": [
+            "RULE_NODE"
+          ]
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ]
+    }
+  }
+}

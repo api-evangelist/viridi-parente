@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/viridi-parente/main/json-schema/viridi-parente-entity-relations-query-schema.json",
+  "title": "EntityRelationsQuery",
+  "description": "A JSON value representing the entity relations query object.",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/viridi-parente-entity-relation-controller-api-openapi.yml#/components/schemas/EntityRelationsQuery",
+  "properties": {
+    "parameters": {
+      "$ref": "#/$defs/RelationsSearchParameters",
+      "description": "Main search parameters."
+    },
+    "filters": {
+      "type": "array",
+      "description": "Main filters.",
+      "items": {
+        "$ref": "#/$defs/RelationEntityTypeFilter"
+      }
+    }
+  },
+  "$defs": {
+    "RelationEntityTypeFilter": {
+      "properties": {
+        "relationType": {
+          "type": "string",
+          "description": "Type of the relation between root entity and other entity (e.g. 'Contains' or 'Manages')."
+        },
+        "entityTypes": {
+          "type": "array",
+          "description": "Array of entity types to filter the related entities (e.g. 'DEVICE', 'ASSET').",
+          "items": {
+            "type": "string",
+            "enum": [
+              "TENANT",
+              "CUSTOMER",
+              "USER",
+              "DASHBOARD",
+              "ASSET",
+              "DEVICE",
+              "ALARM",
+              "RULE_CHAIN",
+              "RULE_NODE",
+              "ROLE",
+              "ENTITY_VIEW",
+              "WIDGETS_BUNDLE",
+              "WIDGET_TYPE",
+              "TENANT_PROFILE",
+              "DEVICE_PROFILE",
+              "ASSET_PROFILE",
+              "API_USAGE_STATE",
+              "TB_RESOURCE",
+              "OTA_PACKAGE",
+              "EDGE",
+              "RPC",
+              "QUEUE",
+              "NOTIFICATION_TARGET",
+              "NOTIFICATION_TEMPLATE",
+              "NOTIFICATION_REQUEST",
+              "NOTIFICATION",
+              "NOTIFICATION_RULE",
+              "QUEUE_STATS"
+            ]
+          }
+        },
+        "negate": {
+          "type": "boolean",
+          "description": "Negate relation type between root entity and other entity."
+        }
+      }
+    },
+    "RelationsSearchParameters": {
+      "properties": {
+        "rootId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Root entity id to start search from."
+        },
+        "rootType": {
+          "type": "string",
+          "description": "Type of the root entity.",
+          "enum": [
+            "TENANT",
+            "CUSTOMER",
+            "USER",
+            "DASHBOARD",
+            "ASSET",
+            "DEVICE",
+            "ALARM",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "ROLE",
+            "ENTITY_VIEW",
+            "WIDGETS_BUNDLE",
+            "WIDGET_TYPE",
+            "TENANT_PROFILE",
+            "DEVICE_PROFILE",
+            "ASSET_PROFILE",
+            "API_USAGE_STATE",
+            "TB_RESOURCE",
+            "OTA_PACKAGE",
+            "EDGE",
+            "RPC",
+            "QUEUE",
+            "NOTIFICATION_TARGET",
+            "NOTIFICATION_TEMPLATE",
+            "NOTIFICATION_REQUEST",
+            "NOTIFICATION",
+            "NOTIFICATION_RULE",
+            "QUEUE_STATS"
+          ]
+        },
+        "direction": {
+          "type": "string",
+          "description": "Type of the root entity.",
+          "enum": [
+            "FROM",
+            "TO"
+          ]
+        },
+        "relationTypeGroup": {
+          "type": "string",
+          "description": "Type of the relation.",
+          "enum": [
+            "COMMON",
+            "DASHBOARD",
+            "RULE_CHAIN",
+            "RULE_NODE",
+            "EDGE",
+            "EDGE_AUTO_ASSIGN_RULE_CHAIN"
+          ]
+        },
+        "maxLevel": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Maximum level of the search depth."
+        },
+        "fetchLastLevelOnly": {
+          "type": "boolean",
+          "description": "Fetch entities that match the last level of search. Useful to find Devices that are strictly 'maxLevel' relations away from the root entity."
+        }
+      }
+    }
+  }
+}
